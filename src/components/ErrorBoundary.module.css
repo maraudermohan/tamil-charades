@@ -1,0 +1,76 @@
+.errorBoundaryBox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  background-color: #f5fffa; ;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.homeIcon {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  top: 28px;
+  left: 24px;
+  color: #3f3f3f;
+}
+
+.oops {
+  margin: 0 auto 3vh auto;
+  margin-bottom: calc(var(--vh, 1vh) * 3);
+  padding: 0;
+  width: 85vw;
+  font-size: 36px;
+  text-align: center;
+  color: #48d1cc;
+}
+
+.title {
+  margin: 0 auto 3vh auto;
+  margin-bottom: calc(var(--vh, 1vh) * 3);
+  padding: 0;
+  width: 85vw;
+  font-size: 24px;
+  letter-spacing: 0.2px;
+  text-align: center;
+  color: #ff6633;
+}
+
+.image {
+  margin: 0;
+  padding: 0;
+  background-size: cover;
+  width: 300px;
+  height: 300px;
+}
+
+.description {
+  margin: 3vh auto 0 auto;
+  margin-top: calc(var(--vh, 1vh) * 3);
+  padding: 0;
+  width: 85vw;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0.2px;
+  text-align: center;
+  color: #ff6633;
+}
+
+@media (max-width: 999px) and (orientation: landscape) {
+  .image {
+    width: 50vh;
+    width: calc(var(--vh, 1vh) * 50);
+    height: 50vh;
+    height: calc(var(--vh, 1vh) * 50);
+  }
+}

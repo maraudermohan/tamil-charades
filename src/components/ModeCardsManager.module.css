@@ -1,0 +1,33 @@
+.modeCardsManager {
+  margin: 0;
+  padding: 0 0 56px 0;
+  width: 100%;
+}
+
+@media (max-width: 999px) and (orientation: landscape) {
+  .modeCardsManager {
+    display: flex;
+  }
+}
+
+@media (min-width: 767px) and (orientation: portrait) {
+  .modeCardsManager {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 24px 6px;
+  }
+}
+
+@media (min-width: 1000px) and (orientation: landscape) {
+  .modeCardsManager {
+    display: flex;
+    padding: 24px 6px;
+  }
+}
+
+@media (min-width: 1500px) and (orientation: landscape) {
+  .modeCardsManager {
+    display: flex;
+    padding: 24px 56px;
+  }
+}

@@ -1,0 +1,186 @@
+.difficultySliderBox {
+  margin: 0;
+  padding: 0 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ff6633;
+  border-radius: 10px;
+}
+
+.difficultyLabel {
+  margin: 0;
+  padding: 0 18px 0 0;
+  height: 24px;
+  line-height: 24px;
+  font-size: 15px;
+  color: #ff6633;
+}
+
+.difficultyLabelFirst {
+  padding: 0 12px 0 0;
+}
+
+.difficultyLabelLast {
+  padding: 0 0 0 12px;
+}
+
+.sliderInput {
+  margin: 0;
+  padding: 0;
+  width: 75px;
+  height: 24px;
+  display: flex;
+  position: relative;
+  cursor: pointer;
+}
+
+.sliderInputControl {
+  position: absolute;
+  width: 12px;
+  height: 22px;
+  border-radius: 4px;
+  top: 0;
+  border: 1px solid white;
+  transition: all 0.2s ease-out;
+  z-index: 6;
+}
+
+.sliderBg {
+  position: absolute;
+  margin: 10px 0;
+  width: 100%;
+  height: 4px;
+  top: 0;
+  left: 0;
+  background: linear-gradient(90deg, rgba(255,194,173,1) 30%, rgba(255,102,51,1) 100%);
+  z-index: 0;
+}
+
+.sliderValue1,
+.sliderValue2,
+.sliderValue3 {
+  position: absolute;
+  width: 33.3%;
+  height: 24px;
+  z-index: 5;
+}
+
+.sliderValue1 {
+  top: 0;
+  left: 0;
+}
+
+.sliderValue2 {
+  top: 0;
+  left: 33.3%;
+}
+
+.sliderValue3 {
+  top: 0;
+  left: 66.6%;
+}
+
+@media (max-width: 420px) and (orientation: portrait) {
+  .difficultySliderBox {
+    padding: 0 10px;
+  }
+
+  .difficultyLabel {
+    line-height: 22px;
+    font-size: 14px;
+  }
+
+  .difficultyLabelFirst {
+    padding: 0 8px 0 0;
+  }
+
+  .difficultyLabelLast {
+    padding: 0 0 0 8px;
+  }
+}
+
+@media (min-width: 767px) and (orientation: portrait) {
+  .difficultyLabel {
+    height: 36px;
+    line-height: 36px;
+    font-size: 20px;
+  }
+
+  .difficultyLabelFirst {
+    padding: 0 18px 0 0;
+  }
+
+  .difficultyLabelLast {
+    padding: 0 0 0 18px;
+  }
+
+  .sliderInput {
+    width: 120px;
+    height: 36px;
+  }
+
+  .sliderInputControl {
+    width: 14px;
+    height: 36px;
+  }
+
+  .sliderBg {
+    margin: 15px 0;
+    height: 6px;
+  }
+
+  .sliderValue1,
+  .sliderValue2,
+  .sliderValue3 {
+    height: 36px;
+  }
+}
+
+@media (min-width: 1000px) and (orientation: landscape) {
+  .difficultyLabel {
+    height: 36px;
+    line-height: 36px;
+    font-size: 20px;
+  }
+
+  .difficultyLabelFirst {
+    padding: 0 18px 0 0;
+  }
+
+  .difficultyLabelLast {
+    padding: 0 0 0 18px;
+  }
+
+  .sliderInput {
+    width: 120px;
+    height: 36px;
+  }
+
+  .sliderInputControl {
+    width: 14px;
+    height: 36px;
+  }
+
+  .sliderBg {
+    margin: 15px 0;
+    height: 6px;
+  }
+
+  .sliderValue1,
+  .sliderValue2,
+  .sliderValue3 {
+    height: 36px;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sliderInput:hover span:first-of-type {
+    background: #ff6633;
+  }
+  .sliderValue1:hover,
+  .sliderValue2:hover,
+  .sliderValue3:hover {
+    cursor: pointer;
+  }
+}

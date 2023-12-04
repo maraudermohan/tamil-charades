@@ -1,0 +1,113 @@
+.homeIcon {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 44px;
+  height: 44px;
+  top: calc(5vw - 3px);
+  left: 5vw;
+  color: #3f3f3f;
+}
+
+.timer {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  color: #3f3f3f;
+  top: calc(5vw + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.starBox {
+  position: absolute;
+  margin: 0;
+  padding: 2px 12px 2px 9px;
+  top: 5vw;
+  right: 5vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 0.5px solid #3f3f3f;
+  border-radius: 25px;
+}
+
+.starIcon {
+  margin: 0;
+  padding: 0;
+  width: 35px;
+  height: 35px;
+  background: url('/star.webp') no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.starCount {
+  margin: 0;
+  padding: 2px 0 0 3px;
+  width: 28px;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  color: #3f3f3f;
+  text-align: center;
+}
+
+
+@media (max-width: 999px) and (orientation: landscape) {
+  .homeIcon {
+    width: 30px;
+    height: 30px;
+    top: 5vh;
+    top: calc(var(--vh, 1vh) * 5);
+  }
+  .timer {
+    top: calc(5vh + 3px);
+    top: calc(var(--vh, 1vh) * 5 + 3px);
+  }
+  .starBox {
+    padding: 1px 12px 1px 9px;
+    top: calc(5vh - 2px);
+    top: calc(var(--vh, 1vh) * 5 - 2px);
+  }
+  .starIcon {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media (min-width: 1120px) and (orientation: landscape) {
+  .homeIcon {
+    left: 10vw;
+  }
+  .starBox {
+    right: 10vw;
+  }
+}
+
+@media (min-width: 1450px) and (orientation: landscape) {
+  .homeIcon {
+    top: 4vh;
+    top: calc(var(--vh, 1vh) * 4);
+    left: 15vw;
+  }
+  .timer {
+    top: calc(4vh + 10px);
+    top: calc(var(--vh, 1vh) * 4 + 10px);
+  }
+  .starBox {
+    top: calc(4vh - 2px);
+    top: calc(var(--vh, 1vh) * 4 - 2px);
+    right: 15vw;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .homeIcon:hover {
+    cursor: pointer;
+    color: white;
+    filter: drop-shadow(0px 0px 1.5px #767676);
+  }
+}

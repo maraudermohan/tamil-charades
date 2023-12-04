@@ -1,0 +1,220 @@
+.resultsSlideBox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transform: translateX(110%);
+  transition: all 0.25s ease-in;
+  background: #ff6633;
+  z-index: 10;
+}
+
+.scoreboard {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  height: 190px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  z-index: 5;
+  color: white;
+}
+
+.starIconLeft {
+  position: absolute;
+  top: 0;
+  left: 32%;
+  width: 50px;
+  height: 50px;
+  transform: translate(-100%, 60%) rotate(-30deg);
+  opacity: 0.2;
+  transition: width 0.2s ease-out, height 0.2s ease-out;
+  background: url('/star.webp') no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.starIconMid {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 60px;
+  height: 60px;
+  transform: translate(-50%);
+  opacity: 0.2;
+  transition: width 0.2s ease-out, height 0.2s ease-out;
+  background: url('/star.webp') no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.starIconRight {
+  position: absolute;
+  top: 0;
+  left: 68%;
+  width: 50px;
+  height: 50px;
+  transform: translateY(60%) rotate(30deg);
+  opacity: 0.2;
+  transition: width 0.2s ease-out, height 0.2s ease-out;
+  background: url('/star.webp') no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.starsCount {
+  margin: 0;
+  padding: 0;
+  font-size: 50px;
+  line-height: 65px;
+  color: white;
+}
+
+.totalCount {
+  margin: 0;
+  padding: 5px 0 0 0;
+  font-size: 24px;
+  line-height: 35px;
+  color: white;
+}
+
+.timeBoard {
+  position: relative;
+  margin: 5vh auto 0 auto;
+  margin-top: calc(var(--vh, 1vh) * 5);
+  padding: 0;
+  width: 70vw;
+  height: 80px;
+  max-width: 500px;
+  z-index: 5;
+  color: white;
+}
+
+.totalKey {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 17px;
+  line-height: 32px;
+  letter-spacing: 0.2px;
+  color: white;
+}
+
+.totalValue {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 32px;
+  letter-spacing: 0.2px;
+  color: white;
+}
+
+.AverageKey {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-size: 17px;
+  line-height: 32px;
+  letter-spacing: 0.2px;
+  color: white;
+}
+
+.AverageValue {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 32px;
+  letter-spacing: 0.2px;
+  color: white;
+}
+
+.continueButton {
+  position: relative;
+  margin: 8vh 0 0 0;
+  margin-top: calc(var(--vh, 1vh) * 8);
+  padding: 0;
+  width: 150px;
+  height: 50px;
+  border-radius: 10px;
+  border: 1px solid #48d1cc;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  background-color: #48d1cc;
+  z-index: 5;
+  color: white;
+}
+
+.orangeBg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 75vh;
+  height: calc(var(--vh, 1vh) * 75);
+  z-index: 1;
+  background: linear-gradient(195deg, rgba(255, 102, 51,1) 70%, rgba(253,208,45,0) 100%);;
+}
+
+.patternBg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 75vh;
+  height: calc(var(--vh, 1vh) * 75);
+  z-index: 0;
+  --s: 40px; /* control the size */
+  --c: #ff6633;
+  
+  --_g: 
+    #0000 calc(-650%/13) calc(50%/13),var(--c) 0 calc(100%/13),
+    #0000 0 calc(150%/13),var(--c) 0 calc(200%/13),
+    #0000 0 calc(250%/13),var(--c) 0 calc(300%/13);
+  --_g0: repeating-linear-gradient( 45deg,var(--_g));
+  --_g1: repeating-linear-gradient(-45deg,var(--_g));
+  background:
+    var(--_g0),var(--_g0) var(--s) var(--s),
+    var(--_g1),var(--_g1) var(--s) var(--s) #ff835a;
+  background-size: calc(2*var(--s)) calc(2*var(--s));
+}
+
+@media (max-height: 400px) and (orientation: landscape) {
+  .continueButton {
+    margin: 4vh 0 0 0;
+    margin-top: calc(var(--vh, 1vh) * 4);
+  }
+  .timeBoard {
+    margin: 4vh auto 0 auto;
+    margin-top: calc(var(--vh, 1vh) * 4);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .continueButton:hover {
+    cursor: pointer;
+    color: #48d1cc;
+    background-color: white;
+  }
+}
