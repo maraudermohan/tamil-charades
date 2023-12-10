@@ -57,6 +57,37 @@
   z-index: 0;
 }
 
+.sliderCircle {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.sliderCircle1 {
+  left: 0;
+  top: 50%;
+  background-color: rgb(255,194,173);
+  transform: translateY(-50%);
+}
+
+.sliderCircle2 {
+  left: 50%;
+  top: 50%;
+  background-color: rgb(255,148,112);
+  transform: translate(-50%, -50%);
+}
+
+.sliderCircle3 {
+  left: 100%;
+  top: 50%;
+  background-color: rgb(255,102,51);
+  transform: translate(-100%, -50%);
+}
+
 .sliderValue1,
 .sliderValue2,
 .sliderValue3 {
@@ -130,6 +161,11 @@
     height: 6px;
   }
 
+  .sliderCircle {
+    width: 12px;
+    height: 12px;
+  }
+
   .sliderValue1,
   .sliderValue2,
   .sliderValue3 {
@@ -167,6 +203,11 @@
     height: 6px;
   }
 
+  .sliderCircle {
+    width: 12px;
+    height: 12px;
+  }
+
   .sliderValue1,
   .sliderValue2,
   .sliderValue3 {
@@ -175,9 +216,13 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .sliderInput:hover span:first-of-type {
-    background: #ff6633;
+  .sliderValue1:hover + .sliderCircle1,
+  .sliderValue2:hover + .sliderCircle2,
+  .sliderValue3:hover + .sliderCircle3 {
+    background: red;
   }
+
+  .difficultyLabel:hover,
   .sliderValue1:hover,
   .sliderValue2:hover,
   .sliderValue3:hover {

@@ -22,7 +22,7 @@ function DifficultySlider({ difficulty, setDifficulty }: DifficultySliderType) {
     {
       background: "rgb(255,102,51)",
       left: "100%",
-      transform: "translateX(-50%)",
+      transform: "translateX(-100%)",
     },
   ] as const;
 
@@ -41,6 +41,8 @@ function DifficultySlider({ difficulty, setDifficulty }: DifficultySliderType) {
       <p
         className={`${styles.difficultyLabel} ${styles.difficultyLabelFirst}`}
         style={{ fontFamily: poppins.style.fontFamily }}
+        data-value={1}
+        onClick={toggleDifficulty}
       >
         EASY
       </p>
@@ -51,12 +53,17 @@ function DifficultySlider({ difficulty, setDifficulty }: DifficultySliderType) {
           style={styleValue[difficulty - 1]}
         />
         <span className={styles.sliderValue1} data-value={1} />
+        <span className={`${styles.sliderCircle} ${styles.sliderCircle1} sliderCircle1`} />
         <span className={styles.sliderValue2} data-value={2} />
+        <span className={`${styles.sliderCircle} ${styles.sliderCircle2} sliderCircle2`} />
         <span className={styles.sliderValue3} data-value={3} />
+        <span className={`${styles.sliderCircle} ${styles.sliderCircle3} sliderCircle3`} />
       </div>
       <p
         className={`${styles.difficultyLabel} ${styles.difficultyLabelLast}`}
         style={{ fontFamily: poppins.style.fontFamily }}
+        data-value={3}
+        onClick={toggleDifficulty}
       >
         HARD
       </p>
