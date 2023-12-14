@@ -19,6 +19,7 @@
   top: calc(5vw + 12px);
   left: 50%;
   transform: translateX(-50%);
+  user-select: none;
 }
 
 .starBox {
@@ -53,6 +54,7 @@
   font-weight: 500;
   color: #3f3f3f;
   text-align: center;
+  user-select: none;
 }
 
 

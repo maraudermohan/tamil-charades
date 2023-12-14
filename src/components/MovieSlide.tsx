@@ -17,6 +17,7 @@ import { MovieSlideHeader, ResultsSlide, TitleSlide } from "components";
 function MovieSlide() {
   const { currentIndex, startTime, gameStoreMethods } =
     useContext(GameStoreContext)!;
+  const boxRef = useRef<HTMLDivElement>(null);
   const presentSlideRef = useRef<HTMLDivElement>(null);
   const prevSlideRef = useRef<HTMLDivElement>(null);
   const nextSlideRef = useRef<HTMLDivElement>(null);
@@ -24,6 +25,7 @@ function MovieSlide() {
   const [resultsText, setResultsText] = useState<string[]>([]);
 
   const startAnimation = useCallback(() => {
+    boxRef.current!.style.backgroundColor = "#f5fffa";
     prevSlideRef.current!.style.visibility = "hidden";
     prevSlideRef.current!.style.transform = "translateX(0)";
     presentSlideRef.current!.style.visibility = "visible";
@@ -32,7 +34,10 @@ function MovieSlide() {
     resultSlideRef.current!.style.visibility = "hidden";
   }, []);
 
-  const endAnimation = useCallback(() => {
+  const endAnimation = useCallback((isPass: boolean) => {
+    boxRef.current!.style.backgroundColor = isPass
+      ? "rgba(72,209,204,.5)"
+      : "rgba(209,72,77,.5)";
     presentSlideRef.current!.style.visibility = "hidden";
     prevSlideRef.current!.style.visibility = "visible";
     prevSlideRef.current!.style.transform = "translateX(-120%)";
@@ -50,7 +55,7 @@ function MovieSlide() {
         `${totalMinutes < 10 ? "0" : ""}${totalMinutes} : ${
           totalSeconds < 10 ? "0" : ""
         }${totalSeconds}`,
-        '00 : 00',
+        "00 : 00",
       ]);
     } else {
       const AverageTime = Math.ceil(totalTime / currentIndex!);
@@ -70,13 +75,13 @@ function MovieSlide() {
   }, [currentIndex, startTime]);
 
   const handleFailClick = useCallback(() => {
-    setTimeout(gameStoreMethods.updateFailAnswer, 200);
-    endAnimation();
+    setTimeout(gameStoreMethods.updateFailAnswer, 300);
+    endAnimation(false);
   }, []);
 
   const handlePassClick = useCallback(() => {
-    setTimeout(gameStoreMethods.updatePassAnswer, 200);
-    endAnimation();
+    setTimeout(gameStoreMethods.updatePassAnswer, 300);
+    endAnimation(true);
   }, []);
 
   useEffect(() => {
@@ -84,7 +89,7 @@ function MovieSlide() {
   }, [currentIndex]);
 
   return (
-    <div className={styles.movieSlideBox}>
+    <div className={styles.movieSlideBox} ref={boxRef}>
       <MovieSlideHeader />
       <TitleSlide elementRef={presentSlideRef} movieIndex={currentIndex!} />
       <TitleSlide elementRef={prevSlideRef} movieIndex={currentIndex!} />

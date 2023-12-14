@@ -7,16 +7,22 @@ import {
   useRef,
   useState,
 } from "react";
+import { useRouter } from "next/navigation";
 import { AiFillHome } from "react-icons/ai";
 import { IoPlay } from "react-icons/io5";
 import { lora, poppins, rubik } from "app/fonts";
 import { DifficultySlider } from "components";
 import { GameStoreContext, fetchData } from "hooks";
 import styles from "./ModeExpanded.module.css";
-import { ErrorStates } from "constant";
+import { ErrorStates, GameModeType } from "constant";
 
-function ModeExpanded() {
-  const { currentMode, gameStoreMethods } = useContext(GameStoreContext)!;
+interface ModeExpandedType {
+  currentModeData: GameModeType;
+}
+
+function ModeExpanded({ currentModeData }: ModeExpandedType) {
+  const router = useRouter();
+  const { gameStoreMethods } = useContext(GameStoreContext)!;
   const [difficulty, setDifficulty] = useState<number>(2);
   const elementRef = useRef<HTMLDivElement>(null);
   const intervalId = useRef<any>(null);
@@ -24,14 +30,14 @@ function ModeExpanded() {
   const [isSubmitted, setIsSubmitted] = useState<number | null>(null);
 
   const fetchMovies = useCallback(async () => {
-    const result = await fetchData(currentMode?.endpoint! + difficulty);
+    const result = await fetchData(currentModeData?.endpoint! + difficulty);
     if (!result) {
       gameStoreMethods.setError(ErrorStates.BACKEND_FAIL);
       return;
     }
     gameStoreMethods.setCurrentDifficulty(difficulty);
     gameStoreMethods.updateMoviesList(result);
-  }, [currentMode, difficulty, gameStoreMethods]);
+  }, [currentModeData, difficulty, gameStoreMethods]);
 
   const handleSubmit = useCallback(() => {
     fetchMovies();
@@ -51,6 +57,10 @@ function ModeExpanded() {
     }, 1050);
   }, [fetchMovies]);
 
+  const handleGoHome = useCallback(() => {
+    router.push("/");
+  }, []);
+
   useEffect(() => {
     setTimeout(() => {
       elementRef.current!.style.transform = "translateX(0)";
@@ -66,24 +76,32 @@ function ModeExpanded() {
       {isSubmitted == null ? (
         <>
           <div
-            style={{ backgroundImage: `url(${currentMode!.backgroundImage})` }}
-            className={`${styles.modeImage} ${currentMode?.title && styles[currentMode.title.split(' ')[0]]}`}
+            style={{
+              backgroundImage: `url(${currentModeData!.backgroundImage})`,
+            }}
+            className={`${styles.modeImage} ${
+              currentModeData?.title &&
+              styles[currentModeData.title.split(" ")[0]]
+            }`}
           />
           <div className={styles.layout}>
-            <AiFillHome
-              className={styles.homeIcon}
-              onClick={gameStoreMethods.resetStore}
-            />
+            <AiFillHome className={styles.homeIcon} onClick={handleGoHome} />
             <h3
               className={styles.modeTitle}
               style={{ fontFamily: rubik.style.fontFamily }}
             >
-              {currentMode?.title}
+              {currentModeData?.title}
             </h3>
             <p
-              className={styles.modeDescription}
+              className={`${styles.modeDescription} ${
+                currentModeData.title === "Classic Mode"
+                  ? styles.modeDescriptionClassic
+                  : null
+              }`}
               style={{ fontFamily: lora.style.fontFamily }}
-              dangerouslySetInnerHTML={{ __html: currentMode?.description! }}
+              dangerouslySetInnerHTML={{
+                __html: currentModeData?.description!,
+              }}
             />
             <div className={styles.controlsBox}>
               <DifficultySlider

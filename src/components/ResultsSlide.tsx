@@ -1,8 +1,16 @@
 "use client";
-import { RefObject, memo, useContext, useEffect, useRef } from "react";
+import {
+  RefObject,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
 import { poppins, rubik, lora } from "app/fonts";
 import styles from "./ResultsSlide.module.css";
 import { GameStoreContext } from "hooks";
+import { useRouter } from "next/navigation";
 
 interface ResultsSlideType {
   elementRef: RefObject<HTMLDivElement>;
@@ -10,37 +18,55 @@ interface ResultsSlideType {
 }
 
 function ResultsSlide({ elementRef, resultsText }: ResultsSlideType) {
+  const router = useRouter();
   const { currentIndex, currentMode, starsCount, gameStoreMethods } =
     useContext(GameStoreContext)!;
   const leftStarRef = useRef<HTMLImageElement>(null);
   const midStarRef = useRef<HTMLImageElement>(null);
   const rightStarRef = useRef<HTMLImageElement>(null);
+  const timeoutIDs = useRef<ReturnType<typeof setTimeout>[] | null>(null);
+
+  const handleGoHome = useCallback(() => {
+    router.push("/");
+  }, []);
 
   useEffect(() => {
+    if (timeoutIDs.current == null) {
+      timeoutIDs.current = [];
+    }
     if (resultsText[0] && resultsText[1]) {
       if (starsCount! > 0) {
-        setTimeout(() => {
+        let id = setTimeout(() => {
           leftStarRef.current!.style.opacity = "1";
           leftStarRef.current!.style.width = "55px";
           leftStarRef.current!.style.height = "55px";
         }, 750);
+        timeoutIDs.current.push(id);
         if (starsCount! / currentIndex! > 0.4) {
-          setTimeout(() => {
+          id = setTimeout(() => {
             midStarRef.current!.style.opacity = "1";
             midStarRef.current!.style.width = "65px";
             midStarRef.current!.style.height = "65px";
           }, 1500);
+          timeoutIDs.current.push(id);
         }
         if (starsCount! / currentIndex! > 0.8) {
-          setTimeout(() => {
+          id = setTimeout(() => {
             rightStarRef.current!.style.opacity = "1";
             rightStarRef.current!.style.width = "55px";
             rightStarRef.current!.style.height = "55px";
           }, 2000);
+          timeoutIDs.current.push(id);
         }
       }
     }
   }, [resultsText]);
+
+  useEffect(() => {
+    return () => {
+      timeoutIDs.current?.forEach((id) => clearTimeout(id));
+    };
+  }, []);
 
   return (
     <div ref={elementRef} className={styles.resultsSlideBox}>
@@ -88,7 +114,7 @@ function ResultsSlide({ elementRef, resultsText }: ResultsSlideType) {
       </div>
       <button
         className={styles.continueButton}
-        onClick={() => gameStoreMethods.resetStore()}
+        onClick={handleGoHome}
         style={{ fontFamily: poppins.style.fontFamily }}
       >
         CONTINUE

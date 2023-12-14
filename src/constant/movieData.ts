@@ -3,7 +3,3 @@ export interface MoviesListType {
   tamil: string;
   movie?: string;
 }
-
-export interface MoviesCacheType {
-  [key: string]: boolean;
-}

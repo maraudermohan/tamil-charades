@@ -18,7 +18,7 @@ function Footer() {
         className={styles.footerLink}
         style={{ fontFamily: alegreya.style.fontFamily }}
       >
-        {'< Mohan Subramanian >'}
+        {"< Mohan Subramanian >"}
       </a>
     </footer>
   );

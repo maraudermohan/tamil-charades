@@ -1,11 +1,13 @@
 "use client";
 import { memo, useCallback, useContext, useEffect, useRef } from "react";
 import { AiFillHome } from "react-icons/ai";
-import { poppins  } from "app/fonts";
+import { poppins } from "app/fonts";
 import styles from "./MovieSlideHeader.module.css";
 import { GameStoreContext } from "hooks";
+import { useRouter } from "next/navigation";
 
 function MovieSlideHeader() {
+  const router = useRouter();
   const { starsCount, gameStoreMethods } = useContext(GameStoreContext)!;
   const intervalId = useRef<any>(null);
   const dateRef = useRef<any>(null);
@@ -21,6 +23,10 @@ function MovieSlideHeader() {
     }${seconds}`;
   }, []);
 
+  const handleGoHome = useCallback(() => {
+    router.push("/");
+  }, []);
+
   useEffect(() => {
     dateRef.current = new Date().getTime();
     gameStoreMethods.setStartTime(dateRef.current);
@@ -34,10 +40,7 @@ function MovieSlideHeader() {
 
   return (
     <>
-      <AiFillHome
-        className={styles.homeIcon}
-        onClick={gameStoreMethods.resetStore}
-      />
+      <AiFillHome className={styles.homeIcon} onClick={handleGoHome} />
       <p
         ref={elementRef}
         className={styles.timer}

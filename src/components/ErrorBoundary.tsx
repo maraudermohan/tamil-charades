@@ -1,20 +1,23 @@
-import { memo, useContext } from "react";
+import { memo, useCallback, useContext } from "react";
 import { rubik, lora } from "app/fonts";
 import { AiFillHome } from "react-icons/ai";
 import styles from "./ErrorBoundary.module.css";
 import { GameStoreContext } from "hooks";
 import { ErrorData } from "constant";
+import { useRouter } from "next/navigation";
 
 function ErrorBoundary() {
+  const router = useRouter();
   const { error, gameStoreMethods } = useContext(GameStoreContext)!;
   const { title = "", imageUrl = "", description = "" } = ErrorData[error!];
 
+  const handleGoHome = useCallback(() => {
+    router.push("/");
+  }, []);
+
   return (
     <div className={styles.errorBoundaryBox}>
-      <AiFillHome
-        className={styles.homeIcon}
-        onClick={gameStoreMethods.resetStore}
-      />
+      <AiFillHome className={styles.homeIcon} onClick={handleGoHome} />
       <h3
         className={styles.oops}
         style={{ fontFamily: rubik.style.fontFamily }}

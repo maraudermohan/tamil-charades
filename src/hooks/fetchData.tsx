@@ -7,11 +7,11 @@ export async function fetchData(url: string) {
     }
     const data = await response.json();
     if (data.length === 0) {
-      throw new Error('No data found');
+      throw new Error("No data found");
     }
     return data;
-  } catch(error) {
-    console.error('Unable to fetch the data: ', error);
+  } catch (error) {
+    console.error("Unable to fetch the data: ", error);
     return false;
   }
-};
+}

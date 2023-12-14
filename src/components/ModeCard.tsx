@@ -1,38 +1,32 @@
-import { memo, useCallback, useContext } from "react";
+import { memo } from "react";
 import styles from "./ModeCard.module.css";
 import { rubik } from "app/fonts";
-import { GameModesType } from "constant";
-import { GameStoreContext } from "hooks";
+import { GAME_MODES_DATA } from "constant";
+import Link from "next/link";
 
 interface ModeCardType {
-  modeData: GameModesType;
+  modeData: string;
 }
 
 function ModeCard({ modeData }: ModeCardType) {
-  const { gameStoreMethods } = useContext(GameStoreContext)!;
-
-  const handleModeCardClick = useCallback(() => {
-    gameStoreMethods.setCurrentMode(modeData);
-  }, [gameStoreMethods, modeData]);
-
   return (
-    <div
+    <Link
       className={styles.modeCardBox}
       style={{
-        backgroundImage: `url(${modeData.backgroundImage})`,
-        backgroundPosition: modeData.backgroundPosition,
+        backgroundImage: `url(${GAME_MODES_DATA[modeData].backgroundImage})`,
+        backgroundPosition: GAME_MODES_DATA[modeData].backgroundPosition,
       }}
-      onClick={handleModeCardClick}
+      href={`game/${modeData}`}
     >
       <div className={styles.overlay}>
         <h3
           className={styles.title}
           style={{ fontFamily: rubik.style.fontFamily }}
         >
-          {modeData.title}
+          {GAME_MODES_DATA[modeData].title}
         </h3>
       </div>
-    </div>
+    </Link>
   );
 }
 

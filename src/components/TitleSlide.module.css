@@ -50,6 +50,7 @@
   color: #ff6633;
   font-weight: 600;
   line-height: 42px;
+  user-select: none;
 }
 
 .movieTitle:first-of-type {
@@ -71,6 +72,7 @@
   font-size: 21px;
   letter-spacing: 0.3px;
   color: #48d1cc;
+  user-select: none;
 }
 
 @media (max-width: 999px) and (orientation: landscape) {

@@ -1,6 +1,6 @@
 .difficultySliderBox {
   margin: 0;
-  padding: 0 12px;
+  padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10,19 +10,21 @@
 
 .difficultyLabel {
   margin: 0;
-  padding: 0 18px 0 0;
+  padding: 0 18px;
   height: 24px;
   line-height: 24px;
   font-size: 15px;
   color: #ff6633;
+  background: none;
+  border: 0;
 }
 
 .difficultyLabelFirst {
-  padding: 0 12px 0 0;
+  padding: 0 12px 0 18px;
 }
 
 .difficultyLabelLast {
-  padding: 0 0 0 12px;
+  padding: 0 18px 0 12px;
 }
 
 .sliderInput {
@@ -53,7 +55,7 @@
   height: 4px;
   top: 0;
   left: 0;
-  background: linear-gradient(90deg, rgba(255,194,173,1) 30%, rgba(255,102,51,1) 100%);
+  background: linear-gradient(90deg, rgba(255, 194, 173, 1) 30%, rgba(255, 102, 51, 1) 100%);
   z-index: 0;
 }
 
@@ -70,21 +72,21 @@
 .sliderCircle1 {
   left: 0;
   top: 50%;
-  background-color: rgb(255,194,173);
+  background-color: rgb(255, 194, 173);
   transform: translateY(-50%);
 }
 
 .sliderCircle2 {
   left: 50%;
   top: 50%;
-  background-color: rgb(255,148,112);
+  background-color: rgb(255, 148, 112);
   transform: translate(-50%, -50%);
 }
 
 .sliderCircle3 {
   left: 100%;
   top: 50%;
-  background-color: rgb(255,102,51);
+  background-color: rgb(255, 102, 51);
   transform: translate(-100%, -50%);
 }
 
@@ -113,21 +115,17 @@
 }
 
 @media (max-width: 420px) and (orientation: portrait) {
-  .difficultySliderBox {
-    padding: 0 10px;
-  }
-
   .difficultyLabel {
     line-height: 22px;
     font-size: 14px;
   }
 
   .difficultyLabelFirst {
-    padding: 0 8px 0 0;
+    padding: 0 8px 0 10px;
   }
 
   .difficultyLabelLast {
-    padding: 0 0 0 8px;
+    padding: 0 10px 0 8px;
   }
 }
 
@@ -139,11 +137,11 @@
   }
 
   .difficultyLabelFirst {
-    padding: 0 18px 0 0;
+    padding: 0 18px;
   }
 
   .difficultyLabelLast {
-    padding: 0 0 0 18px;
+    padding: 0 18px;
   }
 
   .sliderInput {
@@ -181,11 +179,11 @@
   }
 
   .difficultyLabelFirst {
-    padding: 0 18px 0 0;
+    padding: 0 18px;
   }
 
   .difficultyLabelLast {
-    padding: 0 0 0 18px;
+    padding: 0 18px;
   }
 
   .sliderInput {
@@ -216,9 +214,10 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .sliderValue1:hover + .sliderCircle1,
-  .sliderValue2:hover + .sliderCircle2,
-  .sliderValue3:hover + .sliderCircle3 {
+
+  .sliderValue1:hover+.sliderCircle1,
+  .sliderValue2:hover+.sliderCircle2,
+  .sliderValue3:hover+.sliderCircle3 {
     background: red;
   }
 

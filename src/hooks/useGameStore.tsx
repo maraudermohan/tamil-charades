@@ -1,14 +1,13 @@
 "use client";
-import { GameModesType, MoviesListType, ErrorStates } from "constant";
+import { GameModeType, MoviesListType, ErrorStates } from "constant";
 import { createContext, useEffect, useReducer } from "react";
 import { fetchData } from "hooks";
 
 export interface GameStateType {
   currentDifficulty: number | null;
   currentIndex: number | null;
-  currentMode: GameModesType | null;
+  currentMode: GameModeType | null;
   error: string | null;
-  moviesCache: { [key: string]: boolean };
   moviesList: MoviesListType[];
   starsCount: number | null;
   startTime: number | null;
@@ -44,7 +43,6 @@ export function useGameStore(): [GameStateType, GameStoreMethodsType] {
     currentIndex: null,
     currentMode: null,
     error: null,
-    moviesCache: {},
     moviesList: [],
     starsCount: null,
     startTime: null,
@@ -53,7 +51,7 @@ export function useGameStore(): [GameStateType, GameStoreMethodsType] {
   const gameStoreReducer = function (state: GameStateType, action: any) {
     switch (action.type) {
       case GameStoreActions.RESET_STORE:
-        return { ...initialState, moviesCache: state.moviesCache };
+        return initialState;
       case GameStoreActions.SET_CURRENT_DIFFICULTY:
         return {
           ...state,
@@ -84,19 +82,17 @@ export function useGameStore(): [GameStateType, GameStoreMethodsType] {
         }
         return { ...state, currentIndex: 0, starsCount: 0 };
       case GameStoreActions.UPDATE_MOVIES_LIST: {
-        const newMoviesCache = { ...state.moviesCache };
         const newMoviesList: MoviesListType[] = [];
         action.newData.forEach((movie: MoviesListType) => {
-          if (newMoviesCache[movie.english] == null) {
+          if (sessionStorage.getItem(movie.english) == null) {
             newMoviesList.push(movie);
           }
         });
         if (state.moviesList.length === 0 && newMoviesList[0] != null) {
-          newMoviesCache[newMoviesList[0]?.english] = true;
+          sessionStorage.setItem(newMoviesList[0]?.english, "true");
         }
         return {
           ...state,
-          moviesCache: newMoviesCache,
           moviesList: [...state.moviesList, ...newMoviesList],
         };
       }
@@ -104,7 +100,7 @@ export function useGameStore(): [GameStateType, GameStoreMethodsType] {
         let newIndex = state.currentIndex! + 1;
         while (
           newIndex + 1 < state.moviesList.length &&
-          state.moviesCache[state.moviesList[newIndex].english] != null
+          sessionStorage.getItem(state.moviesList[newIndex].english) != null
         ) {
           newIndex++;
         }
@@ -114,20 +110,17 @@ export function useGameStore(): [GameStateType, GameStoreMethodsType] {
             error: ErrorStates.END_OF_LIST,
           };
         }
+        sessionStorage.setItem(state.moviesList[newIndex].english, "true");
         return {
           ...state,
           currentIndex: newIndex,
-          moviesCache: {
-            ...state.moviesCache,
-            [state.moviesList[newIndex].english]: true,
-          },
         };
       }
       case GameStoreActions.UPDATE_PASS_ANSWER: {
         let newIndex = state.currentIndex! + 1;
         while (
           newIndex + 1 < state.moviesList.length &&
-          state.moviesCache[state.moviesList[newIndex].english] != null
+          sessionStorage.getItem(state.moviesList[newIndex].english) != null
         ) {
           newIndex++;
         }
@@ -137,13 +130,10 @@ export function useGameStore(): [GameStateType, GameStoreMethodsType] {
             error: ErrorStates.END_OF_LIST,
           };
         }
+        sessionStorage.setItem(state.moviesList[newIndex].english, "true");
         return {
           ...state,
           currentIndex: newIndex,
-          moviesCache: {
-            ...state.moviesCache,
-            [state.moviesList[newIndex].english]: true,
-          },
           starsCount: state.starsCount! + 1,
         };
       }
@@ -194,7 +184,7 @@ export function useGameStore(): [GameStateType, GameStoreMethodsType] {
           newDifficulty,
         });
       },
-      setCurrentMode: function (newMode: GameModesType) {
+      setCurrentMode: function (newMode: GameModeType) {
         dispatch({
           type: GameStoreActions.SET_CURRENT_MODE,
           newMode,

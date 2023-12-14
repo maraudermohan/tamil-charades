@@ -77,6 +77,7 @@
   font-size: 50px;
   line-height: 65px;
   color: white;
+  user-select: none;
 }
 
 .totalCount {
@@ -85,6 +86,7 @@
   font-size: 24px;
   line-height: 35px;
   color: white;
+  user-select: none;
 }
 
 .timeBoard {
@@ -109,6 +111,7 @@
   line-height: 32px;
   letter-spacing: 0.2px;
   color: white;
+  user-select: none;
 }
 
 .totalValue {
@@ -122,6 +125,7 @@
   line-height: 32px;
   letter-spacing: 0.2px;
   color: white;
+  user-select: none;
 }
 
 .AverageKey {
@@ -134,6 +138,7 @@
   line-height: 32px;
   letter-spacing: 0.2px;
   color: white;
+  user-select: none;
 }
 
 .AverageValue {
@@ -147,6 +152,7 @@
   line-height: 32px;
   letter-spacing: 0.2px;
   color: white;
+  user-select: none;
 }
 
 .continueButton {

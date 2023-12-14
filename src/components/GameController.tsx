@@ -1,12 +1,8 @@
 "use client";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect } from "react";
 import { GameStoreContext, useGameStore } from "hooks";
-import {
-  ModeCardsManager,
-  MovieSlide,
-  ModeExpanded,
-  ErrorBoundary,
-} from "components";
+import { MovieSlide, ModeExpanded, ErrorBoundary } from "components";
+import { GAME_MODES_DATA } from "constant";
 
 const debounce = (callback: Function) => {
   let timeoutId: null | ReturnType<typeof setTimeout> = null;
@@ -24,30 +20,26 @@ const debounce = (callback: Function) => {
 
 const setVariableVH = () => {
   let vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--vh', `${vh}px`);
+  document.documentElement.style.setProperty("--vh", `${vh}px`);
+};
+
+interface GameControllerType {
+  slug: string;
 }
 
-function GameController() {
+function GameController({ slug }: GameControllerType) {
   const [gameState, gameStoreMethods] = useGameStore();
-  const [showModes, setShowModes] = useState<boolean>(true);
 
   useEffect(() => {
     setVariableVH();
     const debouncedResized = debounce(setVariableVH);
-    window.addEventListener('resize', debouncedResized);
+    window.addEventListener("resize", debouncedResized);
+    gameStoreMethods.setCurrentMode(GAME_MODES_DATA[slug]);
 
     return () => {
-      window.removeEventListener('resize', debouncedResized);
+      window.removeEventListener("resize", debouncedResized);
     };
   }, []);
-
-  useEffect(() => {
-    if (gameState.currentMode == null) {
-      setShowModes(true);
-    } else {
-      setTimeout(() => setShowModes(false), 500);
-    }
-  }, [gameState.currentMode]);
 
   return (
     <GameStoreContext.Provider value={{ ...gameState, gameStoreMethods }}>
@@ -55,13 +47,10 @@ function GameController() {
         <ErrorBoundary />
       ) : (
         <>
-          {showModes && <ModeCardsManager />}
-          {gameState.currentMode != null && gameState.currentIndex == null && (
-            <ModeExpanded />
+          {gameState.currentIndex == null && (
+            <ModeExpanded currentModeData={GAME_MODES_DATA[slug]} />
           )}
-          {gameState.currentMode != null && gameState.currentIndex != null && (
-            <MovieSlide />
-          )}
+          {gameState.currentIndex != null && <MovieSlide />}
         </>
       )}
     </GameStoreContext.Provider>
