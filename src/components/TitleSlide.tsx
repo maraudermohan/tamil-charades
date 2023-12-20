@@ -34,7 +34,7 @@ function TitleSlide({ elementRef, movieIndex }: TitleSlideType) {
       >
         {moviesList[movieIndex].tamil}
       </h3>
-      {currentMode?.title === "Song Mode" && (
+      {["Song Mode", "Kids Mode"].includes(currentMode!.title) && (
         <h4 className={styles.subtitle}>{moviesList[movieIndex]?.movie}</h4>
       )}
     </div>

@@ -2,7 +2,7 @@ import { GameController } from "components";
 import styles from "../../page.module.css";
 
 export async function generateStaticParams() {
-  return [{ slug: "classic" }, { slug: "story" }, { slug: "song" }];
+  return [{ slug: "classic" }, { slug: "story" }, { slug: "song" }, , { slug: "kids" }];
 }
 
 function ModePage({ params }: { params: { slug: string } }) {

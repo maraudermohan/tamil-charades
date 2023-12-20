@@ -35,4 +35,12 @@ export const GAME_MODES_DATA: GameModeData = {
     backgroundPosition: "35%",
     endpoint: "/songs.php?difficulty=",
   },
+  kids: {
+    title: "Kids Mode",
+    description:
+      "Simple day-to-day words for kids to get introduced to the world of <strong>Charades</strong>.",
+    backgroundImage: "/kids-bg.webp",
+    backgroundPosition: "50%",
+    endpoint: "/kid-words.php",
+  },
 } as const;

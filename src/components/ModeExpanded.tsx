@@ -30,7 +30,8 @@ function ModeExpanded({ currentModeData }: ModeExpandedType) {
   const [isSubmitted, setIsSubmitted] = useState<number | null>(null);
 
   const fetchMovies = useCallback(async () => {
-    const result = await fetchData(currentModeData?.endpoint! + difficulty);
+    const modeUrl = currentModeData?.endpoint! + (currentModeData?.title !== "Kids Mode" ? difficulty : '');
+    const result = await fetchData(modeUrl);
     if (!result) {
       gameStoreMethods.setError(ErrorStates.BACKEND_FAIL);
       return;
@@ -104,10 +105,14 @@ function ModeExpanded({ currentModeData }: ModeExpandedType) {
               }}
             />
             <div className={styles.controlsBox}>
-              <DifficultySlider
-                difficulty={difficulty}
-                setDifficulty={setDifficulty}
-              />
+              {
+                currentModeData?.title !== "Kids Mode" && (
+                  <DifficultySlider
+                    difficulty={difficulty}
+                    setDifficulty={setDifficulty}
+                  />
+                )
+              }
               <button
                 className={styles.modePlayButton}
                 onClick={handleSubmit}
