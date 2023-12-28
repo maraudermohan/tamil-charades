@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.png',
     apple: '/favicon-180x180.png',
+  },
+  alternates: {
+    canonical: 'https://www.tamilcharades.com'
   }
 }
 
