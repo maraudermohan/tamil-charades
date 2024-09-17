@@ -20,6 +20,7 @@
   height: 32vh;
   height: calc(var(--vh, 1vh) * 32);
   margin: 0;
+  transition: all 0.3s ease-in;
 }
 
 .controlButton {

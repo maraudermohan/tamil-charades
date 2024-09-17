@@ -22,6 +22,7 @@ function MovieSlide() {
   const prevSlideRef = useRef<HTMLDivElement>(null);
   const nextSlideRef = useRef<HTMLDivElement>(null);
   const resultSlideRef = useRef<HTMLDivElement>(null);
+  const controlButtonsRef = useRef<HTMLDivElement>(null);
   const [resultsText, setResultsText] = useState<string[]>([]);
 
   const startAnimation = useCallback(() => {
@@ -32,6 +33,12 @@ function MovieSlide() {
     nextSlideRef.current!.style.visibility = "hidden";
     nextSlideRef.current!.style.transform = "translateX(120%)";
     resultSlideRef.current!.style.visibility = "hidden";
+    setTimeout(() => {
+      if (controlButtonsRef.current) {
+        controlButtonsRef.current!.style.pointerEvents = "auto";
+        controlButtonsRef.current!.style.opacity = "1";
+      }
+    }, 1000);
   }, []);
 
   const endAnimation = useCallback((isPass: boolean) => {
@@ -43,6 +50,8 @@ function MovieSlide() {
     prevSlideRef.current!.style.transform = "translateX(-120%)";
     nextSlideRef.current!.style.visibility = "visible";
     nextSlideRef.current!.style.transform = "translateX(0)";
+    controlButtonsRef.current!.style.pointerEvents = "none";
+    controlButtonsRef.current!.style.opacity = "0";
   }, []);
 
   const resultAnimation = useCallback(() => {
@@ -95,7 +104,7 @@ function MovieSlide() {
       <TitleSlide elementRef={prevSlideRef} movieIndex={currentIndex!} />
       <TitleSlide elementRef={nextSlideRef} movieIndex={currentIndex! + 1} />
       <ResultsSlide elementRef={resultSlideRef} resultsText={resultsText} />
-      <div className={styles.controlButtonsBox}>
+      <div ref={controlButtonsRef} className={styles.controlButtonsBox}>
         <div
           className={`${styles.controlButton} ${styles.stopButton}`}
           onClick={resultAnimation}

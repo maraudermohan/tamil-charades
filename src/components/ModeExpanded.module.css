@@ -106,7 +106,6 @@
   padding: 0 8% 10vh 8%;
   padding-bottom: calc(var(--vh, 1vh) * 10);
   display: flex;
-  justify-content: space-between;
 }
 
 .modePlayButton {

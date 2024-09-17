@@ -1,3 +1,4 @@
+"use client";
 import { memo, useCallback, useContext } from "react";
 import { rubik, lora } from "app/fonts";
 import { AiFillHome } from "react-icons/ai";

@@ -104,7 +104,12 @@ function ModeExpanded({ currentModeData }: ModeExpandedType) {
                 __html: currentModeData?.description!,
               }}
             />
-            <div className={styles.controlsBox}>
+            <div
+              className={styles.controlsBox}
+              style={{
+                justifyContent: currentModeData?.title !== "Kids Mode" ? "space-between" : "center",
+              }}
+            >
               {
                 currentModeData?.title !== "Kids Mode" && (
                   <DifficultySlider

@@ -25,7 +25,7 @@ export const GAME_MODES_DATA: GameModeData = {
       "Make the players guess the movie by acting out only the <strong>storyline</strong> or iconic scenes.<br /><br /><strong>Don't</strong> act anything about the <span>movie title, cast or crew</span>. No hints about hero, heroine, villain, director etc.",
     backgroundImage: "/story-bg.webp",
     backgroundPosition: "85%",
-    endpoint: "/story-movies.php?difficulty=",
+    endpoint: "/story-movies.php?story_difficulty=",
   },
   song: {
     title: "Song Mode",
