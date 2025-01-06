@@ -1,5 +1,5 @@
 export interface MoviesListType {
   english: string;
-  tamil: string;
+  tamil?: string;
   movie?: string;
 }

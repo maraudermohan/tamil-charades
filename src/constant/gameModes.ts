@@ -35,6 +35,14 @@ export const GAME_MODES_DATA: GameModeData = {
     backgroundPosition: "35%",
     endpoint: "/songs.php?difficulty=",
   },
+  hollywood: {
+    title: "Hollywood Mode",
+    description:
+      "Act out the movie without speaking or making sounds.<br /><br />Press ✔ for correct guesses and ✘ for incorrect/skipped ones.<br />Press 🏁 to conclude the game.",
+    backgroundImage: "/hollywood-bg.webp",
+    backgroundPosition: "60%",
+    endpoint: "/hollywood.php?difficulty=",
+  },
   kids: {
     title: "Kids Mode",
     description:

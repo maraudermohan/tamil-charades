@@ -13,7 +13,7 @@ import { GameStoreContext } from "hooks";
 import { useRouter } from "next/navigation";
 
 interface ResultsSlideType {
-  elementRef: RefObject<HTMLDivElement>;
+  elementRef: RefObject<HTMLDivElement | null>;
   resultsText: string[];
 }
 

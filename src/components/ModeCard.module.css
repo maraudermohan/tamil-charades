@@ -58,7 +58,7 @@
 
 @media (min-width: 1000px) and (orientation: landscape) {
   .modeCardBox {
-    margin: 0 6px;
+    margin: 0 6px 12px 6px;
     width: calc(33.3% - 12px);
     height: 44vh;
     height: calc(var(--vh, 1vh) * 44);
@@ -67,6 +67,7 @@
 
 @media (min-width: 1120px) and (orientation: landscape) {
   .modeCardBox {
+    margin-bottom: 12px;
     height: 48vh;
     height: calc(var(--vh, 1vh) * 48);
   }
@@ -74,7 +75,7 @@
 
 @media (min-width: 1500px) and (orientation: landscape) {
   .modeCardBox {
-    margin: 0 8px;
+    margin: 0 8px 12px 8px;
     width: calc(33.3% - 16px);
   }
 }
