@@ -15,7 +15,7 @@ function TitleSlide({ elementRef, movieIndex }: TitleSlideType) {
 
   return (
     <div ref={elementRef} className={styles.titleSlideBox}>
-      <MdCamera className={styles.lensIcon} />
+      {currentMode!.title !== "Hollywood Mode" && <MdCamera className={styles.lensIcon} />}
       <h3
         className={currentMode!.title === "Hollywood Mode" ? styles.centeredMovieTitle : styles.movieTitle}
         style={{
