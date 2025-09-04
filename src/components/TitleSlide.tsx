@@ -1,6 +1,6 @@
 "use client";
 import { RefObject, memo, useContext } from "react";
-import { MdCamera } from "react-icons/md";
+import { RiMovie2AiFill } from "react-icons/ri";
 import { anek, lora } from "app/fonts";
 import styles from "./TitleSlide.module.css";
 import { GameStoreContext } from "hooks";
@@ -15,7 +15,7 @@ function TitleSlide({ elementRef, movieIndex }: TitleSlideType) {
 
   return (
     <div ref={elementRef} className={styles.titleSlideBox}>
-      {currentMode!.title !== "Hollywood Mode" && <MdCamera className={styles.lensIcon} />}
+      {currentMode!.title !== "Hollywood Mode" && <RiMovie2AiFill className={styles.lensIcon} />}
       <h3
         className={currentMode!.title === "Hollywood Mode" ? styles.centeredMovieTitle : styles.movieTitle}
         style={{

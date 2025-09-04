@@ -1,17 +1,5 @@
 .titleSlideBox {
-  --s: 40px; /* control the size */
-  --c: #ffffff;
-  
-  --_g: 
-    #0000 calc(-650%/13) calc(50%/13),var(--c) 0 calc(100%/13),
-    #0000 0 calc(150%/13),var(--c) 0 calc(200%/13),
-    #0000 0 calc(250%/13),var(--c) 0 calc(300%/13);
-  --_g0: repeating-linear-gradient( 45deg,var(--_g));
-  --_g1: repeating-linear-gradient(-45deg,var(--_g));
-  background:
-    var(--_g0),var(--_g0) var(--s) var(--s),
-    var(--_g1),var(--_g1) var(--s) var(--s) #f4fcfc;
-  background-size: calc(2*var(--s)) calc(2*var(--s));
+  background-color: rgba(72, 209, 204, .1);
   position: absolute;
   top: 0;
   left: 5vw;
@@ -34,11 +22,11 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 35vw;
-  height: 35vw;
+  width: 25vw;
+  height: 25vw;
   transform: translate(-50%, -50%);
   color: #48d1cc;
-  opacity: 0.1;
+  opacity: 0.15;
 }
 
 .centeredMovieTitle {
@@ -97,9 +85,9 @@
     height: calc(var(--vh, 1vh) * 45);
   }
   .lensIcon {
-    width: 30vh;
-    height: 30vh;
-    height: calc(var(--vh, 1vh) * 30);
+    width: 20vh;
+    height: 20vh;
+    height: calc(var(--vh, 1vh) * 20);
   }
   .centeredMovieTitle {
     font-size: 24px;
@@ -138,8 +126,8 @@
     height: calc(var(--vh, 1vh) * 46);
   }
   .lensIcon {
-    width: 30vw;
-    height: 30vw;
+    width: 20vw;
+    height: 20vw;
   }
   .centeredMovieTitle {
     font-size: 24px;
@@ -212,10 +200,10 @@
     height: calc(var(--vh, 1vh) * 50);
   }
   .lensIcon {
-    width: 25vh;
-    width: calc(var(--vh, 1vh) * 25);
-    height: 25vh;
-    height: calc(var(--vh, 1vh) * 25);
+    width: 15vh;
+    width: calc(var(--vh, 1vh) * 15);
+    height: 15vh;
+    height: calc(var(--vh, 1vh) * 15);
   }
   .centeredMovieTitle {
     font-size: 28px;

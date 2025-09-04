@@ -20,34 +20,38 @@
   height: 32vh;
   height: calc(var(--vh, 1vh) * 32);
   margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   transition: all 0.3s ease-in;
 }
 
 .controlButton {
-  position: absolute;
-  width: 90px;
+  width: 115px;
   height: 90px;
-  border-radius: 6px;
+  border-radius: 1px;
   display: flex;
   justify-content: center;
   align-items: center;
-  top: 40%;
-  left: 50%;
 }
 
 .stopButton {
-  transform: translate(-50%, 0) rotate(45deg);
-  border: 1px solid #3f3f3f;
+  border-top: 0.5px solid #3f3f3f;
+  border-bottom: 0.5px solid #3f3f3f;
 }
 
 .passButton {
-  transform: translate(80%, -80%) rotate(45deg);
-  background: radial-gradient(circle, rgba(255,255,255,1) 12%, rgba(72,209,204,.8) 100%);
+  border: 0.5px solid rgb(72, 209, 204);
+  margin: 0 0 0 1px;
+  border-top-right-radius: 15%;
+  border-bottom-right-radius: 15%;
 }
 
 .failButton {
-  transform: translate(-180%, -80%) rotate(45deg);
-  background: radial-gradient(circle, rgba(255,255,255,1) 12%, rgba(209,72,77,.3) 100%);
+  border: 0.5px solid rgb(209, 72, 77);
+  margin: 0 1px 0 0;
+  border-top-left-radius: 15%;
+  border-bottom-left-radius: 15%;
 }
 
 .stopControlIcon {
@@ -55,7 +59,6 @@
   padding: 0;
   width: 34px;
   height: 34px;
-  transform: rotate(-45deg);
   color: #323232;
 }
 
@@ -64,7 +67,6 @@
   padding: 0;
   width: 33px;
   height: 33px;
-  transform: rotate(-45deg);
   color: #48d1cc;
 }
 
@@ -73,7 +75,6 @@
   padding: 0;
   width: 28px;
   height: 28px;
-  transform: rotate(-45deg);
   color: #d1484d;
 }
 
@@ -83,23 +84,11 @@
     height: calc(var(--vh, 1vh) * 32);
   }
   .controlButton {
-    width: 15vh;
-    width: calc(var(--vh, 1vh) * 15);
-    height: 15vh;
-    height: calc(var(--vh, 1vh) * 15);
+    width: 20vh;
+    width: calc(var(--vh, 1vh) * 20);
+    height: 16vh;
+    height: calc(var(--vh, 1vh) * 16);
     top: 0;
-  }
-  .stopButton {
-    left: 50%;
-    transform: translateX(-50%) rotate(45deg);
-  }
-  .passButton {
-    left: 75%;
-    transform: translateX(-50%) rotate(45deg);
-  }
-  .failButton {
-    left: 25%;
-    transform: translateX(-50%) rotate(45deg);
   }
   .stopControlIcon,
   .passControlIcon,
@@ -132,24 +121,15 @@
     height: calc(var(--vh, 1vh) * 36);
   }
   .controlButton {
-    width: 80px;
+    width: 100px;
     height: 80px;
   }
 }
 
 @media (min-width: 767px) and (orientation: portrait) {
-  .stopButton {
-    transform: translate(-50%, 5%) rotate(45deg);
-  }
-  .passButton {
-    transform: translate(120%, -80%) rotate(45deg);
-  }
-  .failButton {
-    transform: translate(-220%, -80%) rotate(45deg);
-  }
   .controlButton {
-    width: 110px;
-    height: 110px;
+    width: 125px;
+    height: 100px;
   }
   .stopControlIcon {
     width: 40px;
@@ -165,18 +145,9 @@
   }
 }
 
-@media (min-width: 1000px) and (orientation: landscape) {
-  .passButton {
-    transform: translate(150%, -80%) rotate(45deg);
-  }
-  .failButton {
-    transform: translate(-250%, -80%) rotate(45deg);
-  }
-}
-
 @media (min-width: 1300px) and (orientation: landscape) {
   .controlButton {
-    width: 110px;
+    width: 135px;
     height: 110px;
   }
   .stopControlIcon {
@@ -205,8 +176,8 @@
     cursor: pointer;
   }
   .stopButton:hover {
-    background: radial-gradient(circle, rgba(255,255,255,1) 20%, rgba(63,63,63,.5) 100%);
-    border-color: rgba(63,63,63,.5);
+    background: rgba(255, 215, 0, .75);
+    border-color: rgba(255, 215, 0, .75);
   }
   .passButton:hover {
     background: rgb(72,209,204);

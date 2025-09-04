@@ -106,6 +106,12 @@ function MovieSlide() {
       <ResultsSlide elementRef={resultSlideRef} resultsText={resultsText} />
       <div ref={controlButtonsRef} className={styles.controlButtonsBox}>
         <div
+          className={`${styles.controlButton} ${styles.failButton}`}
+          onClick={handleFailClick}
+        >
+          <ImCross className={styles.failControlIcon} />
+        </div>
+        <div
           className={`${styles.controlButton} ${styles.stopButton}`}
           onClick={resultAnimation}
         >
@@ -116,12 +122,6 @@ function MovieSlide() {
           onClick={handlePassClick}
         >
           <ImCheckmark className={styles.passControlIcon} />
-        </div>
-        <div
-          className={`${styles.controlButton} ${styles.failButton}`}
-          onClick={handleFailClick}
-        >
-          <ImCross className={styles.failControlIcon} />
         </div>
       </div>
     </div>
