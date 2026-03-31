@@ -7,7 +7,11 @@ function ModeCardsManager() {
   return (
     <div className={styles.modeCardsManager}>
       {Object.keys(GAME_MODES_DATA).map((modeData, index) => (
-        <ModeCard key={modeData + index} modeData={modeData} />
+        <ModeCard
+          key={modeData + index}
+          modeData={modeData}
+          priority={index === 0}
+        />
       ))}
     </div>
   );

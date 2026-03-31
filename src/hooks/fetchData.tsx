@@ -1,11 +1,20 @@
 "use client";
-export async function fetchData(url: string) {
+
+import type { MoviesListType } from "constant";
+
+export async function fetchData(
+  url: string,
+  init?: RequestInit
+): Promise<false | MoviesListType[]> {
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      cache: "no-store",
+      ...init,
+    });
     if (!response.ok) {
       throw new Error(response.statusText);
     }
-    const data = await response.json();
+    const data = (await response.json()) as MoviesListType[];
     if (data.length === 0) {
       throw new Error("No data found");
     }

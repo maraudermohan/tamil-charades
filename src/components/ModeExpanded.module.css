@@ -32,12 +32,13 @@
   top: calc(var(--vh, 1vh) * 5 - 5px);
   left: 7vw;
   margin: 0;
-  padding: 0;
-  width: 40px;
-  height: 40px;
+  padding: 5px 6px;
+  width: 48px;
+  height: 48px;
   z-index: 10;
   color: #48d1cc;
-  filter: drop-shadow(0px 0px 1.5px #767676);
+  border: 0.5px solid #48d1cc;
+  border-radius: 20%;
 }
 
 .layout {
@@ -80,7 +81,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   animation-name: zoomOut;
-  animation-duration: 1.05s;
+  animation-duration: 1.00s;
   animation-iteration-count: 4;
   user-select: none;
 }
@@ -150,6 +151,7 @@
   .homeIcon {
     top: 6vh;
     top: calc(var(--vh, 1vh) * 6);
+    padding: 6px 8px;
     width: 45px;
     height: 45px;
   }
@@ -188,8 +190,9 @@
     top: calc(7vh - 5px);
     top: calc(var(--vh, 1vh) * 7 - 5px);
     left: 4vw;
+    padding: 4px 5px;
     width: 40px;
-    left: 40px;
+    height: 40px;
   }
   .modeImage {
     width: 40%;
@@ -353,7 +356,7 @@
 @media (hover: hover) and (pointer: fine) {
   .homeIcon:hover {
     cursor: pointer;
-    color: white;
+    color: #48d1cc99;
     transition: all 0.1s ease-in-out;
   }
   .modePlayButton:hover {

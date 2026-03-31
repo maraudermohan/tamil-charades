@@ -14,7 +14,7 @@ import { lora, poppins, rubik } from "app/fonts";
 import { DifficultySlider } from "components";
 import { GameStoreContext, fetchData } from "hooks";
 import styles from "./ModeExpanded.module.css";
-import { ErrorStates, GameModeType } from "constant";
+import { ErrorStates, GameModeType, type MoviesListType } from "constant";
 
 interface ModeExpandedType {
   currentModeData: GameModeType;
@@ -25,38 +25,67 @@ function ModeExpanded({ currentModeData }: ModeExpandedType) {
   const { gameStoreMethods } = useContext(GameStoreContext)!;
   const [difficulty, setDifficulty] = useState<number>(2);
   const elementRef = useRef<HTMLDivElement>(null);
-  const intervalId = useRef<any>(null);
-  const timerCount = useRef<any>(null);
+  const intervalId = useRef<ReturnType<typeof setInterval> | null>(null);
+  const playBusyRef = useRef(false);
+  const [playLocked, setPlayLocked] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState<number | null>(null);
 
-  const fetchMovies = useCallback(async () => {
-    const modeUrl = currentModeData?.endpoint! + (currentModeData?.title !== "Kids Mode" ? difficulty : '');
+  const COUNTDOWN_MS = 1000;
+  const COUNTDOWN_START = 3;
+
+  const fetchMovies = useCallback(async (): Promise<false | MoviesListType[]> => {
+    const modeUrl =
+      currentModeData?.endpoint! +
+      (currentModeData?.title !== "Kids Mode" ? difficulty : "");
     const result = await fetchData(modeUrl);
     if (!result) {
       gameStoreMethods.setError(ErrorStates.BACKEND_FAIL);
-      return;
+      return false;
     }
     gameStoreMethods.setCurrentDifficulty(difficulty);
     gameStoreMethods.updateMoviesList(result);
+    return result;
   }, [currentModeData, difficulty, gameStoreMethods]);
 
   const handleSubmit = useCallback(() => {
-    fetchMovies();
-    if (timerCount.current == null) {
-      timerCount.current = 3;
-      setIsSubmitted(3);
+    if (playBusyRef.current) {
+      return;
     }
+    playBusyRef.current = true;
+    setPlayLocked(true);
+
+    const fetchPromise = fetchMovies();
+
+    let remaining = COUNTDOWN_START;
+    setIsSubmitted(remaining);
+
+    if (intervalId.current != null) {
+      clearInterval(intervalId.current);
+    }
+
     intervalId.current = setInterval(() => {
-      if (timerCount.current === 1) {
-        clearInterval(intervalId.current);
-        setIsSubmitted(null);
-        gameStoreMethods.startGame();
-      } else if (timerCount.current > 0) {
-        timerCount.current -= 1;
-        setIsSubmitted(timerCount.current);
+      remaining -= 1;
+      if (remaining > 0) {
+        setIsSubmitted(remaining);
+        return;
       }
-    }, 1050);
-  }, [fetchMovies]);
+
+      if (intervalId.current != null) {
+        clearInterval(intervalId.current);
+        intervalId.current = null;
+      }
+
+      void (async () => {
+        const ok = await fetchPromise;
+        playBusyRef.current = false;
+        setPlayLocked(false);
+        setIsSubmitted(null);
+        if (ok) {
+          gameStoreMethods.startGame();
+        }
+      })();
+    }, COUNTDOWN_MS);
+  }, [fetchMovies, gameStoreMethods]);
 
   const handleGoHome = useCallback(() => {
     router.push("/");
@@ -68,7 +97,10 @@ function ModeExpanded({ currentModeData }: ModeExpandedType) {
     }, 0);
 
     return () => {
-      clearInterval(intervalId.current);
+      if (intervalId.current != null) {
+        clearInterval(intervalId.current);
+        intervalId.current = null;
+      }
     };
   }, []);
 
@@ -78,7 +110,7 @@ function ModeExpanded({ currentModeData }: ModeExpandedType) {
         <>
           <div
             style={{
-              backgroundImage: `url(${currentModeData!.backgroundImage})`,
+              backgroundImage: `url(${currentModeData!.backgroundImage.src})`,
             }}
             className={`${styles.modeImage} ${
               currentModeData?.title &&
@@ -119,8 +151,10 @@ function ModeExpanded({ currentModeData }: ModeExpandedType) {
                 )
               }
               <button
+                type="button"
                 className={styles.modePlayButton}
                 onClick={handleSubmit}
+                disabled={playLocked}
                 style={{ fontFamily: poppins.style.fontFamily }}
               >
                 PLAY

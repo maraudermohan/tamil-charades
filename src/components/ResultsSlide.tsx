@@ -121,6 +121,15 @@ function ResultsSlide({ elementRef, resultsText }: ResultsSlideType) {
       </button>
       <div className={styles.orangeBg} />
       <div className={styles.patternBg} />
+      <a
+        href="https://www.buymeacoffee.com/maraudermohan"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.supportLink}
+        style={{ fontFamily: lora.style.fontFamily }}
+      >
+        ☕ Enjoying the game? Support it
+      </a>
     </div>
   );
 }

@@ -1,56 +1,43 @@
 import {
   Alegreya,
   Anek_Tamil,
-  Montserrat,
   Rubik,
   Poppins,
   Lora,
 } from "next/font/google";
 
-export const alegreya = Alegreya({
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-export const rubik = Rubik({
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-export const poppins = Poppins({
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
+/** Variable font: one network file covers 400-700 (header, body, headings). */
 export const lora = Lora({
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
   subsets: ["latin"],
   display: "swap",
 });
 
+/** Variable font: one file covers weights used across cards and game UI. */
+export const rubik = Rubik({
+  subsets: ["latin"],
+  display: "swap",
+});
+
+/**
+ * Variable font; preload off so above-the-fold Lora/Rubik win the connection first.
+ * Footer text still uses font-display swap and loads when parsed.
+ */
+export const alegreya = Alegreya({
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
+});
+
+/** Static weights only (no variable axis in next/font for Poppins). */
+export const poppins = Poppins({
+  weight: ["400", "500", "600"],
+  style: ["normal"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
+/** Variable font; latin + tamil for movie titles. */
 export const anek = Anek_Tamil({
-  weight: ["400", "500", "600", "700"],
-  style: ["normal"],
-  subsets: ["latin"],
+  subsets: ["latin", "tamil"],
   display: "swap",
 });
-
-export const montserrat = Montserrat({
-  weight: ["400", "500", "600", "700"],
-  style: ["normal"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-// Source Sans Pro, small descriptions
-// Rubik , titles
-// Poppins, titles
-// Lora, descriptions
-// Diastema, header

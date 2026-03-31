@@ -13,6 +13,7 @@ import { ImCross } from "react-icons/im";
 import styles from "./MovieSlide.module.css";
 import { GameStoreContext } from "hooks";
 import { MovieSlideHeader, ResultsSlide, TitleSlide } from "components";
+import { poppins } from "app/fonts";
 
 function MovieSlide() {
   const { currentIndex, startTime, gameStoreMethods } =
@@ -106,22 +107,46 @@ function MovieSlide() {
       <ResultsSlide elementRef={resultSlideRef} resultsText={resultsText} />
       <div ref={controlButtonsRef} className={styles.controlButtonsBox}>
         <div
-          className={`${styles.controlButton} ${styles.failButton}`}
+          className={`${styles.controlButton} ${styles.failButton} ${currentIndex! < 2 ? styles.hasLabel : ""}`}
           onClick={handleFailClick}
         >
           <ImCross className={styles.failControlIcon} />
+          {(currentIndex! < 2) && (
+            <p
+              className={styles.failLabel}
+              style={{ fontFamily: poppins.style.fontFamily }}
+            >
+              WRONG
+            </p>
+          )}
         </div>
         <div
-          className={`${styles.controlButton} ${styles.stopButton}`}
+          className={`${styles.controlButton} ${styles.stopButton} ${currentIndex! < 2 ? styles.hasLabel : ""}`}
           onClick={resultAnimation}
         >
           <FaFlagCheckered className={styles.stopControlIcon} />
+          {(currentIndex! < 2) && (
+            <p
+              className={styles.endLabel}
+              style={{ fontFamily: poppins.style.fontFamily }}
+            >
+              END
+            </p>
+          )}
         </div>
         <div
-          className={`${styles.controlButton} ${styles.passButton}`}
+          className={`${styles.controlButton} ${styles.passButton} ${currentIndex! < 2 ? styles.hasLabel : ""}`}
           onClick={handlePassClick}
         >
           <ImCheckmark className={styles.passControlIcon} />
+          {(currentIndex! < 2) && (
+            <p
+              className={styles.passLabel}
+              style={{ fontFamily: poppins.style.fontFamily }}
+            >
+              RIGHT
+            </p>
+          )}
         </div>
       </div>
     </div>

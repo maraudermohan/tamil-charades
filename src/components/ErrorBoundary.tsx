@@ -9,8 +9,15 @@ import { useRouter } from "next/navigation";
 
 function ErrorBoundary() {
   const router = useRouter();
-  const { error, gameStoreMethods } = useContext(GameStoreContext)!;
-  const { title = "", imageUrl = "", description = "" } = ErrorData[error!];
+  const { error } = useContext(GameStoreContext)!;
+  const entry =
+    error != null && error in ErrorData
+      ? ErrorData[error as keyof typeof ErrorData]
+      : null;
+  const title = entry?.title ?? "Something went wrong";
+  const imageUrl = entry?.imageUrl ?? "";
+  const description =
+    entry?.description ?? "Please go back home and try again.";
 
   const handleGoHome = useCallback(() => {
     router.push("/");

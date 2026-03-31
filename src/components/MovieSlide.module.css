@@ -36,22 +36,36 @@
 }
 
 .stopButton {
-  border-top: 0.5px solid #3f3f3f;
-  border-bottom: 0.5px solid #3f3f3f;
+  border: 0;
+  background: rgba(255, 215, 0, .75);
 }
 
 .passButton {
   border: 0.5px solid rgb(72, 209, 204);
-  margin: 0 0 0 1px;
+  margin: 0;
   border-top-right-radius: 15%;
   border-bottom-right-radius: 15%;
 }
 
 .failButton {
   border: 0.5px solid rgb(209, 72, 77);
-  margin: 0 1px 0 0;
+  margin: 0;
   border-top-left-radius: 15%;
   border-bottom-left-radius: 15%;
+}
+
+.hasLabel {
+  flex-direction: column;
+}
+
+.failLabel,
+.endLabel,
+.passLabel {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  font-weight: 500;
 }
 
 .stopControlIcon {
@@ -62,6 +76,12 @@
   color: #323232;
 }
 
+.endLabel {
+  color: #323232;
+  position: relative;
+  top: -3px;
+}
+
 .passControlIcon {
   margin: 0 0 6px 0;
   padding: 0;
@@ -70,11 +90,19 @@
   color: #48d1cc;
 }
 
+.passLabel {
+  color: #48d1cc;
+}
+
 .failControlIcon {
   margin: 0 0 6px 0;
   padding: 0;
   width: 28px;
   height: 28px;
+  color: #d1484d;
+}
+
+.failLabel {
   color: #d1484d;
 }
 
@@ -112,6 +140,11 @@
     width: calc(var(--vh, 1vh) * 5 - 4px);
     height: calc(5vh - 4px);
     height: calc(var(--vh, 1vh) * 5 - 4px);
+  }
+  .failLabel,
+  .endLabel,
+  .passLabel {
+    font-size: 13px;
   }
 }
 
@@ -162,6 +195,11 @@
     width: 34px;
     height: 34px;
   }
+  .failLabel,
+  .endLabel,
+  .passLabel {
+    font-size: 17px;
+  }
 }
 
 @media (min-width: 1450px) and (orientation: landscape) {  
@@ -176,19 +214,22 @@
     cursor: pointer;
   }
   .stopButton:hover {
-    background: rgba(255, 215, 0, .75);
-    border-color: rgba(255, 215, 0, .75);
+    opacity: 0.6;
   }
   .passButton:hover {
     background: rgb(72,209,204);
+    .passLabel {
+      color: white;
+    }
   }
-  .passButton:hover svg {
+  .passButton:hover svg,
+  .failButton:hover svg {
     color: white;
   }
   .failButton:hover {
     background: rgb(209,72,77);
-  }
-  .failButton:hover svg {
-    color: white;
+    .failLabel {
+      color: white;
+    }
   }
 }

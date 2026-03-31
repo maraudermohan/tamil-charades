@@ -1,17 +1,39 @@
 import type { Metadata } from 'next';
 import './globals.css';
+/* Same asset as first entry in GAME_MODES_DATA (Classic); keep order in sync for LCP preload. */
+import classicModeBg from '../assets/game-modes/classic-bg.webp';
 
 export const metadata: Metadata = {
-  title: 'Tamil Dumb Charades',
-  description: 'Dumb Charades game for Tamil movies. Supports multiple modes like Classic, Storylines and Song lyrics. 1960s movies till latest. Developed by Mohan Subramanian.',
-  icons: {
-    icon: '/favicon.png',
-    apple: '/favicon-180x180.png',
+  metadataBase: new URL("https://www.tamilcharades.com"),
+  title: {
+    default: "Tamil & Hollywood Dumb Charades",
+    template: "%s | Tamil Charades",
   },
-  alternates: {
-    canonical: 'https://www.tamilcharades.com'
-  }
-}
+  description:
+    "Dumb Charades game for Tamil and English movies. Classic, Story, Song, Kids, and Hollywood modes. 1960s through latest films.",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon-180x180.png",
+  },
+  /** Default for `/`; child routes (e.g. `/game/classic`) override in `generateMetadata`. */
+  openGraph: {
+    title: "Tamil & Hollywood Dumb Charades",
+    description:
+      "Dumb Charades game for Tamil and English movies. Classic, Story, Song, Kids, and Hollywood modes. 1960s through latest films.",
+    url: "/",
+    siteName: "Tamil Charades",
+    type: "website",
+    locale: "en_US",
+    images: [{ url: "/tamil-logo-blue.webp", alt: "Tamil Charades" }],
+  },
+  twitter: {
+    card: "summary",
+    title: "Tamil & Hollywood Dumb Charades",
+    description:
+      "Dumb Charades game for Tamil and English movies. Classic, Story, Song, Kids, and Hollywood modes. 1960s through latest films.",
+    images: ["/tamil-logo-blue.webp"],
+  },
+};
 
 export default function RootLayout({
   children,
@@ -20,6 +42,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="preload"
+          href={classicModeBg.src}
+          as="image"
+          type="image/webp"
+          fetchPriority="high"
+        />
+      </head>
       <body>{children}</body>
     </html>
   )

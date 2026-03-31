@@ -68,7 +68,6 @@ export function useGameStore(): [GameStateType, GameStoreMethodsType] {
           error: action.newError,
         };
       case GameStoreActions.SET_START_TIME:
-        state.startTime;
         return {
           ...state,
           startTime: action.newStartTime,
@@ -145,8 +144,14 @@ export function useGameStore(): [GameStateType, GameStoreMethodsType] {
   const [gameState, dispatch] = useReducer(gameStoreReducer, initialState);
 
   const fetchMovies = async () => {
-    let url =
-      gameState?.currentMode?.endpoint + (gameState?.currentDifficulty || "2");
+    const mode = gameState.currentMode;
+    if (mode == null) {
+      return;
+    }
+    const url =
+      mode.title === "Kids Mode"
+        ? mode.endpoint
+        : mode.endpoint + (gameState.currentDifficulty ?? "2");
     const result = await fetchData(url);
     if (!result) {
       dispatch({

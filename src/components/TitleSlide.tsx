@@ -13,6 +13,21 @@ interface TitleSlideType {
 function TitleSlide({ elementRef, movieIndex }: TitleSlideType) {
   const { currentMode, moviesList } = useContext(GameStoreContext)!;
 
+  if (
+    movieIndex < 0 ||
+    movieIndex >= moviesList.length ||
+    moviesList[movieIndex] == null
+  ) {
+    return (
+      <div
+        ref={elementRef}
+        className={styles.titleSlideBox}
+        aria-hidden
+        style={{ visibility: "hidden" }}
+      />
+    );
+  }
+
   return (
     <div ref={elementRef} className={styles.titleSlideBox}>
       {currentMode!.title !== "Hollywood Mode" && <RiMovie2AiFill className={styles.lensIcon} />}
