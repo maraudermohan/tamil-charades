@@ -18,10 +18,32 @@
   font-size: 16px;
   letter-spacing: 0.5px;
   color: #3f3f3f;
+  font-weight: 400;
   top: calc(5vw + 12px);
   left: 50%;
   transform: translateX(-50%);
   user-select: none;
+}
+
+.timerUrgent {
+  color: #d1484d;
+  font-weight: 600;
+}
+
+.timerBlink {
+  animation: timerBlinkPulse 1s infinite;
+}
+
+@keyframes timerBlinkPulse {
+  0% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 .starBox {

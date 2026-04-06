@@ -1,7 +1,7 @@
 "use client";
 import { GameModeType, MoviesListType, ErrorStates } from "constant";
 import { createContext, useEffect, useReducer } from "react";
-import { fetchData } from "hooks";
+import { fetchData, getUniqueUserId } from "utils";
 
 export interface GameStateType {
   currentDifficulty: number | null;
@@ -11,6 +11,7 @@ export interface GameStateType {
   moviesList: MoviesListType[];
   starsCount: number | null;
   startTime: number | null;
+  uniqueUserId: string;
 }
 
 export const GameStoreActions = {
@@ -46,6 +47,7 @@ export function useGameStore(): [GameStateType, GameStoreMethodsType] {
     moviesList: [],
     starsCount: null,
     startTime: null,
+    uniqueUserId: getUniqueUserId(),
   };
 
   const gameStoreReducer = function (state: GameStateType, action: any) {

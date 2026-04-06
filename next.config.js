@@ -10,6 +10,8 @@ const PHP_API_FILES = [
 
 const nextConfig = {
   output: "export",
+  /** Emit `game/classic/index.html` so static hosts (S3, etc.) do not 403 on `/game/classic`. */
+  trailingSlash: true,
   reactStrictMode: false,
   images: {
     unoptimized: true,

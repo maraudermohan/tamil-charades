@@ -12,7 +12,8 @@ import { AiFillHome } from "react-icons/ai";
 import { IoPlay } from "react-icons/io5";
 import { lora, poppins, rubik } from "app/fonts";
 import { DifficultySlider } from "components";
-import { GameStoreContext, fetchData } from "hooks";
+import { GameStoreContext } from "hooks";
+import { fetchData } from "utils";
 import styles from "./ModeExpanded.module.css";
 import { ErrorStates, GameModeType, type MoviesListType } from "constant";
 

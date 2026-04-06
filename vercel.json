@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/game/:slug",
+      "destination": "/game/:slug/",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/_next/static/:path*",

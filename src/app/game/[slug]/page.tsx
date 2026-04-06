@@ -28,12 +28,12 @@ export async function generateMetadata({
     description: seo.description,
     keywords: seo.keywords,
     alternates: {
-      canonical: `/game/${slug}`,
+      canonical: `/game/${slug}/`,
     },
     openGraph: {
       title: fullTitle,
       description: seo.description,
-      url: `/game/${slug}`,
+      url: `/game/${slug}/`,
       siteName: "Tamil Charades",
       type: "website",
       locale: "en_US",

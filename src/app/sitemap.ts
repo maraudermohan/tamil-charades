@@ -19,7 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     ...GAME_SLUGS.map((slug) => ({
-      url: `${BASE}/game/${slug}`,
+      url: `${BASE}/game/${slug}/`,
       lastModified: now,
       changeFrequency: weekly,
       priority: 0.85,

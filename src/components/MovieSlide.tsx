@@ -62,22 +62,16 @@ function MovieSlide() {
     const totalSeconds = totalTime % 60;
     if (currentIndex === 0) {
       setResultsText([
-        `${totalMinutes < 10 ? "0" : ""}${totalMinutes} : ${
-          totalSeconds < 10 ? "0" : ""
-        }${totalSeconds}`,
-        "00 : 00",
+        `${totalMinutes} : ${totalSeconds < 10 ? "0" : ""}${totalSeconds}`,
+        "0 : 00",
       ]);
     } else {
       const AverageTime = Math.ceil(totalTime / currentIndex!);
       const AverageMinutes = Math.floor(AverageTime / 60);
       const AverageSeconds = AverageTime % 60;
       setResultsText([
-        `${totalMinutes < 10 ? "0" : ""}${totalMinutes} : ${
-          totalSeconds < 10 ? "0" : ""
-        }${totalSeconds}`,
-        `${AverageMinutes < 10 ? "0" : ""}${AverageMinutes} : ${
-          AverageSeconds < 10 ? "0" : ""
-        }${AverageSeconds}`,
+        `${totalMinutes} : ${totalSeconds < 10 ? "0" : ""}${totalSeconds}`,
+        `${AverageMinutes} : ${AverageSeconds < 10 ? "0" : ""}${AverageSeconds}`,
       ]);
     }
     resultSlideRef.current!.style.visibility = "visible";
@@ -100,7 +94,9 @@ function MovieSlide() {
 
   return (
     <div className={styles.movieSlideBox} ref={boxRef}>
-      <MovieSlideHeader />
+      {resultsText.length === 0 && (
+        <MovieSlideHeader handleFailClick={handleFailClick} />
+      )}      
       <TitleSlide elementRef={presentSlideRef} movieIndex={currentIndex!} />
       <TitleSlide elementRef={prevSlideRef} movieIndex={currentIndex!} />
       <TitleSlide elementRef={nextSlideRef} movieIndex={currentIndex! + 1} />

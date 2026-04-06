@@ -11,6 +11,7 @@ export interface GameModeType {
   backgroundImage: StaticImageData;
   backgroundPosition: string;
   endpoint: string;
+  timeLimit: number;
 }
 
 export interface GameModeData {
@@ -25,6 +26,7 @@ export const GAME_MODES_DATA: GameModeData = {
     backgroundImage: classicBg,
     backgroundPosition: "90%",
     endpoint: "/classic-movies.php?difficulty=",
+    timeLimit: 75,
   },
   story: {
     title: "Story Mode",
@@ -33,6 +35,7 @@ export const GAME_MODES_DATA: GameModeData = {
     backgroundImage: storyBg,
     backgroundPosition: "85%",
     endpoint: "/story-movies.php?story_difficulty=",
+    timeLimit: 90,
   },
   song: {
     title: "Song Mode",
@@ -41,6 +44,7 @@ export const GAME_MODES_DATA: GameModeData = {
     backgroundImage: songBg,
     backgroundPosition: "35%",
     endpoint: "/songs.php?difficulty=",
+    timeLimit: 90,
   },
   hollywood: {
     title: "Hollywood Mode",
@@ -49,6 +53,7 @@ export const GAME_MODES_DATA: GameModeData = {
     backgroundImage: hollywoodBg,
     backgroundPosition: "60%",
     endpoint: "/hollywood.php?difficulty=",
+    timeLimit: 75,
   },
   kids: {
     title: "Kids Mode",
@@ -57,5 +62,6 @@ export const GAME_MODES_DATA: GameModeData = {
     backgroundImage: kidsBg,
     backgroundPosition: "50%",
     endpoint: "/kid-words.php",
+    timeLimit: 60,
   },
 } as const;

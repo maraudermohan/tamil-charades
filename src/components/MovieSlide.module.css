@@ -27,6 +27,7 @@
 }
 
 .controlButton {
+  position: relative;
   width: 115px;
   height: 90px;
   border-radius: 1px;
@@ -61,11 +62,16 @@
 .failLabel,
 .endLabel,
 .passLabel {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
   margin: 0;
   padding: 0;
   font-size: 14px;
   letter-spacing: 0.3px;
   font-weight: 500;
+  opacity: 0.7;
 }
 
 .stopControlIcon {
@@ -78,8 +84,6 @@
 
 .endLabel {
   color: #323232;
-  position: relative;
-  top: -3px;
 }
 
 .passControlIcon {
@@ -198,7 +202,7 @@
   .failLabel,
   .endLabel,
   .passLabel {
-    font-size: 17px;
+    font-size: 15px;
   }
 }
 
