@@ -21,7 +21,7 @@ function ErrorBoundary() {
 
   const handleGoHome = useCallback(() => {
     router.push("/");
-  }, []);
+  }, [router]);
 
   return (
     <div className={styles.errorBoundaryBox}>

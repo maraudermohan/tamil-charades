@@ -4,7 +4,8 @@
   padding: 3px 4px;
   width: 40px;
   height: 40px;
-  top: calc(5vw - 3px);
+  top: calc(3vh - 3px);
+  top: calc(var(--vh, 1vh) * 3 - 3px);
   left: 5vw;
   color: #3f3f3f;
   border: 0.5px solid #3f3f3f;
@@ -19,7 +20,8 @@
   letter-spacing: 0.5px;
   color: #3f3f3f;
   font-weight: 400;
-  top: calc(5vw + 12px);
+  top: calc(3vh + 12px);
+  top: calc(var(--vh, 1vh) * 3 + 12px);
   left: 50%;
   transform: translateX(-50%);
   user-select: none;
@@ -50,7 +52,8 @@
   position: absolute;
   margin: 0;
   padding: 2px 12px 2px 9px;
-  top: 5vw;
+  top: 3vh;
+  top: calc(var(--vh, 1vh) * 3);
   right: 5vw;
   display: flex;
   justify-content: center;
@@ -84,8 +87,8 @@
 
 @media (max-width: 999px) and (orientation: landscape) {
   .homeIcon {
-    width: 30px;
-    height: 30px;
+    width: 33px;
+    height: 33px;
     top: 5vh;
     top: calc(var(--vh, 1vh) * 5);
   }
@@ -127,6 +130,15 @@
     top: calc(4vh - 2px);
     top: calc(var(--vh, 1vh) * 4 - 2px);
     right: 15vw;
+  }
+}
+
+@media (max-height: 400px) and (orientation: landscape) {
+  .homeIcon {
+    left: 2vw;
+  }
+  .starBox {
+    right: 2vw;
   }
 }
 

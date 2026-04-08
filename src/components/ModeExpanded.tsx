@@ -90,7 +90,7 @@ function ModeExpanded({ currentModeData }: ModeExpandedType) {
 
   const handleGoHome = useCallback(() => {
     router.push("/");
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -111,8 +111,10 @@ function ModeExpanded({ currentModeData }: ModeExpandedType) {
         <>
           <div
             style={{
-              backgroundImage: `url(${currentModeData!.backgroundImage.src})`,
-            }}
+              "--bg-sm": `url(${currentModeData!.backgroundSm.src})`,
+              "--bg-md": `url(${currentModeData!.backgroundMd.src})`,
+              "--bg-lg": `url(${currentModeData!.backgroundLg.src})`,
+            } as React.CSSProperties}
             className={`${styles.modeImage} ${
               currentModeData?.title &&
               styles[currentModeData.title.split(" ")[0]]

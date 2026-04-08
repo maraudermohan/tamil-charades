@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 /* Same asset as first entry in GAME_MODES_DATA (Classic); keep order in sync for LCP preload. */
-import classicModeBg from '../assets/game-modes/classic-bg.webp';
+import classicModeBg from '../assets/game-modes/classic-lg.webp';
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.tamilcharades.com"),

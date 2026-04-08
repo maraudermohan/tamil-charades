@@ -5,7 +5,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useRef,
 } from "react";
 import { poppins, rubik, lora } from "app/fonts";
@@ -27,22 +26,23 @@ function ResultsSlide({ elementRef, resultsText }: ResultsSlideType) {
   const rightStarRef = useRef<HTMLImageElement>(null);
   const timeoutIDs = useRef<ReturnType<typeof setTimeout>[] | null>(null);
 
-  const firstPartIndex = useMemo(
-    () => Math.floor(Math.random() * 4),
-    [resultsText],
-  );
+  const shareIndicesRef = useRef({ first: 0, second: 0 });
 
-  const secondPartIndex = useMemo(
-    () => Math.floor(Math.random() * 4),
-    [resultsText],
-  );
+  useEffect(() => {
+    shareIndicesRef.current = {
+      first: Math.floor(Math.random() * 4),
+      second: Math.floor(Math.random() * 4),
+    };
+  }, [resultsText]);
 
   const handleGoHome = useCallback(() => {
     router.push("/");
-  }, []);
+  }, [router]);
 
   // Share the score
   const handleShare = useCallback(async () => {
+    const { first: firstPartIndex, second: secondPartIndex } =
+      shareIndicesRef.current;
     const scoreText = `${starsCount}/${currentIndex}`;
     const imageBlob = await generateShareCard({
       currentMode: currentMode?.title || "",
@@ -102,7 +102,7 @@ function ResultsSlide({ elementRef, resultsText }: ResultsSlideType) {
     if (!window.open && navigator.clipboard) {
       navigator.clipboard.writeText(`${message}\n\n${url}`);
     }
-  }, [currentDifficulty, currentIndex, currentMode, starsCount, resultsText, firstPartIndex, secondPartIndex]);
+  }, [currentDifficulty, currentIndex, currentMode, starsCount, resultsText]);
 
   // On results slide show, animate the stars
   useEffect(() => {

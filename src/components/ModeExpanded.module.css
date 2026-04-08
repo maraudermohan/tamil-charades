@@ -19,6 +19,7 @@
   top: -1px;
   width: 100%;
   height: calc((100vw / 1.77) * 1.1);
+  background-image: var(--bg-sm);
   background-repeat: no-repeat;
   background-color: sandybrown;
   background-size: cover;
@@ -135,15 +136,39 @@
   color: white;  
 }
 
+@media (min-width: 600px) and (orientation: portrait) {
+  .modeImage {
+    background-image: var(--bg-md);
+  }
+}
+
+@media (min-height: 330px) and (orientation: landscape) {
+  .modeImage {
+    background-image: var(--bg-md);
+  }
+}
+
+@media (min-height: 505px) and (orientation: landscape) {
+  .modeImage {
+    background-image: var(--bg-lg);
+  }
+}
+
+@media (min-width: 900px) and (orientation: portrait) {
+  .modeImage {
+    background-image: var(--bg-lg);
+  }
+}
+
+@media (min-width: 1000px) {
+  .modeImage {
+    background-image: var(--bg-lg);
+  }
+}
+
 @media (min-width: 767px) and (orientation: portrait) {
   .modeImage {
     height: calc(100vw / 1.77 * 0.85);
-  }
-  .Story {
-    background-position: top center;
-  }
-  .Song {
-    background-position: bottom center;
   }
   .layout {
     justify-content: flex-start;
@@ -176,6 +201,15 @@
   }
 }
 
+@media (max-width: 767px) and (orientation: portrait) {
+  .Story {
+    background-position: 75% 25%;
+  }
+  .Song {
+    background-position: center 25%;
+  }
+}
+
 @media (min-width: 767px) and (max-width: 819px) and (orientation: portrait) {
   .modeDescription {
     padding-top: 0;
@@ -199,14 +233,11 @@
     height: 101vh;
     height: calc(var(--vh, 1vh) * 101);
   }
-  .Classic {
-    background-position: 95%;
-  }
   .Story {
-    background-position: 90%;
+    background-position: 60% center;
   }
   .Song {
-    background-position: 50%;
+    background-position: 75% center;
   }
   .layout {
     justify-content: flex-start;
@@ -245,9 +276,6 @@
   .modeDescription {
     line-height: 26px;
   }
-  .Story {
-    background-position: 80%;
-  }
 }
 
 @media (max-height: 400px) and (orientation: landscape) {
@@ -273,13 +301,13 @@
     border-radius: 20px;
   }
   .Classic {
-    background-position: center 10%;
+    background-position: center 25%;
   }
   .Story {
-    background-position: top center;
+    background-position: center 25%;
   }
   .Song {
-    background-position: center;
+    background-position: center 30%;
   }
   .layout {
     justify-content: flex-start;
@@ -322,13 +350,10 @@
     border-radius: 20px;
   }
   .Classic {
-    background-position: center 10%;
+    background-position: center 30%;
   }
   .Story {
-    background-position: top center;
-  }
-  .Song {
-    background-position: center;
+    background-position: center 40%;
   }
   .homeIcon {
     top: 4vh;

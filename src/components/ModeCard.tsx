@@ -19,16 +19,22 @@ export default function ModeCard({ modeData, priority = false }: ModeCardType) {
       href={`/game/${modeData}`}
       prefetch={false}
     >
-      <Image
-        className={styles.modeImage}
-        src={mode.backgroundImage}
-        alt={mode.title}
-        fill
-        sizes="(max-width: 766px) 50vw, (max-width: 999px) and (orientation: landscape) 33vw, (min-width: 1000px) 33vw, 50vw"
-        placeholder="blur"
-        priority={priority}
-        fetchPriority={priority ? "high" : "low"}
-      />
+      <picture className={styles.modePicture}>
+        <source media="(min-width: 1500px)" srcSet={mode.backgroundLg.src} />
+        <source media="(min-height: 1500px)" srcSet={mode.backgroundLg.src} />
+        <source media="(max-width: 766px) and (orientation: portrait)" srcSet={mode.backgroundSm.src} />
+        <source media="(max-height: 500px) and (orientation: landscape)" srcSet={mode.backgroundSm.src} />
+        <Image
+          className={styles.modeImage}
+          src={mode.backgroundMd}
+          alt={mode.title}
+          fill
+          sizes="(max-width: 766px) 50vw, (max-width: 999px) and (orientation: landscape) 33vw, (min-width: 1000px) 33vw, 50vw"
+          placeholder="blur"
+          priority={priority}
+          fetchPriority={priority ? "high" : "low"}
+        />
+      </picture>
       <div className={styles.overlay}>
         <h3
           className={styles.title}
