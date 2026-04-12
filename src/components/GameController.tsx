@@ -4,7 +4,8 @@ import Link from "next/link";
 import { memo, useEffect } from "react";
 import { GameStoreContext, useGameStore } from "hooks";
 import { ModeExpanded, ErrorBoundary } from "components";
-import { GAME_MODES_DATA } from "constant";
+import { GAME_MODES_DATA, TrackEvents } from "constant";
+import { track } from "utils";
 
 const MovieSlide = dynamic(() => import("./MovieSlide"), {
   ssr: false,
@@ -51,6 +52,14 @@ function GameController({ slug }: GameControllerType) {
     };
     // gameStoreMethods is a new object each render; setCurrentMode dispatches the same actions.
   }, [slug, modeConfig]);
+
+  useEffect(() => {
+    track(
+      TrackEvents.MODE_SELECTED,
+      null,
+      { mode: slug as "classic" | "story" | "song" | "hollywood" | "kids" },
+    );
+  }, [slug]);
 
   if (modeConfig == null) {
     return (

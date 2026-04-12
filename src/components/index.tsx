@@ -9,4 +9,5 @@ export { default as ModeExpanded } from './ModeExpanded';
 export { default as MovieSlide } from './MovieSlide';
 export { default as MovieSlideHeader } from './MovieSlideHeader';
 export { default as ResultsSlide } from './ResultsSlide';
+export { default as SessionMetricsHandler } from './SessionMetricsHandler';
 export { default as TitleSlide } from './TitleSlide';

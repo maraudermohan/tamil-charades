@@ -15,8 +15,11 @@ import kidsSm from "../assets/game-modes/kids-sm.webp";
 import songSm from "../assets/game-modes/song-sm.webp";
 import storySm from "../assets/game-modes/story-sm.webp";
 
+export const GameDifficulty = ["easy", "medium", "hard"] as const;
+
 export interface GameModeType {
   title: string;
+  mode: "classic" | "story" | "song" | "hollywood" | "kids";
   description: string;
   backgroundLg: StaticImageData;
   backgroundMd: StaticImageData;
@@ -33,6 +36,7 @@ export interface GameModeData {
 export const GAME_MODES_DATA: GameModeData = {
   classic: {
     title: "Classic Mode",
+    mode: "classic",
     description:
       "Act out the movie without speaking or making sounds.<br /><br />Press ✔ for right guesses and ✘ for wrong/skipped ones.<br />Press 🏁 to conclude the game.",
     backgroundLg: classicLg,
@@ -44,6 +48,7 @@ export const GAME_MODES_DATA: GameModeData = {
   },
   story: {
     title: "Story Mode",
+    mode: "story",
     description:
       "Make the players guess the movie by acting out only the <strong>storyline</strong> or iconic scenes.<br /><br /><strong>Don't</strong> act anything about the <span>movie title, cast or crew</span>. No hints about hero, heroine, villain, director etc.",
     backgroundLg: storyLg,
@@ -55,6 +60,7 @@ export const GAME_MODES_DATA: GameModeData = {
   },
   song: {
     title: "Song Mode",
+    mode: "song",
     description:
       "Make the players guess the song by acting out only the <strong>lyrics</strong>, song scenes or <strong>famous dance steps</strong>.<br /><br /><strong>Don't</strong> act anything about the <span>movie title, storyline, cast or crew</span>. No hints about music director, hero, heroine or villain.",
     backgroundLg: songLg,
@@ -66,6 +72,7 @@ export const GAME_MODES_DATA: GameModeData = {
   },
   hollywood: {
     title: "Hollywood Mode",
+    mode: "hollywood",
     description:
       "Act out the movie without speaking or making sounds.<br /><br />Press ✔ for right guesses and ✘ for wrong/skipped ones.<br />Press 🏁 to conclude the game.",
     backgroundLg: hollywoodLg,
@@ -77,6 +84,7 @@ export const GAME_MODES_DATA: GameModeData = {
   },
   kids: {
     title: "Kids Mode",
+    mode: "kids",
     description:
       "Simple day-to-day words for kids to get introduced to the world of <strong>Charades</strong>.",
     backgroundLg: kidsLg,

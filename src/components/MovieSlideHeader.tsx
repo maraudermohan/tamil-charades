@@ -5,6 +5,8 @@ import { poppins } from "app/fonts";
 import styles from "./MovieSlideHeader.module.css";
 import { GameStoreContext } from "hooks";
 import { useRouter } from "next/navigation";
+import { track } from "utils";
+import { GameDifficulty, TrackEvents } from "constant";
 
 function formatMmSs(totalSeconds: number): string {
   if (totalSeconds < 0) return "";
@@ -15,14 +17,44 @@ function formatMmSs(totalSeconds: number): string {
 
 function MovieSlideHeader({ handleFailClick }: { handleFailClick: () => void }) {
   const router = useRouter();
-  const { currentIndex, currentMode, starsCount, gameStoreMethods } =
+  const {
+    currentDifficulty,
+    currentIndex,
+    currentMode,
+    starsCount,
+    startTime,
+    gameStoreMethods,
+  } =
     useContext(GameStoreContext)!;
   const timeLimit = currentMode?.timeLimit ?? 60;
   const [secondsLeft, setSecondsLeft] = useState(timeLimit);
 
   const handleGoHome = useCallback(() => {
+    const newTime = new Date().getTime();
+    const totalTime = Math.round((newTime - startTime!) / 1000) + 1;
+    const totalCount = currentIndex! + 1;
+    track(
+      TrackEvents.GAME_ENDED,
+      {
+        correctCount: starsCount!,
+        totalCount,
+        totalTime: totalTime,
+        avgTime: Math.ceil(totalTime / totalCount),
+      },
+      {
+        mode: currentMode!.mode,
+        difficulty: GameDifficulty[(currentDifficulty! - 1)],
+      }
+    );
     router.push("/");
-  }, []);
+  }, [
+    currentDifficulty,
+    currentIndex,
+    currentMode,
+    starsCount,
+    startTime,
+    router,
+  ]);
 
   useEffect(() => {
     gameStoreMethods.setStartTime(Date.now());

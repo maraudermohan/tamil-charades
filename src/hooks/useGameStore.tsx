@@ -1,7 +1,7 @@
 "use client";
-import { GameModeType, MoviesListType, ErrorStates } from "constant";
+import { GameModeType, MoviesListType, ErrorStates, TrackEvents, GAME_MODES_DATA, GameDifficulty } from "constant";
 import { createContext, useEffect, useReducer } from "react";
-import { fetchData, getUniqueUserId } from "utils";
+import { fetchData, getRoundsCount, track } from "utils";
 
 export interface GameStateType {
   currentDifficulty: number | null;
@@ -11,7 +11,6 @@ export interface GameStateType {
   moviesList: MoviesListType[];
   starsCount: number | null;
   startTime: number | null;
-  uniqueUserId: string;
 }
 
 export const GameStoreActions = {
@@ -47,7 +46,6 @@ export function useGameStore(): [GameStateType, GameStoreMethodsType] {
     moviesList: [],
     starsCount: null,
     startTime: null,
-    uniqueUserId: getUniqueUserId(),
   };
 
   const gameStoreReducer = function (state: GameStateType, action: any) {
@@ -75,13 +73,36 @@ export function useGameStore(): [GameStateType, GameStoreMethodsType] {
           startTime: action.newStartTime,
         };
       case GameStoreActions.START_GAME:
+        track(
+          TrackEvents.GAME_STARTED,
+          { roundsCount: getRoundsCount() },
+          {
+            mode: state.currentMode!.mode,
+            difficulty: GameDifficulty[(state?.currentDifficulty || 2) - 1],
+          },
+        );
         if (state.moviesList.length === 0) {
+          track(
+            TrackEvents.GAME_LIST_EXHAUSTED,
+            {
+              totalCount: state.moviesList.length,
+              totalTime: Date.now() - state.startTime!,
+            },
+            {
+              mode: state.currentMode!.mode,
+              difficulty: GameDifficulty[(state?.currentDifficulty || 2) - 1],
+            },
+          );
           return {
             ...state,
             error: ErrorStates.END_OF_LIST,
           };
         }
-        return { ...state, currentIndex: 0, starsCount: 0 };
+        return {
+          ...state,
+          currentIndex: 0,
+          starsCount: 0,
+        };
       case GameStoreActions.UPDATE_MOVIES_LIST: {
         const newMoviesList: MoviesListType[] = [];
         action.newData.forEach((movie: MoviesListType) => {
@@ -126,6 +147,17 @@ export function useGameStore(): [GameStateType, GameStoreMethodsType] {
           newIndex++;
         }
         if (newIndex + 1 >= state.moviesList.length) {
+          track(
+            TrackEvents.GAME_LIST_EXHAUSTED,
+            {
+              totalCount: state.moviesList.length,
+              totalTime: Date.now() - state.startTime!,
+            },
+            {
+              mode: state.currentMode!.mode,
+              difficulty: GameDifficulty[(state?.currentDifficulty || 2) - 1],
+            },
+          );
           return {
             ...state,
             error: ErrorStates.END_OF_LIST,

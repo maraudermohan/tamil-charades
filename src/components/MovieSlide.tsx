@@ -14,10 +14,18 @@ import styles from "./MovieSlide.module.css";
 import { GameStoreContext } from "hooks";
 import { MovieSlideHeader, ResultsSlide, TitleSlide } from "components";
 import { poppins } from "app/fonts";
+import { GameDifficulty, TrackEvents } from "constant";
+import { track } from "utils";
 
 function MovieSlide() {
-  const { currentIndex, startTime, gameStoreMethods } =
-    useContext(GameStoreContext)!;
+  const {
+    currentDifficulty,
+    currentIndex,
+    currentMode,
+    startTime,
+    starsCount,
+    gameStoreMethods,
+  } = useContext(GameStoreContext)!;
   const boxRef = useRef<HTMLDivElement>(null);
   const presentSlideRef = useRef<HTMLDivElement>(null);
   const prevSlideRef = useRef<HTMLDivElement>(null);
@@ -60,13 +68,14 @@ function MovieSlide() {
     const totalTime = Math.round((newTime - startTime!) / 1000) + 1;
     const totalMinutes = Math.floor(totalTime / 60);
     const totalSeconds = totalTime % 60;
+    const totalCount = currentIndex! + 1;
     if (currentIndex === 0) {
       setResultsText([
         `${totalMinutes} : ${totalSeconds < 10 ? "0" : ""}${totalSeconds}`,
         "0 : 00",
       ]);
     } else {
-      const AverageTime = Math.ceil(totalTime / currentIndex!);
+      const AverageTime = Math.ceil(totalTime / totalCount);
       const AverageMinutes = Math.floor(AverageTime / 60);
       const AverageSeconds = AverageTime % 60;
       setResultsText([
@@ -74,9 +83,22 @@ function MovieSlide() {
         `${AverageMinutes} : ${AverageSeconds < 10 ? "0" : ""}${AverageSeconds}`,
       ]);
     }
+    track(
+      TrackEvents.GAME_ENDED,
+      {
+        correctCount: starsCount!,
+        totalCount,
+        totalTime,
+        avgTime: Math.ceil(totalTime / totalCount),
+      },
+      {
+        mode: currentMode!.mode,
+        difficulty: GameDifficulty[(currentDifficulty! - 1)],
+      }
+    );
     resultSlideRef.current!.style.visibility = "visible";
     resultSlideRef.current!.style.transform = "translateX(0)";
-  }, [currentIndex, startTime]);
+  }, [currentDifficulty, currentIndex, currentMode, startTime, starsCount]);
 
   const handleFailClick = useCallback(() => {
     setTimeout(gameStoreMethods.updateFailAnswer, 300);

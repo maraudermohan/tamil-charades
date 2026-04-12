@@ -6,6 +6,7 @@ const PHP_API_FILES = [
   "songs.php",
   "hollywood.php",
   "kid-words.php",
+  "track-metrics.php",
 ];
 
 const nextConfig = {

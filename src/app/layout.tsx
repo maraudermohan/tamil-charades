@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
+import { SessionMetricsHandler } from 'components';
 import './globals.css';
-/* Same asset as first entry in GAME_MODES_DATA (Classic); keep order in sync for LCP preload. */
-import classicModeBg from '../assets/game-modes/classic-lg.webp';
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.tamilcharades.com"),
@@ -42,16 +41,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <link
-          rel="preload"
-          href={classicModeBg.src}
-          as="image"
-          type="image/webp"
-          fetchPriority="high"
-        />
-      </head>
-      <body>{children}</body>
+      <body>
+        <SessionMetricsHandler />
+        {children}
+      </body>
     </html>
   )
 }

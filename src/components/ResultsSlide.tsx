@@ -11,7 +11,8 @@ import { poppins, rubik, lora } from "app/fonts";
 import styles from "./ResultsSlide.module.css";
 import { GameStoreContext } from "hooks";
 import { useRouter } from "next/navigation";
-import { generateShareCard } from "utils";
+import { generateShareCard, track, trackShareNativeResult } from "utils";
+import { GameDifficulty, TrackEvents } from "constant";
 
 interface ResultsSlideType {
   elementRef: RefObject<HTMLDivElement | null>;
@@ -38,6 +39,24 @@ function ResultsSlide({ elementRef, resultsText }: ResultsSlideType) {
   const handleGoHome = useCallback(() => {
     router.push("/");
   }, [router]);
+
+  const handleDonate = useCallback(() => {
+    const totalTime = resultsText[0]
+      ? parseInt(resultsText[0].split(":")[0]) * 60 + parseInt(resultsText[0].split(":")[1])
+      : 0;
+    track(
+      TrackEvents.DONATE_CLICKED,
+      {
+        totalCount: currentIndex! + 1,
+        totalTime,
+      },
+      {
+        mode: currentMode!.mode,
+        difficulty: GameDifficulty[(currentDifficulty! - 1)],
+      }
+    );
+    window.open("https://www.buymeacoffee.com/maraudermohan", "_blank", "noopener noreferrer");
+  }, [currentDifficulty, currentIndex, currentMode, resultsText]);
 
   // Share the score
   const handleShare = useCallback(async () => {
@@ -71,6 +90,28 @@ function ResultsSlide({ elementRef, resultsText }: ResultsSlideType) {
     const message = firstPart[firstPartIndex] + secondPart[secondPartIndex];
   
     const url = "https://tamilcharades.com?ref=share";
+
+    const totalTime = resultsText[0]
+      ? parseInt(resultsText[0].split(":")[0]) * 60 + parseInt(resultsText[0].split(":")[1])
+      : 0;
+    const avgTime = resultsText[1]
+      ? parseInt(resultsText[1].split(":")[0]) * 60 + parseInt(resultsText[1].split(":")[1])
+      : 0;
+    const metricsCtx = {
+      mode: currentMode!.mode,
+      difficulty: GameDifficulty[(currentDifficulty! - 1)],
+    };
+
+    track(
+      TrackEvents.SHARE_CLICKED,
+      {
+        correctCount: starsCount!,
+        totalCount: currentIndex! + 1,
+        totalTime,
+        avgTime,
+      },
+      metricsCtx,
+    );
   
     // Web Share
     if (imageBlob && navigator.canShare?.({ files: [new File([imageBlob], "x.png", { type: "image/png" })] })) {
@@ -79,18 +120,24 @@ function ResultsSlide({ elementRef, resultsText }: ResultsSlideType) {
         "tamil-charades.png",
         { type: "image/png" },
       );
-      await navigator.share({
-        title: "Tamil Charades",
-        text: message,
-        url,
-        files: [file],
-      });
+      await trackShareNativeResult(
+        navigator.share({
+          title: "Tamil Charades",
+          text: message,
+          url,
+          files: [file],
+        }),
+        metricsCtx,
+      );
       return;
     }
 
     // Web Share API without image
     if (navigator.share) {
-      await navigator.share({ title: "Tamil Charades", text: message, url });
+      await trackShareNativeResult(
+        navigator.share({ title: "Tamil Charades", text: message, url }),
+        metricsCtx,
+      );
       return;
     }
   
@@ -100,7 +147,7 @@ function ResultsSlide({ elementRef, resultsText }: ResultsSlideType) {
   
     // Clipboard fallback
     if (!window.open && navigator.clipboard) {
-      navigator.clipboard.writeText(`${message}\n\n${url}`);
+      void navigator.clipboard.writeText(`${message}\n\n${url}`);
     }
   }, [currentDifficulty, currentIndex, currentMode, starsCount, resultsText]);
 
@@ -207,15 +254,13 @@ function ResultsSlide({ elementRef, resultsText }: ResultsSlideType) {
             Share 🔥
           </button>
         )}
-        <a
-          href="https://www.buymeacoffee.com/maraudermohan"
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
           className={styles.supportLink}
+          onClick={handleDonate}
           style={{ fontFamily: lora.style.fontFamily }}
         >
           ☕ Enjoying the game? Support it
-        </a>
+        </button>
       </div>
     </div>
   );
