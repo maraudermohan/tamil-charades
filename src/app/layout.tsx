@@ -1,6 +1,14 @@
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import type { Metadata } from 'next';
 import { SessionMetricsHandler } from 'components';
 import './globals.css';
+
+/** Inlined so static export runs zoom detect during parse (beforeInteractive + src only preloads on export). */
+const iosSafariZoomCheck = readFileSync(
+  join(process.cwd(), 'public/ios-safari-zoom-boot.js'),
+  'utf8',
+);
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.tamilcharades.com"),
@@ -41,6 +49,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: iosSafariZoomCheck }}
+        />
+      </head>
       <body>
         <SessionMetricsHandler />
         {children}

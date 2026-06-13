@@ -10,7 +10,7 @@ function ModeCardsManager() {
         <ModeCard
           key={modeData + index}
           modeData={modeData}
-          priority={index === 0}
+          priority={index <= 1}
         />
       ))}
     </div>

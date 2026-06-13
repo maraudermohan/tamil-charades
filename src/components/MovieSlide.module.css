@@ -36,6 +36,21 @@
   align-items: center;
 }
 
+:global(.ios-safari-zoomed.zoom-1) .controlButton {
+  width: 32dvw;
+  height: 72px;
+}
+
+:global(.ios-safari-zoomed.zoom-2) .controlButton {
+  width: 32dvw;
+  height: 56px;
+}
+
+:global(.ios-safari-zoomed.zoom-3) .controlButton {
+  width: 32dvw;
+  height: 40px;
+}
+
 .stopButton {
   border: 0;
   background: rgba(255, 215, 0, .75);
@@ -74,12 +89,51 @@
   opacity: 0.7;
 }
 
+:global(.ios-safari-zoomed.zoom-1) .failLabel,
+:global(.ios-safari-zoomed.zoom-1) .endLabel,
+:global(.ios-safari-zoomed.zoom-1) .passLabel {
+  bottom: 4px;
+  font-size: 12px;
+}
+
+:global(.ios-safari-zoomed.zoom-2) .failLabel,
+:global(.ios-safari-zoomed.zoom-2) .endLabel,
+:global(.ios-safari-zoomed.zoom-2) .passLabel {
+  bottom: 3px;
+  font-size: 10px;
+}
+
+:global(.ios-safari-zoomed.zoom-3) .failLabel,
+:global(.ios-safari-zoomed.zoom-3) .endLabel,
+:global(.ios-safari-zoomed.zoom-3) .passLabel {
+  bottom: 2px;
+  font-size: 8px;
+}
+
 .stopControlIcon {
   margin: 0 0 6px 0;
   padding: 0;
   width: 34px;
   height: 34px;
   color: #323232;
+}
+
+:global(.ios-safari-zoomed.zoom-1) .stopControlIcon {
+  width: 28px;
+  height: 28px;
+  margin: 0 0 5px 0;
+}
+
+:global(.ios-safari-zoomed.zoom-2) .stopControlIcon {
+  width: 22px;
+  height: 22px;
+  margin: 0 0 4px 0;
+}
+
+:global(.ios-safari-zoomed.zoom-3) .stopControlIcon {
+  width: 20px;
+  height: 20px;
+  margin: 0 0 3px 0;
 }
 
 .endLabel {
@@ -94,6 +148,24 @@
   color: #48d1cc;
 }
 
+:global(.ios-safari-zoomed.zoom-1) .passControlIcon {
+  width: 26px;
+  height: 26px;
+  margin: 0 0 5px 0;
+}
+
+:global(.ios-safari-zoomed.zoom-2) .passControlIcon {
+  width: 20px;
+  height: 20px;
+  margin: 0 0 4px 0;
+}
+
+:global(.ios-safari-zoomed.zoom-3) .passControlIcon {
+  width: 17px;
+  height: 17px;
+  margin: 0 0 3px 0;
+}
+
 .passLabel {
   color: #48d1cc;
 }
@@ -104,6 +176,24 @@
   width: 28px;
   height: 28px;
   color: #d1484d;
+}
+
+:global(.ios-safari-zoomed.zoom-1) .failControlIcon {
+  width: 22px;
+  height: 22px;
+  margin: 0 0 5px 0;
+}
+
+:global(.ios-safari-zoomed.zoom-2) .failControlIcon {
+  width: 18px;
+  height: 18px;
+  margin: 0 0 4px 0;
+}
+
+:global(.ios-safari-zoomed.zoom-3) .failControlIcon {
+  width: 16px;
+  height: 16px;
+  margin: 0 0 3px 0;
 }
 
 .failLabel {
@@ -156,6 +246,15 @@
   .controlButtonsBox {
     height: 36vh;
     height: calc(var(--vh, 1vh) * 36);
+  }
+  :global(.ios-safari-zoomed.zoom-1) .controlButtonsBox {
+    height: 31dvh;
+  }
+  :global(.ios-safari-zoomed.zoom-2) .controlButtonsBox {
+    height: 26dvh;
+  }
+  :global(.ios-safari-zoomed.zoom-3) .controlButtonsBox {
+    height: 21dvh;
   }
   .controlButton {
     width: 100px;

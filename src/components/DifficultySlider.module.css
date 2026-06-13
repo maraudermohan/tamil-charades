@@ -27,6 +27,24 @@
   padding: 0 18px 0 12px;
 }
 
+:global(.ios-safari-zoomed.zoom-1) .difficultyLabel {
+  padding: 0 6px;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+:global(.ios-safari-zoomed.zoom-2) .difficultyLabel {
+  padding: 0 6px;
+  font-size: 9px;
+  line-height: 12px;
+}
+
+:global(.ios-safari-zoomed.zoom-3) .difficultyLabel {
+  padding: 0 2px;
+  font-size: 6px;
+  line-height: 8px;
+}
+
 .sliderInput {
   margin: 0;
   padding: 0;
@@ -35,6 +53,21 @@
   display: flex;
   position: relative;
   cursor: pointer;
+}
+
+:global(.ios-safari-zoomed.zoom-1) .sliderInput {
+  width: 66px;
+  height: 21px;
+}
+
+:global(.ios-safari-zoomed.zoom-2) .sliderInput {
+  width: 50px;
+  height: 19px;
+}
+
+:global(.ios-safari-zoomed.zoom-3) .sliderInput {
+  width: 38px;
+  height: 17px;
 }
 
 .sliderInputControl {
@@ -48,6 +81,21 @@
   z-index: 6;
 }
 
+:global(.ios-safari-zoomed.zoom-1) .sliderInputControl {
+  width: 11px;
+  height: 20px;
+}
+
+:global(.ios-safari-zoomed.zoom-2) .sliderInputControl {
+  width: 10px;
+  height: 18px;
+}
+
+:global(.ios-safari-zoomed.zoom-3) .sliderInputControl {
+  width: 9px;
+  height: 16px;
+}
+
 .sliderBg {
   position: absolute;
   margin: 10px 0;
@@ -59,6 +107,21 @@
   z-index: 0;
 }
 
+:global(.ios-safari-zoomed.zoom-1) .sliderBg {
+  margin: 9px 0;
+  height: 3px;
+}
+
+:global(.ios-safari-zoomed.zoom-2) .sliderBg {
+  margin: 8px 0;
+  height: 3px;
+}
+
+:global(.ios-safari-zoomed.zoom-3) .sliderBg {
+  margin: 7px 0;
+  height: 2px;
+}
+
 .sliderCircle {
   position: absolute;
   margin: 0;
@@ -67,6 +130,21 @@
   height: 8px;
   border-radius: 50%;
   z-index: 1;
+}
+
+:global(.ios-safari-zoomed.zoom-1) .sliderCircle {
+  width: 7px;
+  height: 7px;
+}
+
+:global(.ios-safari-zoomed.zoom-2) .sliderCircle {
+  width: 6px;
+  height: 6px;
+}
+
+:global(.ios-safari-zoomed.zoom-3) .sliderCircle {
+  width: 5px;
+  height: 5px;
 }
 
 .sliderCircle1 {

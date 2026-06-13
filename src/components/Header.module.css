@@ -22,6 +22,18 @@
   border-radius: 50%;
 }
 
+:global(.ios-safari-zoomed.zoom-3) .headerLogo {
+  width: 45px;
+  height: 45px;
+  margin: 4dvh 0 0 0;
+}
+
+:global(.ios-safari-zoomed) .headerLogo {
+  width: 60px;
+  height: 60px;
+  margin: 5dvh 0 0 0;
+}
+
 .pageTitle {
   margin: 0;
   padding: 0 0 20px 0;
@@ -40,12 +52,37 @@
   user-select: none;
 }
 
+:global(.ios-safari-zoomed) .subtitle {
+  margin: 4dvh 0 0 0;
+  padding: 0 0 12px 0;
+}
+
+:global(.ios-safari-zoomed.zoom-1) .subtitle {
+  font-size: 17px;
+}
+
+:global(.ios-safari-zoomed.zoom-2) .subtitle {
+  font-size: 13px;
+}
+
+:global(.ios-safari-zoomed.zoom-3) .subtitle {
+  font-size: 9px;
+}
+
 @media (max-width: 999px) and (orientation: landscape) {
   .header {
     margin: 0;
     padding: 32px 0 12px 0;
     flex-direction: row;
     align-items: center;
+  }
+
+  :global(.ios-safari-zoomed.zoom-2) .header {
+    padding: 20px 0 12px 0;
+  }
+
+  :global(.ios-safari-zoomed.zoom-3) .header {
+    padding: 12px 0 12px 0;
   }
 
   .headerLogo {
@@ -55,9 +92,23 @@
     left: 28px;
   }
 
+  :global(.ios-safari-zoomed) .headerLogo {
+    margin: 0;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 50px;
+  }
+
   .subtitle {
     margin: 0;
     padding: 12px 0;
+  }
+
+  :global(.ios-safari-zoomed) .subtitle {
+    margin: 0;
+    padding: 12px 0 12px 12px;
   }
 }
 

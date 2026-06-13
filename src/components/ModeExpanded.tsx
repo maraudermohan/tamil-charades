@@ -126,7 +126,7 @@ function ModeExpanded({ currentModeData }: ModeExpandedType) {
               className={styles.modeTitle}
               style={{ fontFamily: rubik.style.fontFamily }}
             >
-              {currentModeData?.title}
+              {currentModeData?.mode === "hollywood" ? "Hollywood" : currentModeData?.title}
             </h3>
             <p
               className={`${styles.modeDescription} ${

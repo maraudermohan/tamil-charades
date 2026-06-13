@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useEffect } from "react";
+import { useEffect } from "react";
 import {
   TrackEvents,
   type SessionEndedPayload,
@@ -155,4 +155,4 @@ function SessionMetricsHandler() {
   return null;
 }
 
-export default memo(SessionMetricsHandler);
+export default SessionMetricsHandler;

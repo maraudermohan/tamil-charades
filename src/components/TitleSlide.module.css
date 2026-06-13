@@ -125,6 +125,15 @@
     height: 46vh;
     height: calc(var(--vh, 1vh) * 46);
   }
+  :global(.ios-safari-zoomed.zoom-1) .titleSlideBox {
+    height: 58dvh;
+  }
+  :global(.ios-safari-zoomed.zoom-2) .titleSlideBox {
+    height: 60dvh;
+  }
+  :global(.ios-safari-zoomed.zoom-3) .titleSlideBox {
+    height: 60dvh;
+  }
   .lensIcon {
     width: 20vw;
     height: 20vw;
@@ -132,8 +141,29 @@
   .centeredMovieTitle {
     font-size: 24px;
   }
+  :global(.ios-safari-zoomed.zoom-1) .centeredMovieTitle {
+    font-size: 21px;
+    line-height: 24px;
+  }
+  :global(.ios-safari-zoomed.zoom-2) .centeredMovieTitle {
+    font-size: 17.5px;
+    line-height: 21px;
+  }
+  :global(.ios-safari-zoomed.zoom-3) .centeredMovieTitle {
+    font-size: 14px;
+    line-height: 18px;
+  }
   .movieTitle {
     line-height: 32px;
+  }
+  :global(.ios-safari-zoomed.zoom-1) .movieTitle {
+    line-height: 27px;
+  }
+  :global(.ios-safari-zoomed.zoom-2) .movieTitle {
+    line-height: 21px;
+  }
+  :global(.ios-safari-zoomed.zoom-3) .movieTitle {
+    line-height: 15px;
   }
   .movieTitle:first-of-type {
     transform: translate(-50%, calc(-15vw - 100%));
@@ -143,8 +173,35 @@
     transform: translate(-50%, 15vw);
     font-size: 22px;
   }
+  :global(.ios-safari-zoomed.zoom-1) .movieTitle:first-of-type {
+    font-size: 20px;
+  }
+  :global(.ios-safari-zoomed.zoom-2) .movieTitle:first-of-type {
+    font-size: 16px;
+  }
+  :global(.ios-safari-zoomed.zoom-3) .movieTitle:first-of-type {
+    font-size: 13px;
+  }
+  :global(.ios-safari-zoomed.zoom-1) .movieTitle:last-of-type {
+    font-size: 18px;
+  }
+  :global(.ios-safari-zoomed.zoom-2) .movieTitle:last-of-type {
+    font-size: 14.5px;
+  }
+  :global(.ios-safari-zoomed.zoom-3) .movieTitle:last-of-type {
+    font-size: 11px;
+  }
   .subtitle {
     font-size: 20px;
+  }
+  :global(.ios-safari-zoomed.zoom-1) .subtitle {
+    font-size: 18px;
+  }
+  :global(.ios-safari-zoomed.zoom-2) .subtitle {
+    font-size: 15px;
+  }
+  :global(.ios-safari-zoomed.zoom-3) .subtitle {
+    font-size: 12px;
   }
 }
 

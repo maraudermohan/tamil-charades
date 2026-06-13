@@ -11,6 +11,11 @@
   z-index: 3;
 }
 
+:global(.ios-safari-zoomed) .footer {
+  margin: 5dvh 5dvw 0 5dvw;
+  width: calc(100% - 10dvw);
+}
+
 .footerDescription {
   margin: 0;
   padding: 0 0 12px 4px;
@@ -18,6 +23,18 @@
   letter-spacing: 0.2px;
   font-weight: 500;
   color: #ff6633;
+}
+
+:global(.ios-safari-zoomed.zoom-1) .footerDescription {
+  font-size: 14px;
+}
+
+:global(.ios-safari-zoomed.zoom-2) .footerDescription {
+  font-size: 12px;
+}
+
+:global(.ios-safari-zoomed.zoom-3) .footerDescription {
+  font-size: 10px;
 }
 
 .footerLink {
@@ -28,6 +45,18 @@
   font-weight: 500;
   color: #ff6633;
   border-bottom: 1px solid #ff6633;
+}
+
+:global(.ios-safari-zoomed.zoom-1) .footerLink {
+  font-size: 14px;
+}
+
+:global(.ios-safari-zoomed.zoom-2) .footerLink {
+  font-size: 12px;
+}
+
+:global(.ios-safari-zoomed.zoom-3) .footerLink {
+  font-size: 10px;
 }
 
 @media (max-width: 999px) and (orientation: landscape) {

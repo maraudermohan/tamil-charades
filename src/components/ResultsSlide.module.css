@@ -27,6 +27,27 @@
   letter-spacing: 0.3px;
 }
 
+:global(.ios-safari-zoomed.zoom-1) .supportLink {
+  margin: 0 0 9px 0;
+  padding: 2px 0;
+  border-radius: 6px;
+  font-size: 12px;
+  width: 100%;
+}
+:global(.ios-safari-zoomed.zoom-2) .supportLink {
+  margin: 0 0 7px 0;
+  padding: 2px 0;
+  border-radius: 5px;
+  font-size: 10px;
+  width: 100%;
+}
+:global(.ios-safari-zoomed.zoom-3) .supportLink {
+  margin: 0 0 4px 0;
+  padding: 2px 0;
+  border-radius: 4px;
+  font-size: 8px;
+  width: 100%;
+}
 .shareButton {
   z-index: 1;
   margin: 0 0 12px 0;
@@ -38,6 +59,25 @@
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.3px;
+}
+
+:global(.ios-safari-zoomed.zoom-1) .shareButton {
+  margin: 0 0 9px 0;
+  padding: 2px 0;
+  border-radius: 6px;
+  font-size: 12px;
+}
+:global(.ios-safari-zoomed.zoom-2) .shareButton {
+  margin: 0 0 7px 0;
+  padding: 2px 0;
+  border-radius: 5px;
+  font-size: 10px;
+}
+:global(.ios-safari-zoomed.zoom-3) .shareButton {
+  margin: 0 0 4px 0;
+  padding: 2px 0;
+  border-radius: 4px;
+  font-size: 8px;
 }
 
 .scoreboard {
@@ -166,6 +206,24 @@
   user-select: none;
 }
 
+:global(.ios-safari-zoomed.zoom-1) .AverageKey,
+:global(.ios-safari-zoomed.zoom-1) .totalKey {
+  font-size: 14px;
+  line-height: 17px;
+}
+
+:global(.ios-safari-zoomed.zoom-2) .AverageKey,
+:global(.ios-safari-zoomed.zoom-2) .totalKey {
+  font-size: 12px;
+  line-height: 15px;
+}
+
+:global(.ios-safari-zoomed.zoom-3) .AverageKey,
+:global(.ios-safari-zoomed.zoom-3) .totalKey {
+  font-size: 10px;
+  line-height: 13px;
+}
+
 .AverageValue {
   margin: 0;
   padding: 0;
@@ -178,6 +236,24 @@
   letter-spacing: 0.2px;
   color: white;
   user-select: none;
+}
+
+:global(.ios-safari-zoomed.zoom-1) .AverageValue,
+:global(.ios-safari-zoomed.zoom-1) .totalValue {
+  font-size: 13px;
+  line-height: 16px;
+}
+
+:global(.ios-safari-zoomed.zoom-2) .AverageValue,
+:global(.ios-safari-zoomed.zoom-2) .totalValue {
+  font-size: 11px;
+  line-height: 14px;
+}
+
+:global(.ios-safari-zoomed.zoom-3) .AverageValue,
+:global(.ios-safari-zoomed.zoom-3) .totalValue {
+  font-size: 9px;
+  line-height: 13px;
 }
 
 .continueButton {
@@ -195,6 +271,22 @@
   background-color: #48d1cc;
   z-index: 5;
   color: white;
+}
+
+:global(.ios-safari-zoomed.zoom-1) .continueButton {
+  font-size: 15px;
+  width: 134px;
+  height: 43px;
+}
+:global(.ios-safari-zoomed.zoom-2) .continueButton {
+  font-size: 13px;
+  width: 118px;
+  height: 36px;
+}
+:global(.ios-safari-zoomed.zoom-3) .continueButton {
+  width: 100px;
+  height: 30px;
+  font-size: 11px;
 }
 
 .socialButtonBox {
@@ -291,12 +383,41 @@
 }
 
 @media (max-width: 420px) and (orientation: portrait) {
+  :global(.ios-safari-zoomed.zoom-1) .scoreboard {
+    transform: scale(0.8);
+  }
+  :global(.ios-safari-zoomed.zoom-2) .scoreboard {
+    transform: scale(0.6);
+  }
+  :global(.ios-safari-zoomed.zoom-3) .scoreboard {
+    transform: scale(0.4);
+  }
   .socialButtonBox {
     flex-direction: column;
     text-align: center;
     width: 280px;
-    left: 50%;
-    transform: translateX(-50%);
+    position: static;
+    margin: 24px 0 0 0;
+  }
+  :global(.ios-safari-zoomed.zoom-1) .socialButtonBox {
+    margin: 12px 0 0 0;
+    padding: 0 3%;
+    width: 100%;
+  }
+  :global(.ios-safari-zoomed.zoom-2) .socialButtonBox {
+    margin: 8px 0 0 0;
+    padding: 0 3%;
+    width: 100%;
+  }
+  :global(.ios-safari-zoomed.zoom-3) .socialButtonBox {
+    margin: 3px 0 0 0;
+    padding: 0 3%;
+    width: 100%;
+  }
+  :global(.ios-safari-zoomed) .timeBoard {
+    width: 94dvw;
+    margin-top: 0;
+    height: 50px;
   }
   .shareButton {
     margin: 0 0 12px 0;
