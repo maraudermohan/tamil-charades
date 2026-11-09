@@ -1,27 +1,33 @@
 import type { Metadata } from "next";
-import { GameController } from "components";
+import { notFound } from "next/navigation";
+import GameController from "@/components/GameController";
+import { GAME_MODES_DATA, GAME_SLUGS, isGameSlug } from "@/constant/gameModes";
+import { SITE_NAME } from "@/constant/site";
 import styles from "../../page.module.css";
 import { GAME_PATH_SEO } from "./seo";
 
-export async function generateStaticParams() {
-  return [{ slug: "classic" }, { slug: "story" }, { slug: "song" }, { slug: "kids" }, { slug: "hollywood" }];
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return GAME_SLUGS.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+}: PageProps<"/game/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const seo = GAME_PATH_SEO[slug];
-  if (seo == null) {
-    return {
-      title: "Game mode",
-      description: "Play Tamil and Hollywood dumb charades online.",
-    };
+  if (!isGameSlug(slug)) {
+    notFound();
   }
-
-  const fullTitle = `${seo.title} | Tamil Charades`;
+  const seo = GAME_PATH_SEO[slug];
+  const fullTitle = `${seo.title} | ${SITE_NAME}`;
+  const artwork = GAME_MODES_DATA[slug].backgroundLg;
+  const image = {
+    url: artwork.src,
+    width: artwork.width,
+    height: artwork.height,
+    alt: GAME_MODES_DATA[slug].title,
+  };
 
   return {
     title: seo.title,
@@ -34,14 +40,16 @@ export async function generateMetadata({
       title: fullTitle,
       description: seo.description,
       url: `/game/${slug}/`,
-      siteName: "Tamil Charades",
+      siteName: SITE_NAME,
       type: "website",
       locale: "en_US",
+      images: [image],
     },
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
       description: seo.description,
+      images: [image],
     },
     robots: {
       index: true,
@@ -50,11 +58,14 @@ export async function generateMetadata({
   };
 }
 
-async function ModePage({ params }: { params: Promise<{ slug: string }> }) {
+async function ModePage({ params }: PageProps<"/game/[slug]">) {
   const { slug } = await params;
+  if (!isGameSlug(slug)) {
+    notFound();
+  }
 
   return (
-    <main className={styles.main} style={{ backgroundColor: "#f5fffa" }}>
+    <main className={styles.main}>
       <GameController slug={slug} />
     </main>
   );

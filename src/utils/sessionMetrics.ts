@@ -1,4 +1,4 @@
-import { type TrackApiRequest } from "constant";
+import type { TrackApiRequest } from "@/constant/metricsData";
 
 const SIXTEEN_DIGITS = /^\d{16}$/;
 const uniqueUserIdKey = "uniqueUserId";
@@ -80,6 +80,9 @@ export function getDeviceContext() {
   };
 }
 
+/** Used when sessionStorage is unavailable, so one page view stays one session. */
+let sessionIdWithoutStorage: string | null = null;
+
 export function getUniqueSessionId(): string {
   if (typeof window === "undefined") {
     return "";
@@ -89,11 +92,12 @@ export function getUniqueSessionId(): string {
     if (isValidSixteenDigitId(existing)) {
       return existing;
     }
-    const created = randomSixteenDigitId();
+    const created = sessionIdWithoutStorage ?? randomSixteenDigitId();
     sessionStorage.setItem(uniqueSessionIdKey, created);
     return created;
   } catch {
-    return randomSixteenDigitId();
+    sessionIdWithoutStorage ??= randomSixteenDigitId();
+    return sessionIdWithoutStorage;
   }
 }
 

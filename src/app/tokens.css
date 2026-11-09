@@ -1,0 +1,194 @@
+/*
+ * Design tokens: Tamil Charades color scheme.
+ *
+ * Two tiers:
+ *   --palette-*  raw brand colors. Only referenced by the semantic tokens below.
+ *   --color-*    semantic roles. Components use these, so a role can be re-pointed
+ *                (or themed) without touching component CSS.
+ *
+ * Accent roles come in pairs:
+ *   --color-X       fill (buttons, badges, flashes), always paired with --color-on-X
+ *   --color-X-text  foreground on the page background (text, icons, outlines)
+ *
+ * Dark mode overrides roles only (see the [data-theme="dark"] block at the end);
+ * components never need their own dark-mode rules. `data-theme` is always set on <html>
+ * before first paint by themeBootScript (src/utils/theme.ts): the saved choice, else the
+ * system setting.
+ *
+ * Tints and hover shades are literal hex values because the browserslist
+ * (Chrome 107, Firefox 104) predates color-mix(), relative color syntax and light-dark().
+ */
+:root {
+  color-scheme: light;
+
+  /* ── Palette ─────────────────────────────────────────── */
+  --palette-parchment: #f6efe3;
+  --palette-cream: #fffcf6;
+  --palette-ink: #2b2a4c;
+  --palette-midnight: #1e1d33;
+  --palette-mustard: #e5b653;
+  --palette-teal: #1f7a6f;
+  --palette-teal-bright: #2a9d8f;
+  --palette-tomato: #c9472b;
+  --palette-tomato-bright: #e0644a;
+  --palette-plum: #5b4b8a;
+  --palette-plum-bright: #8e7fc7;
+
+  /* ── Surfaces ────────────────────────────────────────── */
+  --color-bg: var(--palette-parchment);
+  --color-surface: var(--palette-cream);
+  --color-surface-inverse: var(--palette-ink);
+
+  /*
+   * The word card (and the results stat cards) stay card stock with ink text in every theme;
+   * only the edge changes in dark mode.
+   */
+  --color-word-card: var(--palette-cream);
+  --color-on-word-card: var(--palette-ink);
+  --color-word-card-border: var(--palette-ink);
+  /* Hairlines inside card stock (the Missed list); ink-tinted in both themes since the card stays cream. */
+  --color-word-card-divider: #2b2a4c26;
+  /* Original teal (5:1 on cream); the bright dark-mode teal would be 3.3:1 on this card. */
+  --color-word-card-accent: var(--palette-teal);
+  /* The homepage mode cards frame colourful artwork, so their edge is full ink or full cream. */
+  --color-mode-card-border: var(--palette-ink);
+
+  /* ── Text ────────────────────────────────────────────── */
+  --color-text: var(--palette-ink);
+  --color-text-muted: #2b2a4cb3;
+  --color-heading: var(--palette-ink);
+  --color-nav: var(--palette-ink);
+  --color-text-on-inverse: var(--palette-cream);
+
+  /* ── Logo: an ink arch with a cream glyph in both themes ── */
+  --color-logo: var(--palette-ink);
+  --color-logo-line: var(--palette-cream);
+  /* Dark mode outlines the arch so it doesn't sink into midnight. */
+  --color-logo-outline: transparent;
+
+  /* ── Homepage ticket: printed paper, so the same in both themes ── */
+  --color-ticket-paper: #c9dfe4;
+  --color-ticket-edge: #2f4a5240;
+  --color-ticket-ink: var(--palette-ink);
+  --color-ticket-print: var(--palette-tomato);
+  --color-ticket-rule: #2b2a4c59;
+  --color-ticket-pen: #d6408f;
+
+  /* ── Lines and depth ─────────────────────────────────── */
+  --color-border: var(--palette-ink);
+  --color-border-subtle: #2b2a4c26;
+  --color-focus-ring: var(--palette-ink);
+  --color-shadow: #2b2a4c33;
+  --shadow-sm: 0 1px 2px #2b2a4c1f;
+  --shadow-md: 0 4px 12px #2b2a4c26;
+  /* Dims everything behind a modal dialog. */
+  --color-overlay: #2b2a4c80;
+
+  /* ── Neutral (ink): quiet utility controls such as the theme toggle ── */
+  /* Same in both themes, so pair it with --color-border-subtle when it sits on dark surfaces. */
+  --color-neutral: var(--palette-ink);
+  --color-neutral-hover: #444360;
+  --color-on-neutral: var(--palette-cream);
+  /* Neutral confirm buttons in dialogs (End Game). The panel turns ink in dark mode, so these switch to teal there. */
+  --color-dialog-neutral: var(--color-neutral);
+  --color-dialog-neutral-hover: var(--color-neutral-hover);
+  --color-on-dialog-neutral: var(--color-highlight);
+
+  /* ── Primary action / energy (tomato) ─────────────────── */
+  /* Tomato on parchment is 4.2:1: large text only. On cream it passes AA (4.6:1). */
+  --color-primary: var(--palette-tomato);
+  --color-on-primary: var(--palette-cream);
+  --color-highlight-playful: var(--palette-tomato);
+
+  /* ── Secondary action (teal) ─────────────────────────── */
+  --color-secondary: var(--palette-teal);
+  --color-on-secondary: var(--palette-cream);
+  /* Teal text and links on the page background (5:1 on parchment). */
+  --color-secondary-text: var(--palette-teal);
+
+  /* ── Excitement: timers, badges, points (mustard) ────── */
+  /* Mustard is 1.7:1 on light surfaces: never use it for text there; pair it with ink. */
+  --color-highlight: var(--palette-mustard);
+  --color-highlight-subtle: #e5b65340;
+  --color-on-highlight: var(--palette-ink);
+
+  /* ── Feedback ────────────────────────────────────────── */
+  --color-success: var(--palette-teal);
+  --color-success-hover: #1b6b62;
+  --color-success-text: var(--palette-teal);
+  --color-success-subtle: #1f7a6f26;
+  /* 50% washes over the whole screen right after an answer. */
+  --color-success-flash: #1f7a6f80;
+  --color-on-success: var(--palette-cream);
+  --color-danger: var(--palette-tomato);
+  --color-danger-hover: #b13e26;
+  --color-danger-text: var(--palette-tomato);
+  --color-danger-subtle: #c9472b26;
+  --color-danger-flash: #c9472b80;
+  --color-on-danger: var(--palette-cream);
+  /* "Oops" on the error pages. */
+  --color-error-accent: var(--palette-tomato);
+
+  /* ── Decorative accent: illustrations, category badges (plum) ── */
+  --color-accent: var(--palette-plum);
+  --color-accent-text: var(--palette-plum);
+  --color-on-accent: var(--palette-cream);
+}
+
+/*
+ * Dark mode (late-night play). Contrast against --color-bg (#1e1d33):
+ *   cream text 16:1, mustard 8.7:1, bright teal 4.9:1, bright tomato 4.8:1, bright plum 4.7:1.
+ * On --color-surface (ink) the bright accents drop to about 3.9–4.1:1, so on dark cards
+ * use them for large text, icons and outlines only.
+ * Fills keep the original accents so cream "on" text keeps passing AA.
+ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-bg: var(--palette-midnight);
+  --color-surface: var(--palette-ink);
+  --color-surface-inverse: var(--palette-cream);
+
+  --color-text: var(--palette-cream);
+  --color-text-muted: #fffcf6b3;
+  --color-heading: var(--palette-cream);
+  --color-nav: var(--palette-cream);
+  --color-text-on-inverse: var(--palette-ink);
+
+  --color-logo-outline: var(--palette-cream);
+
+  /* Ink lines and shadows vanish on midnight (1.2:1), so outlines use cream and shadows use black. */
+  --color-border: #fffcf6b3;
+  --color-border-subtle: #fffcf62e;
+  --color-focus-ring: var(--palette-cream);
+  --color-shadow: #00000080;
+  --shadow-sm: 0 1px 2px #00000066;
+  --shadow-md: 0 4px 12px #00000080;
+  --color-overlay: #000000a6;
+  /* The End Game button's edge (--color-border-subtle over midnight), opaque so the cream card
+     doesn't show through the border. Ink would vanish on midnight. */
+  --color-word-card-border: #474556;
+  --color-mode-card-border: var(--palette-cream);
+
+  --color-highlight-playful: var(--palette-tomato-bright);
+  --color-secondary-text: var(--palette-teal-bright);
+
+  /* Cream on bright teal is only 3.2:1, so bright-teal fills take midnight text (4.9:1). */
+  --color-success: var(--palette-teal-bright);
+  /* Lighter, not darker: the fill carries midnight text, so darkening would drop it below AA. */
+  --color-success-hover: #34ad9e;
+  --color-success-text: var(--palette-teal-bright);
+  --color-success-subtle: #2a9d8f33;
+  --color-success-flash: #2a9d8f80;
+  --color-on-success: var(--palette-midnight);
+
+  --color-dialog-neutral: var(--color-success);
+  --color-dialog-neutral-hover: var(--color-success-hover);
+  --color-on-dialog-neutral: var(--color-on-success);
+
+  --color-danger-text: var(--palette-tomato-bright);
+  --color-danger-subtle: #e0644a33;
+  --color-error-accent: var(--palette-tomato-bright);
+
+  --color-accent-text: var(--palette-plum-bright);
+}

@@ -2,41 +2,7 @@
   margin: 0;
   padding: 0;
   width: 100vw;
-  height: 100vh;
-  height: calc(var(--vh, 1vh) * 100);
-  overflow: scroll;
-}
-
-.whiteBg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  height: calc(var(--vh, 1vh) * 100);
-  z-index: -1;
-  background: linear-gradient(20deg, rgba(245,255,250,1) 80%, rgba(253,208,45,0) 100%);;
-}
-
-.patternBg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  height: calc(var(--vh, 1vh) * 100);
-  z-index: -2;
-  --s: 40px; /* control the size */
-  --c: #ffffff;
-  
-  --_g: 
-    #0000 calc(-650%/13) calc(50%/13),var(--c) 0 calc(100%/13),
-    #0000 0 calc(150%/13),var(--c) 0 calc(200%/13),
-    #0000 0 calc(250%/13),var(--c) 0 calc(300%/13);
-  --_g0: repeating-linear-gradient( 45deg,var(--_g));
-  --_g1: repeating-linear-gradient(-45deg,var(--_g));
-  background:
-    var(--_g0),var(--_g0) var(--s) var(--s),
-    var(--_g1),var(--_g1) var(--s) var(--s) #e5f8f8;
-  background-size: calc(2*var(--s)) calc(2*var(--s));
+  height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
 }

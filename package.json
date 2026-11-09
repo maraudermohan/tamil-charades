@@ -1,20 +1,20 @@
 {
   "name": "tamil-charades",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "preview": "python3 -m http.server 4175 -d out",
     "lint": "eslint ."
   },
   "dependencies": {
-    "next": "^16.2.2",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "react-icons": "^5.6.0",
-    "typescript": "^6.0.2",
-    "web-vitals": "^5.2.0"
+    "next": "^16.4.5",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-icons": "^5.7.0",
+    "typescript": "~6.0.3",
+    "web-vitals": "^6.2.3"
   },
   "browserslist": [
     "chrome >= 107",
@@ -25,12 +25,16 @@
     "not dead"
   ],
   "devDependencies": {
-    "@types/node": "^25.5.2",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "@typescript-eslint/eslint-plugin": "^8.27.0",
-    "@typescript-eslint/parser": "^8.58.0",
-    "eslint": "^9.39.4",
-    "eslint-config-next": "^16.2.2"
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.5"
+  },
+  "overrides": {
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "^11.0.4"
+    }
   }
 }

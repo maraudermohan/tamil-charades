@@ -1,21 +1,26 @@
-import Link from "next/link";
 import ReactDOM from "react-dom";
-import { rubik } from "app/fonts";
-import { GAME_MODES_DATA } from "constant";
+import { rubik } from "@/app/fonts";
+import ModeCardLink from "@/components/ModeCardLink";
+import { GAME_MODES_DATA, type GameSlug } from "@/constant/gameModes";
 import styles from "./ModeCard.module.css";
 
 interface ModeCardType {
-  modeData: string;
+  slug: GameSlug;
   /** First visible card: preload + high-priority fetch the LCP image */
   priority?: boolean;
+  /** Spans two columns. */
+  featured?: boolean;
 }
 
 /** Same crop at three resolutions, so width-descriptor srcSet lets the browser pick. */
 const CARD_SIZES =
-  "(max-width: 766px) 50vw, (max-width: 999px) and (orientation: landscape) 33vw, (min-width: 1000px) 33vw, 50vw";
+  "(max-width: 766px) 50vw, (orientation: landscape) 33vw, 50vw";
+const FEATURED_CARD_SIZES =
+  "(max-width: 766px) 100vw, (orientation: landscape) 67vw, 100vw";
 
-export default function ModeCard({ modeData, priority = false }: ModeCardType) {
-  const mode = GAME_MODES_DATA[modeData];
+export default function ModeCard({ slug, priority = false, featured = false }: ModeCardType) {
+  const mode = GAME_MODES_DATA[slug];
+  const sizes = featured ? FEATURED_CARD_SIZES : CARD_SIZES;
 
   const srcSet = `${mode.backgroundSm.src} 600w, ${mode.backgroundMd.src} 900w, ${mode.backgroundLg.src} 1600w`;
 
@@ -27,16 +32,15 @@ export default function ModeCard({ modeData, priority = false }: ModeCardType) {
     ReactDOM.preload(mode.backgroundMd.src, {
       as: "image",
       imageSrcSet: srcSet,
-      imageSizes: CARD_SIZES,
+      imageSizes: sizes,
       fetchPriority: "high",
     });
   }
 
   return (
-    <Link
-      className={styles.modeCardBox}
-      href={`/game/${modeData}`}
-      prefetch={false}
+    <ModeCardLink
+      className={featured ? `${styles.modeCardBox} ${styles.featured}` : styles.modeCardBox}
+      slug={slug}
     >
       <picture
         className={styles.modePicture}
@@ -50,21 +54,21 @@ export default function ModeCard({ modeData, priority = false }: ModeCardType) {
           className={styles.modeImage}
           src={mode.backgroundMd.src}
           srcSet={srcSet}
-          sizes={CARD_SIZES}
-          alt={mode.title}
+          sizes={sizes}
+          alt=""
           decoding="async"
           loading={priority ? "eager" : "lazy"}
           fetchPriority={priority ? "high" : "low"}
         />
       </picture>
       <div className={styles.overlay}>
-        <h3
+        <h2
           className={styles.title}
           style={{ fontFamily: rubik.style.fontFamily }}
         >
           {mode.title}
-        </h3>
+        </h2>
       </div>
-    </Link>
+    </ModeCardLink>
   );
 }

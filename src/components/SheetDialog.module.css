@@ -1,0 +1,280 @@
+/*
+ * Same layout as ConfirmDialog: a bottom sheet on portrait phones and phone landscape, and a
+ * centered card from 768px wide. The <dialog> itself is the full-viewport overlay.
+ *
+ * .icon, .title and .button are shared by the dialogs built on SheetDialog.
+ */
+.dialog {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-overlay);
+  color: var(--color-text);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+.dialog[open] {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  animation: overlayIn 0.2s ease both;
+}
+
+.dialog::backdrop {
+  background: transparent;
+}
+
+/* The padding is exposed so content can bleed to the panel's edges. */
+.panel {
+  --pad-top: 32px;
+  --pad-x: max(24px, env(safe-area-inset-left), env(safe-area-inset-right));
+  --pad-bottom: max(24px, calc(env(safe-area-inset-bottom) + 16px));
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: var(--pad-top) var(--pad-x) var(--pad-bottom);
+  border-radius: 20px 20px 0 0;
+  background: var(--color-surface);
+  box-shadow: 0 -8px 24px var(--color-shadow);
+  animation: sheetIn 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* The panel scrolls when content is too tall; without this, flex squashes the children instead. */
+.panel > * {
+  flex-shrink: 0;
+}
+
+/* Opaque, so it stays readable over a colored band. */
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background-color: var(--color-surface);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.closeIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: var(--color-highlight-subtle);
+  color: var(--color-text);
+  font-size: 28px;
+}
+
+.title {
+  margin: 16px 0 16px;
+  color: var(--color-heading);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  margin-top: 24px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-success);
+  color: var(--color-on-success);
+  box-shadow: var(--shadow-md);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.button:active {
+  transform: scale(0.98);
+}
+
+.close:focus-visible,
+.button:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .close:hover {
+    background-image: linear-gradient(var(--color-border-subtle), var(--color-border-subtle));
+    color: var(--color-text);
+  }
+
+  .button:hover {
+    background: var(--color-success-hover);
+  }
+}
+
+@media (min-width: 768px) {
+  .dialog[open] {
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .panel {
+    --pad-top: 40px;
+    --pad-x: 32px;
+    --pad-bottom: 32px;
+    max-width: 440px;
+    border-radius: 16px;
+    box-shadow: 0 16px 48px var(--color-shadow);
+    animation-name: cardIn;
+  }
+}
+
+/* Declared last so it wins over min-width 768px on wide phones in landscape. */
+@media (max-width: 999px) and (orientation: landscape) {
+  .dialog[open] {
+    justify-content: flex-end;
+    padding: 0;
+  }
+
+  .panel {
+    --pad-top: 20px;
+    --pad-x: 24px;
+    --pad-bottom: max(16px, env(safe-area-inset-bottom));
+    max-width: 560px;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -8px 24px var(--color-shadow);
+    animation-name: sheetIn;
+  }
+
+  .icon {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+
+  .title {
+    margin: 10px 0 10px;
+    font-size: 20px;
+  }
+
+  .button {
+    height: 44px;
+    margin-top: 16px;
+  }
+}
+
+/* Compact (zoomed in; see globals.css). */
+@media (orientation: portrait) and (max-width: 319px), (orientation: landscape) and (max-height: 300px) {
+  .panel {
+    --pad-top: 24px;
+    --pad-x: max(16px, env(safe-area-inset-left), env(safe-area-inset-right));
+    --pad-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  .close {
+    top: 6px;
+    right: 6px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .icon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .title {
+    margin: 10px 0;
+    font-size: 19px;
+  }
+
+  .button {
+    height: 44px;
+    margin-top: 16px;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 300px) {
+  .panel {
+    --pad-top: 12px;
+  }
+
+  .button {
+    height: 40px;
+    margin-top: 12px;
+  }
+}
+
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sheetIn {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog[open],
+  .panel {
+    animation: none;
+  }
+
+  .close,
+  .button {
+    transition: none;
+  }
+
+  .button:active {
+    transform: none;
+  }
+}

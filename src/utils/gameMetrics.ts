@@ -1,16 +1,13 @@
-import { TrackApiRequest, TrackEvents } from "constant";
-import { track } from "utils";
+import { TrackEvents, type TrackContext } from "@/constant/metricsData";
+import { track } from "@/utils/trackMetrics";
 
 export function getRoundsCount(): number {
   if (typeof window === "undefined") {
     return 0;
   }
   try {
-    const existing = sessionStorage.getItem("roundsCount");
-    let newCount = 1;
-    if (existing != null) {
-      newCount = parseInt(existing, 10) + 1;
-    }
+    const previous = Number(sessionStorage.getItem("roundsCount"));
+    const newCount = Number.isSafeInteger(previous) && previous > 0 ? previous + 1 : 1;
     sessionStorage.setItem("roundsCount", newCount.toString());
     return newCount;
   } catch {
@@ -20,7 +17,7 @@ export function getRoundsCount(): number {
 
 export async function trackShareNativeResult(
   sharePromise: Promise<void>,
-  metricsCtx: Omit<TrackApiRequest, "event" | "payload" | "session_id" | "user_id" | "created">,
+  metricsCtx: TrackContext,
 ): Promise<void> {
   try {
     await sharePromise;

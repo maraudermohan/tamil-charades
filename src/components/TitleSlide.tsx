@@ -1,61 +1,72 @@
 "use client";
-import { RefObject, memo, useContext } from "react";
+import { useRef } from "react";
 import { RiMovie2AiFill } from "react-icons/ri";
-import { anek, lora } from "app/fonts";
+import { anek, lora } from "@/app/fonts";
+import { useFitTitles } from "@/hooks/useFitTitles";
+import { useGameStore } from "@/hooks/useGameStore";
 import styles from "./TitleSlide.module.css";
-import { GameStoreContext } from "hooks";
 
 interface TitleSlideType {
-  elementRef: RefObject<HTMLDivElement | null>;
   movieIndex: number;
+  hidden?: boolean;
+  /** Parks the card off-screen; changing it animates the slide. */
+  offset?: "left" | "right";
 }
 
-function TitleSlide({ elementRef, movieIndex }: TitleSlideType) {
-  const { currentMode, moviesList } = useContext(GameStoreContext)!;
+/** Titles longer than this get a smaller font so they fit the card. */
+const LONG_TITLE_LENGTH = 35;
 
-  if (
-    movieIndex < 0 ||
-    movieIndex >= moviesList.length ||
-    moviesList[movieIndex] == null
-  ) {
-    return (
-      <div
-        ref={elementRef}
-        className={styles.titleSlideBox}
-        aria-hidden
-        style={{ visibility: "hidden" }}
-      />
-    );
+function titleClassName(className: string, title: string) {
+  return title.length > LONG_TITLE_LENGTH ? `${className} ${styles.longTitle}` : className;
+}
+
+function TitleSlide({ movieIndex, hidden = false, offset }: TitleSlideType) {
+  const {
+    state: { mode, titles },
+  } = useGameStore();
+  const entry = titles[movieIndex];
+  const cardRef = useRef<HTMLDivElement>(null);
+  useFitTitles(cardRef, entry == null ? "" : `${entry.english}\n${entry.tamil}\n${entry.movie}`);
+  const isHidden = hidden || entry == null;
+  const className = [
+    styles.titleSlideBox,
+    isHidden && styles.hidden,
+    offset === "left" && styles.offLeft,
+    offset === "right" && styles.offRight,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  if (entry == null) {
+    return <div ref={cardRef} className={className} aria-hidden />;
   }
 
   return (
-    <div ref={elementRef} className={styles.titleSlideBox}>
-      {currentMode!.title !== "Hollywood Mode" && <RiMovie2AiFill className={styles.lensIcon} />}
+    <div ref={cardRef} className={className} aria-hidden={isHidden || undefined}>
+      {!mode.centeredTitle && <RiMovie2AiFill className={styles.lensIcon} />}
       <h3
-        className={currentMode!.title === "Hollywood Mode" ? styles.centeredMovieTitle : styles.movieTitle}
-        style={{
-          fontFamily: lora.style.fontFamily,
-          fontSize: moviesList[movieIndex].english.length > 35 ? "24px" : "",
-        }}
+        className={titleClassName(
+          mode.centeredTitle ? styles.centeredMovieTitle : styles.movieTitle,
+          entry.english,
+        )}
+        style={{ fontFamily: lora.style.fontFamily }}
       >
-        {moviesList[movieIndex].english}
+        {entry.english}
       </h3>
-      {moviesList[movieIndex]?.tamil != null && (
+      {entry.tamil != null && (
         <h3
-          className={styles.movieTitle}
-          style={{
-            fontFamily: anek.style.fontFamily,
-            fontSize: moviesList[movieIndex]?.tamil?.length > 35 ? "24px" : "",
-          }}
+          lang="ta"
+          className={titleClassName(styles.movieTitle, entry.tamil)}
+          style={{ fontFamily: anek.style.fontFamily }}
         >
-          {moviesList[movieIndex].tamil}
+          {entry.tamil}
         </h3>
       )}
-      {["Song Mode", "Kids Mode"].includes(currentMode!.title) && (
-        <h4 className={styles.subtitle}>{moviesList[movieIndex]?.movie}</h4>
+      {mode.showsSubtitle && (
+        <h4 className={styles.subtitle}>{entry.movie}</h4>
       )}
     </div>
   );
 }
 
-export default memo(TitleSlide);
+export default TitleSlide;

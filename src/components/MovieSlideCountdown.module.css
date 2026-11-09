@@ -1,0 +1,198 @@
+.countdownBox {
+  /* Matches the header's side gutter at each breakpoint. */
+  --countdown-gutter: 16px;
+  /* Space between the header and the instruction card. */
+  --instruction-gap: 16px;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: 100dvw;
+  height: 100dvh;
+  /* GameHeader sits on top of this space. */
+  padding-top: var(--page-header-height);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--color-bg);
+  /* Focusable (see :focus below), so mobile browsers would flash the whole screen on every tap. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Focused by script when the countdown replaces the intro; not a tab stop. */
+.countdownBox:focus {
+  outline: none;
+}
+
+/*
+ * Plain text in the theme's text color: mustard text would be 1.7:1 on parchment.
+ * In normal flow right under the header. Grows slowly while it's on its own (the first 2s).
+ */
+.instructionCard {
+  flex: none;
+  width: calc(100% - 2 * var(--countdown-gutter));
+  max-width: 600px;
+  margin: var(--instruction-gap) 0 0;
+  padding: 20px 24px;
+  background: transparent;
+  color: var(--color-text);
+  font-size: calc(20px + var(--tamil-boost));
+  font-weight: 500;
+  line-height: calc(28px + 2 * var(--tamil-boost));
+  text-align: center;
+  text-wrap: balance;
+  user-select: none;
+  animation: instructionGrow 2s ease-out both;
+  /* Every size below adds this; Tamil reads small at the Latin size. */
+  --tamil-boost: 0px;
+}
+
+/* Tamil: 2px larger, a touch more tracking, and taller lines for the vowel signs. */
+.instructionCard.tamil {
+  --tamil-boost: 2px;
+
+  letter-spacing: 0.02em;
+}
+
+@keyframes instructionGrow {
+  from {
+    transform: scale(0.9);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Shrinks from half the card's width to nothing over INSTRUCTION_MS, timing the wait for 3, 2, 1. */
+.instructionCard::after {
+  content: "";
+  display: block;
+  width: 50%;
+  height: 4px;
+  margin: 16px auto 0;
+  border-radius: 2px;
+  background: var(--color-highlight-playful);
+  animation: dividerShrink 2s linear forwards;
+}
+
+@keyframes dividerShrink {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@media (min-width: 768px) {
+  .countdownBox {
+    --countdown-gutter: 24px;
+    --instruction-gap: 24px;
+  }
+
+  .instructionCard {
+    padding: 24px 32px;
+    font-size: calc(22px + var(--tamil-boost));
+    line-height: calc(32px + 2 * var(--tamil-boost));
+  }
+}
+
+/* Declared last so it wins over min-width 768px on wide phones in landscape. */
+@media (max-width: 999px) and (orientation: landscape) {
+  .countdownBox {
+    --countdown-gutter: max(16px, env(safe-area-inset-left), env(safe-area-inset-right));
+    --instruction-gap: 8px;
+  }
+
+  .instructionCard {
+    padding: 14px 24px;
+    font-size: calc(18px + var(--tamil-boost));
+    line-height: calc(26px + 2 * var(--tamil-boost));
+  }
+}
+
+/*
+ * Covers the whole area under the header rather than what's left below the instruction card,
+ * so the number is centered on the screen whatever the card's height.
+ */
+.stage {
+  position: absolute;
+  top: var(--page-header-height);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*
+ * Rendered at its final size and scaled down from 2x, so the text stays sharp
+ * (scaling a small glyph up blurs it). Tomato, not mustard: mustard text is 1.7:1 on parchment.
+ */
+.count {
+  font-size: 68px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  color: var(--color-highlight-playful);
+  user-select: none;
+  animation: countdownZoomOut 1s ease both;
+}
+
+@keyframes countdownZoomOut {
+  from {
+    transform: scale(2);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Compact (zoomed in; see globals.css): the number goes below the card, which is too tall to clear. */
+@media (orientation: portrait) and (max-width: 319px), (orientation: landscape) and (max-height: 300px) {
+  .countdownBox {
+    --countdown-gutter: max(8px, env(safe-area-inset-left), env(safe-area-inset-right));
+    --instruction-gap: 8px;
+  }
+
+  .instructionCard {
+    padding: 12px 8px;
+  }
+
+  .instructionCard::after {
+    margin-top: 12px;
+  }
+
+  .stage {
+    position: static;
+    flex: 1 1 0;
+    min-height: 0;
+    width: 100%;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 300px) {
+  .instructionCard {
+    padding: 4px 8px;
+    font-size: calc(16px + var(--tamil-boost));
+    line-height: calc(22px + 2 * var(--tamil-boost));
+  }
+
+  .instructionCard::after {
+    margin-top: 8px;
+  }
+
+  .count {
+    font-size: min(68px, 20dvh);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .instructionCard,
+  .instructionCard::after,
+  .count {
+    animation: none;
+  }
+}

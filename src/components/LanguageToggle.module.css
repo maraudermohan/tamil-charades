@@ -1,0 +1,95 @@
+/*
+ * A small outlined box (like the Pause button's outline, but not a pill or tag): the active
+ * language's label sits on the left, the other is smaller and raised at the right. They trade
+ * places on click.
+ */
+
+/*
+ * Zero specificity, so a parent's positioning class wins even when a lazy chunk re-inserts
+ * this stylesheet after the parent's.
+ */
+:where(.toggle) {
+  position: relative;
+}
+
+.toggle {
+  flex: none;
+  width: 60px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.toggle:active {
+  transform: scale(0.94);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.glyph {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-weight: 700;
+  line-height: 1;
+  user-select: none;
+  transition: transform 0.25s ease;
+}
+
+.latinGlyph {
+  font-size: 28px;
+}
+
+.tamilGlyph {
+  font-size: 25px;
+}
+
+/*
+ * Offsets come from the letters' ink boxes, so they need retuning if the labels, fonts or sizes
+ * change: the pair sits side by side with a 3px gap, the small one raised 4px, centered as a group.
+ * Each language has its own values because "En" is much wider than "த" (which also sits about
+ * 3px low in its line box).
+ */
+.latinGlyph.front {
+  transform: translate(calc(-50% - 7.3px), calc(-50% + 2.3px));
+}
+
+.latinGlyph.back {
+  transform: translate(calc(-50% + 11.6px), calc(-50% - 6.8px)) scale(0.55);
+}
+
+.tamilGlyph.front {
+  transform: translate(calc(-50% - 9.4px), calc(-50% - 0.9px));
+}
+
+.tamilGlyph.back {
+  transform: translate(calc(-50% + 18.2px), calc(-50% - 7.7px)) scale(0.55);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .toggle:hover {
+    background: var(--color-surface);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle,
+  .glyph {
+    transition: none;
+  }
+
+  .toggle:active {
+    transform: none;
+  }
+}

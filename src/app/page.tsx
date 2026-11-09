@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { Footer, Header, ModeCardsManager } from "components";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import ModeCardsManager from "@/components/ModeCardsManager";
+import NewLookAnnouncement from "@/components/NewLookAnnouncement";
+import PaperShower from "@/components/PaperShower";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -14,8 +18,8 @@ function Home() {
       <Header />
       <ModeCardsManager />
       <Footer />
-      <div className={styles.whiteBg} />
-      <div className={styles.patternBg} />
+      <PaperShower />
+      <NewLookAnnouncement />
     </main>
   );
 }

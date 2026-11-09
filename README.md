@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Tamil Charades
 
-## Getting Started
+A dumb charades game for Tamil and English movies, live at [tamilcharades.com](https://www.tamilcharades.com). Players pick a mode (Classic, Story, Song, Hollywood or Kids), act out titles against a timer, and get a score card they can share.
 
-First, run the development server:
+## Stack
+
+- Next.js (App Router) as a fully static export (`output: "export"`), with React Compiler, typed routes and Strict Mode on
+- React 19, TypeScript, CSS Modules
+- PHP endpoints on the same origin serve the title lists (`classic-movies.php`, `songs.php`, ...) and collect analytics (`track-metrics.php`). They are deployed separately and are not part of this repo.
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The dev server runs on [http://localhost:3000](http://localhost:3000). To get real titles locally, create `.env.local` and point the dev proxy at a backend that serves the PHP endpoints:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Proxies /classic-movies.php, /story-movies.php, etc. during `npm run dev` only.
+BACKEND_PROXY_TARGET=https://your-backend.example
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Analytics aren't proxied, so `npm run dev` never records events in production. To test them, set `NEXT_PUBLIC_TRACK_METRICS_URL` to a local sink.
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Development server |
+| `npm run build` | Type-checks and writes the static site to `out/` |
+| `npm run preview` | Serves `out/` on port 4175 to check a production build |
+| `npm run lint` | ESLint (Next core web vitals and React hooks rules) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project layout
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- `src/app`: routes. `/` lists the modes and `/game/[slug]` is one page per mode, generated at build time.
+- `src/components`: UI. `GameController` picks the screen (intro, game, results or error) from the game store.
+- `src/hooks/useGameStore.tsx`: game state, using a pure reducer plus context.
+- `src/constant/gameModes.ts`: mode definitions. `GAME_SLUGS` drives the routes, sitemap and SEO entries.
+- `src/utils`: API client, analytics and the share-card generator.
 
-## Deploy on Vercel
+To add a game mode, add its slug to `GAME_SLUGS`, define it in `GAME_MODES_DATA` and add its SEO entry in `src/app/game/[slug]/seo.ts`. TypeScript flags anything missing.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The site is hosted on Hostinger (LiteSpeed) behind Cloudflare. Run `rm -rf out && npm run build` and upload the contents of `out/`, including `.htaccess`. Starting from an empty `out/` matters: a leftover file there, such as a local mock of a PHP endpoint, would overwrite the real one. That file handles the canonical HTTPS `www` redirect, trailing slashes, the 404 page, cache headers and security headers (CSP and others).

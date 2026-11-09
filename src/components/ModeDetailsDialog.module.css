@@ -1,0 +1,171 @@
+/*
+ * Layout:
+ *   base                                  phones (portrait and landscape): full-width bottom sheet
+ *   min-width 1000px, or 768px portrait   tablets and desktop: centered modal
+ * ModeDetailsSheet's `.inDialog` rules use the same breakpoints.
+ *
+ * The <dialog> itself is the full-viewport overlay (::backdrop only inherits custom properties
+ * from Chrome 122 / Safari 17.4), so a click whose target is the dialog is a click on the overlay.
+ */
+.dialog {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-overlay);
+  color: var(--color-text);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+.dialog[open] {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  animation: overlayIn 0.2s ease both;
+}
+
+.dialog::backdrop {
+  background: transparent;
+}
+
+/* Doesn't scroll itself: the sheet inside does, and Play is pinned to the panel's bottom. */
+.panel {
+  position: relative;
+  width: 100%;
+  height: 85vh;
+  height: 85dvh;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+  background: var(--color-bg);
+  box-shadow: 0 -8px 24px var(--color-shadow);
+  animation: sheetIn 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* Over the artwork's top-right corner, clear of the language toggle below it. */
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 7;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  color: var(--color-text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.close:active {
+  transform: scale(0.94);
+}
+
+.close:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.closeIcon {
+  width: 24px;
+  height: 24px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .close:hover {
+    background: var(--color-bg);
+  }
+}
+
+/* Phone landscape: the artwork is the left column, so the close button moves over it. */
+@media (max-width: 999px) and (orientation: landscape) {
+  .close {
+    right: auto;
+    left: max(12px, env(safe-area-inset-left));
+  }
+}
+
+/* Compact (zoomed in; see globals.css). */
+@media (orientation: portrait) and (max-width: 319px), (orientation: landscape) and (max-height: 300px) {
+  .close {
+    top: 8px;
+    right: 8px;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Nearly the whole screen: 85% would leave the sheet only a sliver for the details and Play. */
+@media (orientation: landscape) and (max-height: 300px) {
+  .panel {
+    height: calc(100dvh - 12px);
+  }
+
+  .close {
+    right: auto;
+    left: max(8px, env(safe-area-inset-left));
+  }
+}
+
+@media (min-width: 1000px), (min-width: 768px) and (orientation: portrait) {
+  .dialog[open] {
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .panel {
+    max-width: 680px;
+    border-radius: 20px;
+    box-shadow: 0 16px 48px var(--color-shadow);
+    animation-name: cardIn;
+  }
+}
+
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sheetIn {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog[open],
+  .panel {
+    animation: none;
+  }
+
+  .close {
+    transition: none;
+  }
+
+  .close:active {
+    transform: none;
+  }
+}

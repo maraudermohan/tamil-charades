@@ -1,3 +1,5 @@
+import type { GameDifficulty, GameSlug } from "./gameModes";
+
 export const TrackEvents = {
   SESSION_STARTED: "session.started",
   SESSION_ENDED: "session.ended",
@@ -15,8 +17,14 @@ export const TrackEvents = {
 
 export type TrackEventName = (typeof TrackEvents)[keyof typeof TrackEvents];
 
+/** Shared fields sent with every event; `track()` fills in ids and timestamp. */
+export type TrackContext = Omit<
+  TrackApiRequest,
+  "event" | "payload" | "session_id" | "user_id" | "created"
+>;
+
 /**
- * Full JSON body sent to track-metrics.php. `created` is set in postMetricsFetch/postMetricsBeacon.
+ * Full JSON body sent to track-metrics.php. `created` is set in `track()`.
  */
 export interface TrackApiRequest {
   user_id: string;
@@ -25,12 +33,10 @@ export interface TrackApiRequest {
   payload?: unknown | null;
   device?: "mobile" | "tablet" | "desktop" | null;
   browser?: "chrome" | "safari" | "firefox" | "edge" | "other" | null;
-  mode?: "classic" | "story" | "song" | "hollywood" | "kids" | null;
-  difficulty?: "easy" | "medium" | "hard" | null;
+  mode?: GameSlug | null;
+  difficulty?: (typeof GameDifficulty)[number] | null;
   created?: string;
 }
-
-export type EmptyTrackPayload = Record<string, never>;
 
 export interface SessionStartedPayload {
   entry: "direct" | "referral";
@@ -43,17 +49,13 @@ export interface SessionStartedPayload {
 }
 
 export interface SessionEndedPayload {
-  type: "visibilitychange" | "pagehide" | "beforeunload";
+  type: "visibilitychange" | "pagehide";
 }
 
 export type WebVitalRating = "good" | "needs-improvement" | "poor";
 
 /** One observation from the web-vitals library (may repeat per metric, e.g. CLS). */
-export type WebVitalSample = [
-  number,
-  WebVitalRating,
-  string | undefined,
-] | null;
+export type WebVitalSample = [number, WebVitalRating, string | undefined];
 
 export interface GameStartedPayload {
   roundsCount: number;
@@ -64,7 +66,9 @@ export interface GameEndedPayload {
   // difficulty: "easy" | "medium" | "hard";
   correctCount: number;
   totalCount: number;
+  /** Seconds of play time, excluding pauses. */
   totalTime: number;
+  /** Seconds per title. */
   avgTime: number;
 }
 
@@ -77,6 +81,7 @@ export interface GameErrorPayload {
 
 export interface TotalTimeCountPayload {
   totalCount: number;
+  /** Seconds of play time, excluding pauses. */
   totalTime: number;
 }
 
@@ -106,13 +111,3 @@ export interface TrackEventPayloadByName {
   "share.completed": ShareCompletedPayload;
   "share.cancelled": ShareCancelledPayload;
 }
-
-export type TrackPayloadFor<E extends TrackEventName> =
-  TrackEventPayloadByName[E];
-
-/**
- * Discriminated union: `event` narrows `payload` for switch/if checks and autocomplete.
- */
-export type TrackEventCall = {
-  [K in TrackEventName]: { event: K; payload: TrackEventPayloadByName[K] };
-}[TrackEventName];

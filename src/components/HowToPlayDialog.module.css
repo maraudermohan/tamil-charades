@@ -1,0 +1,52 @@
+.languageToggle {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 40ch;
+  margin: 0;
+  padding: 0 0 0 1.4em;
+  color: var(--color-text-muted);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.steps.tamil {
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+}
+
+.step::marker {
+  color: var(--color-heading);
+  font-weight: 600;
+}
+
+@media (max-width: 999px) and (orientation: landscape) {
+  .steps {
+    gap: 6px;
+  }
+}
+
+/* Compact (zoomed in; see globals.css). */
+@media (orientation: portrait) and (max-width: 319px), (orientation: landscape) and (max-height: 300px) {
+  .languageToggle {
+    top: 6px;
+    left: 6px;
+  }
+
+  .steps {
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  .steps.tamil {
+    font-size: 15px;
+  }
+}

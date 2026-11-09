@@ -1,20 +1,25 @@
-import { memo } from "react";
+import ModeCard from "@/components/ModeCard";
+import { ModeDetailsDialogProvider } from "@/components/ModeDetailsDialog";
+import { GAME_SLUGS, type GameSlug } from "@/constant/gameModes";
 import styles from "./ModeCardsManager.module.css";
-import { GAME_MODES_DATA } from "constant";
-import { ModeCard } from "components";
+
+const FEATURED_SLUG: GameSlug = "classic";
 
 function ModeCardsManager() {
   return (
-    <div className={styles.modeCardsManager}>
-      {Object.keys(GAME_MODES_DATA).map((modeData, index) => (
-        <ModeCard
-          key={modeData + index}
-          modeData={modeData}
-          priority={index <= 1}
-        />
-      ))}
-    </div>
+    <ModeDetailsDialogProvider>
+      <div className={styles.modeCardsManager}>
+        {GAME_SLUGS.map((slug, index) => (
+          <ModeCard
+            key={slug}
+            slug={slug}
+            priority={index <= 1}
+            featured={slug === FEATURED_SLUG}
+          />
+        ))}
+      </div>
+    </ModeDetailsDialogProvider>
   );
 }
 
-export default memo(ModeCardsManager);
+export default ModeCardsManager;

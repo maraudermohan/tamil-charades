@@ -1,0 +1,52 @@
+/* In front of the page but click-through, so taps reach the cards underneath. */
+.shower {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fall {
+  position: absolute;
+  top: -24px;
+  left: var(--x);
+  animation: fall var(--fall) linear var(--delay) infinite;
+}
+
+.paper {
+  display: block;
+  width: var(--width);
+  height: var(--height);
+  border-radius: 1px;
+  background: var(--color);
+  opacity: 0.85;
+  animation: flutter var(--flutter) ease-in-out var(--delay) infinite alternate;
+}
+
+@keyframes fall {
+  to {
+    transform: translate3d(0, calc(100dvh + 48px), 0);
+  }
+}
+
+@keyframes flutter {
+  from {
+    transform: translateX(calc(var(--sway) * -1)) rotate(-25deg) rotateY(0deg);
+  }
+  to {
+    transform: translateX(var(--sway)) rotate(35deg) rotateY(180deg);
+  }
+}
+
+@media (max-width: 699px) {
+  .fall:nth-child(n + 11) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shower {
+    display: none;
+  }
+}

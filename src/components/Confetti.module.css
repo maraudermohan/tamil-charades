@@ -1,0 +1,107 @@
+/*
+ * Each piece is three nested spans so the motions combine:
+ *   .drift  sideways, slowing down (air drag)
+ *   .rise   up to --peak, then falling back under "gravity"
+ *   .piece  spin, flutter and fade out at the end
+ * Per-piece values come from Confetti.tsx as custom properties.
+ */
+.confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.drift {
+  position: absolute;
+  bottom: 0;
+  animation: drift var(--duration) cubic-bezier(0.15, 0.6, 0.35, 1) var(--delay) both;
+}
+
+.rise {
+  display: block;
+  animation: rise var(--duration) linear var(--delay) both;
+}
+
+.piece {
+  display: block;
+  background: var(--color);
+  animation:
+    spin var(--duration) linear var(--delay) both,
+    flutter var(--flutter) ease-in-out var(--delay) infinite alternate;
+}
+
+.rect {
+  width: 8px;
+  height: 12px;
+  border-radius: 1px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.streamer {
+  width: 4px;
+  height: 22px;
+  border-radius: 2px;
+}
+
+@keyframes drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--dx));
+  }
+}
+
+/* Fast launch that slows to the peak, then an accelerating fall. */
+@keyframes rise {
+  0% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.4, 1);
+  }
+  35% {
+    transform: translateY(var(--peak));
+    animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.6);
+  }
+  100% {
+    transform: translateY(var(--fall));
+  }
+}
+
+/* Hidden until launch, so pieces don't sit in the corners during their delay. */
+@keyframes spin {
+  0% {
+    opacity: 0;
+    rotate: 0deg;
+  }
+  2%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    rotate: var(--spin);
+  }
+}
+
+/* Tumbling edge-on and back, like paper catching the air. */
+@keyframes flutter {
+  from {
+    transform: rotateX(0deg);
+  }
+  to {
+    transform: rotateX(70deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confetti {
+    display: none;
+  }
+}

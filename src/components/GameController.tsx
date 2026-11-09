@@ -1,89 +1,149 @@
 "use client";
-import dynamic from "next/dynamic";
-import Link from "next/link";
-import { memo, useEffect } from "react";
-import { GameStoreContext, useGameStore } from "hooks";
-import { ModeExpanded, ErrorBoundary } from "components";
-import { GAME_MODES_DATA, TrackEvents } from "constant";
-import { track } from "utils";
+import { lazy, Suspense, useEffect, useEffectEvent, useRef, useState, ViewTransition } from "react";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import GameHeader from "@/components/GameHeader";
+import ModeDetailsSheet from "@/components/ModeDetailsSheet";
+import MovieSlideCountdown from "@/components/MovieSlideCountdown";
+import { GAME_MODES_DATA, type DifficultyLevel, type GameSlug } from "@/constant/gameModes";
+import { TrackEvents } from "@/constant/metricsData";
+import { GameStoreProvider, useGameStore } from "@/hooks/useGameStore";
+import { useRulesLanguage } from "@/hooks/useRulesLanguage";
+import { getRememberedDifficulty, rememberDifficulty } from "@/utils/difficultyMemory";
+import { historyGuardToken } from "@/utils/gameHistory";
+import { clearPlayIntent, getPlayIntent } from "@/utils/playIntent";
+import { changeStage, STAGE_TRANSITION } from "@/utils/stageTransition";
+import { track } from "@/utils/trackMetrics";
 
-const MovieSlide = dynamic(() => import("./MovieSlide"), {
-  ssr: false,
-  loading: () => null,
-});
+const MovieSlide = lazy(() => import("@/components/MovieSlide"));
+const ResultsSlide = lazy(() => import("@/components/ResultsSlide"));
 
-const debounce = (callback: Function) => {
-  let timeoutId: null | ReturnType<typeof setTimeout> = null;
+const STAGE_ENTER = { [STAGE_TRANSITION]: "stage-enter", default: "none" };
+const STAGE_EXIT = { [STAGE_TRANSITION]: "stage-exit", default: "none" };
 
-  return () => {
-    if (timeoutId != null) {
-      clearTimeout(timeoutId);
+/**
+ * The game page under its header. Opened directly, it starts on the details sheet; arriving from
+ * Play in the homepage's mode dialog, it goes straight to the countdown at the difficulty picked
+ * there. Titles load during the countdown.
+ */
+function GameScreens({ slug }: { slug: GameSlug }) {
+  const { state, actions } = useGameStore();
+  const { language } = useRulesLanguage();
+  const [intent] = useState(() => getPlayIntent(slug));
+  const [countingDown, setCountingDown] = useState(intent != null);
+  const titlesLoadRef = useRef<Promise<boolean>>(Promise.resolve(false));
+  // The countdown starts inside a view transition, so the intro takes clicks for a moment after Play.
+  const playedRef = useRef(false);
+  const steppedOffGuardRef = useRef(false);
+
+  const loadTitles = (difficulty: DifficultyLevel) => {
+    if (state.mode.hasDifficulty) {
+      rememberDifficulty(slug, difficulty);
     }
-    timeoutId = setTimeout(() => {
-      callback();
-      timeoutId = null;
-    }, 300);
+    titlesLoadRef.current = actions.loadTitles(difficulty);
   };
-};
 
-const setVariableVH = () => {
-  let vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty("--vh", `${vh}px`);
-};
-
-interface GameControllerType {
-  slug: string;
-}
-
-function GameController({ slug }: GameControllerType) {
-  const [gameState, gameStoreMethods] = useGameStore();
-  const modeConfig = GAME_MODES_DATA[slug];
-
-  useEffect(() => {
-    setVariableVH();
-    const debouncedResized = debounce(setVariableVH);
-    window.addEventListener("resize", debouncedResized);
-    if (modeConfig != null) {
-      gameStoreMethods.setCurrentMode(modeConfig);
+  const arrive = useEffectEvent(() => {
+    clearPlayIntent();
+    if (intent != null) {
+      // Stored too, so the mid-game refills fetch the same difficulty.
+      actions.setDifficulty(intent.difficulty);
+      loadTitles(intent.difficulty);
+    } else if (state.mode.hasDifficulty) {
+      // After hydration, since the prerendered sheet can only show the default.
+      actions.setDifficulty(getRememberedDifficulty(slug));
     }
+  });
 
-    return () => {
-      window.removeEventListener("resize", debouncedResized);
-    };
-    // gameStoreMethods is a new object each render; setCurrentMode dispatches the same actions.
-  }, [slug, modeConfig]);
-
+  // A reload mid-game lands on that game's extra history entry; step back off it, so Back from
+  // here leaves in one press instead of first landing on this same page.
   useEffect(() => {
-    track(
-      TrackEvents.MODE_SELECTED,
-      null,
-      { mode: slug as "classic" | "story" | "song" | "hollywood" | "kids" },
-    );
-  }, [slug]);
+    if (!steppedOffGuardRef.current && historyGuardToken() != null) {
+      steppedOffGuardRef.current = true;
+      window.history.back();
+    }
+  }, []);
 
-  if (modeConfig == null) {
-    return (
-      <main style={{ padding: "24px", textAlign: "center" }}>
-        <p>Unknown game mode.</p>
-        <Link href="/">Back to home</Link>
-      </main>
-    );
-  }
+  // Not guarded against Strict Mode's second run: the provider aborts the first load on the
+  // simulated unmount, so the second run has to start it again.
+  useEffect(() => {
+    arrive();
+  }, []);
+
+  const handlePlay = () => {
+    if (playedRef.current) {
+      return;
+    }
+    playedRef.current = true;
+    loadTitles(state.difficulty);
+    changeStage(() => setCountingDown(true));
+  };
+
+  const handleCountdownComplete = () => {
+    void titlesLoadRef.current.then((ok) => {
+      if (ok) {
+        changeStage(actions.startGame);
+      }
+    });
+  };
+
+  const stage =
+    state.error != null
+      ? "error"
+      : state.currentIndex == null
+        ? countingDown
+          ? "countdown"
+          : "intro"
+        : state.gameOver
+          ? "results"
+          : "game";
 
   return (
-    <GameStoreContext.Provider value={{ ...gameState, gameStoreMethods }}>
-      {gameState.error != null ? (
+    <>
+      {stage !== "results" && <GameHeader stage={stage === "error" ? "intro" : stage} />}
+      {stage === "error" ? (
         <ErrorBoundary />
       ) : (
-        <>
-          {gameState.currentIndex == null && (
-            <ModeExpanded currentModeData={modeConfig} />
-          )}
-          {gameState.currentIndex != null && <MovieSlide />}
-        </>
+        // Already showing when a lazy screen loads, so the transition keeps the old screen up
+        // until the new one is ready instead of flashing an empty fallback.
+        <Suspense fallback={null}>
+          {/* Keyed by stage, so each screen fully unmounts while its snapshot animates out. */}
+          <ViewTransition key={stage} enter={STAGE_ENTER} exit={STAGE_EXIT} default="none">
+            {stage === "intro" && (
+              <ModeDetailsSheet
+                mode={state.mode}
+                difficulty={state.difficulty}
+                onDifficultyChange={actions.setDifficulty}
+                onPlay={handlePlay}
+              />
+            )}
+            {stage === "countdown" && (
+              <MovieSlideCountdown
+                instruction={
+                  language === "ta" ? state.mode.instructionInTamil : state.mode.instruction
+                }
+                language={language}
+                onComplete={handleCountdownComplete}
+              />
+            )}
+            {stage === "game" && <MovieSlide />}
+            {stage === "results" && <ResultsSlide />}
+          </ViewTransition>
+        </Suspense>
       )}
-    </GameStoreContext.Provider>
+    </>
   );
 }
 
-export default memo(GameController);
+function GameController({ slug }: { slug: GameSlug }) {
+  useEffect(() => {
+    track(TrackEvents.MODE_SELECTED, null, { mode: slug });
+  }, [slug]);
+
+  return (
+    <GameStoreProvider key={slug} mode={GAME_MODES_DATA[slug]}>
+      <GameScreens slug={slug} />
+    </GameStoreProvider>
+  );
+}
+
+export default GameController;

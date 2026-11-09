@@ -10,113 +10,108 @@
   z-index: 3;
 }
 
-.headerLogo {
+.themeToggle {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+/* The logo lockup: arch and title. Everything scales with --arch-height. */
+.brand {
+  --arch-height: 85px;
+  --title-scale: 0.33;
   margin: 40px 0 0 0;
-  background: url('/tamil-logo-blue.webp') no-repeat;
-  background-size: 95%;
-  background-position: center;
-  width: 70px;
-  height: 70px;
-  padding: 16px 4px;
-  border: 3px solid #48d1cc;
-  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--arch-height) * 0.16);
+  color: var(--color-heading);
 }
 
-:global(.ios-safari-zoomed.zoom-3) .headerLogo {
-  width: 45px;
-  height: 45px;
-  margin: 4dvh 0 0 0;
+.arch {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--arch-height) / 1.5);
+  height: var(--arch-height);
+  padding-top: calc(var(--arch-height) * 0.05);
+  border: 2px solid var(--color-logo-outline);
+  border-radius: 999px 999px calc(var(--arch-height) * 0.1) calc(var(--arch-height) * 0.1);
+  background: var(--color-logo);
+  box-shadow: var(--shadow-md);
 }
 
-:global(.ios-safari-zoomed) .headerLogo {
-  width: 60px;
-  height: 60px;
-  margin: 5dvh 0 0 0;
+.arch::after {
+  content: "";
+  position: absolute;
+  inset: calc(var(--arch-height) * 0.033 - 2px);
+  border: 1.5px solid var(--color-logo-line);
+  border-radius: 999px 999px calc(var(--arch-height) * 0.07) calc(var(--arch-height) * 0.07);
+  opacity: 0.35;
 }
 
-.pageTitle {
+.glyph {
+  display: block;
+  width: auto;
+  height: calc(var(--arch-height) * 0.84);
+}
+
+.title {
   margin: 0;
-  padding: 0 0 20px 0;
-  font-size: 34px;
-  color: #48d1cc;
+  font-size: calc(var(--arch-height) * var(--title-scale));
+  font-weight: 700;
+  line-height: 0.95;
 }
 
+/* Two lines on phones; one line from tablets up. */
+.title span {
+  display: block;
+}
 .subtitle {
   margin: 32px 0 0 0;
   padding: 0 0 24px 0;
+  border: 0;
+  background: transparent;
+  line-height: inherit;
   font-size: 20px;
-  color: #ff6633;
+  color: var(--color-secondary-text);
   font-weight: 600;
   letter-spacing: 0.5px;
   text-align: center;
   user-select: none;
 }
 
-:global(.ios-safari-zoomed) .subtitle {
-  margin: 4dvh 0 0 0;
-  padding: 0 0 12px 0;
-}
-
-:global(.ios-safari-zoomed.zoom-1) .subtitle {
-  font-size: 17px;
-}
-
-:global(.ios-safari-zoomed.zoom-2) .subtitle {
-  font-size: 13px;
-}
-
-:global(.ios-safari-zoomed.zoom-3) .subtitle {
-  font-size: 9px;
-}
-
 @media (max-width: 999px) and (orientation: landscape) {
   .header {
+    /* Clears the absolutely positioned logo: 20px from the top, 85px tall, 15px below. */
+    min-height: 120px;
     margin: 0;
     padding: 32px 0 12px 0;
     flex-direction: row;
     align-items: center;
   }
 
-  :global(.ios-safari-zoomed.zoom-2) .header {
-    padding: 20px 0 12px 0;
-  }
-
-  :global(.ios-safari-zoomed.zoom-3) .header {
-    padding: 12px 0 12px 0;
-  }
-
-  .headerLogo {
+  .brand {
     margin: 0;
     position: absolute;
     top: 20px;
     left: 28px;
   }
 
-  :global(.ios-safari-zoomed) .headerLogo {
-    margin: 0;
-    position: relative;
-    top: 0;
-    left: 0;
-    width: 50px;
-    height: 50px;
-  }
-
   .subtitle {
     margin: 0;
     padding: 12px 0;
   }
-
-  :global(.ios-safari-zoomed) .subtitle {
-    margin: 0;
-    padding: 12px 0 12px 12px;
-  }
 }
 
 @media (min-width: 767px) and (orientation: portrait) {
-  .headerLogo {
-    width: 100px;
-    height: 100px;
-    padding: 15px 4px;
+  .brand {
+    --arch-height: 100px;
+    --title-scale: 0.4;
+  }
+
+  .title span {
+    display: inline;
   }
 
   .subtitle {
@@ -126,14 +121,58 @@
 }
 
 @media (min-width: 1000px) and (orientation: landscape) {
-  .headerLogo {
-    width: 90px;
-    height: 90px;
-    padding: 13px 3px;
+  .brand {
+    --arch-height: 100px;
+    --title-scale: 0.4;
+  }
+
+  .title span {
+    display: inline;
   }
 
   .subtitle {
     font-size: 21px;
     letter-spacing: 0.6px;
+  }
+}
+
+/* Compact (zoomed in; see globals.css). MovieTicket hides itself here. */
+@media (orientation: portrait) and (max-width: 319px) {
+  /* Starts below the theme toggle, which would otherwise sit over the title's right end. */
+  .brand {
+    --arch-height: 64px;
+    margin-top: 56px;
+  }
+
+  .subtitle {
+    margin-top: 20px;
+    padding-bottom: 16px;
+    font-size: 18px;
+  }
+}
+
+/* A plain row, logo then subtitle: the logo floated over the corner would cover the subtitle. */
+@media (orientation: landscape) and (max-height: 300px) {
+  .header {
+    min-height: 0;
+    padding: 8px 88px 8px max(16px, env(safe-area-inset-left));
+    justify-content: flex-start;
+    gap: 16px;
+  }
+
+  .themeToggle {
+    top: 12px;
+  }
+
+  .brand {
+    --arch-height: 48px;
+    --title-scale: 0.36;
+    position: static;
+  }
+
+  .subtitle {
+    flex: 1;
+    min-width: 0;
+    font-size: 16px;
   }
 }

@@ -1,17 +1,21 @@
-Options -MultiViews
+Options -MultiViews -Indexes
 
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /
 
+# 0) Collapse leading slashes: the client router reads //game/classic/ as a URL on host "game"
+RewriteCond %{THE_REQUEST} ^\S+\s//+([^\s?]*)
+RewriteRule ^ https://www.tamilcharades.com/%1 [R=301,L,NE]
+
 # 1) Canonical origin in one 301: HTTPS + host www.tamilcharades.com
-#    (Your deployed rule used %{https} off; Apache expects %{HTTPS} off. Wrong variable can break HTTPS detection.)
 RewriteCond %{HTTPS} !=on [OR]
 RewriteCond %{HTTP_HOST} !^www\.tamilcharades\.com$ [NC]
 RewriteRule ^ https://www.tamilcharades.com%{REQUEST_URI} [L,R=301]
 
-# 2) Next static export (trailingSlash): real files are game/<slug>/index.html
-RewriteRule ^game/(classic|story|song|kids|hollywood)$ https://www.tamilcharades.com/game/$1/ [R=301,L]
+# 2) Next static export (trailingSlash): pages are <dir>/index.html, so add the slash in one 301
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(.*[^/])$ https://www.tamilcharades.com/$1/ [R=301,L]
 
 # 3) Extensionless URLs: /page -> page.html when that file exists (internal rewrite, not redirect)
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -24,13 +28,32 @@ RewriteRule ^(.*)$ %{REQUEST_FILENAME}.html [L]
 ErrorDocument 404 /404.html
 
 <IfModule mod_headers.c>
-  # Immutable fingerprinted assets — safe to cache for 1 year
-  <FilesMatch "\.(js|mjs|css|woff|woff2|ttf|eot|otf|webp|png|jpg|jpeg|gif|ico|svg|map)$">
+  # Security headers. 'unsafe-inline' is required for scripts and styles because a static export
+  # cannot use nonces: Next inlines its RSC payload, layout.tsx inlines the iOS zoom check,
+  # and experimental.inlineCss inlines route CSS. Everything else is same-origin.
+  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-Content-Type-Options "nosniff"
+  Header set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  Header set Strict-Transport-Security "max-age=31536000"
+  # Don't advertise the PHP version to scanners
+  Header always unset X-Powered-By
+  Header unset X-Powered-By
+
+  # Code and fonts only come from /_next/static/ with hashed names — safe to cache for 1 year
+  <FilesMatch "\.(js|mjs|css|woff|woff2|ttf|eot|otf|map)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
 
-  # HTML pages — short cache so deploys propagate
-  <FilesMatch "\.html$">
+  # Images: public/ files (logo, favicon, OG image) keep their names, so an edit must reach
+  # returning visitors
+  <FilesMatch "\.(webp|png|jpg|jpeg|gif|ico|svg)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+
+  # HTML pages and their RSC payloads (.txt, fetched on client navigation) — short cache so
+  # deploys propagate
+  <FilesMatch "\.(html|txt)$">
     Header set Cache-Control "public, max-age=3600, must-revalidate"
   </FilesMatch>
 </IfModule>
@@ -39,7 +62,7 @@ ErrorDocument 404 /404.html
   ExpiresActive On
   ExpiresByType font/woff2                   "access plus 1 year"
   ExpiresByType font/woff                    "access plus 1 year"
-  ExpiresByType image/webp                   "access plus 1 year"
+  ExpiresByType image/webp                   "access plus 1 week"
   ExpiresByType application/javascript       "access plus 1 year"
   ExpiresByType text/css                     "access plus 1 year"
   ExpiresByType text/html                    "access plus 1 hour"

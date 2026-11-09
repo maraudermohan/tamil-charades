@@ -1,16 +1,45 @@
 .modeCardBox {
+  /* One column's width, and the horizontal margins between two cards (for .featured). */
+  --card-width: calc(50% - 4px);
+  --card-gap: 4px;
   position: relative;
   display: block;
   margin: 6px 2px 0 2px;
-  width: calc(49% - 4px);
-  height: calc((100vh - 200px) / 3.1);
-  height: calc(((var(--vh, 1vh) * 100) - 200px) / 3.1);
+  width: var(--card-width);
+  height: calc((100dvh - 200px) / 3.1);
+  /* Card-stock edge, like the word card: a thin outline with a heavier bottom. */
+  border: 2px solid var(--color-mode-card-border);
+  border-bottom-width: 5px;
   border-radius: 12px;
   overflow: hidden;
 }
 
-:global(.ios-safari-zoomed) .modeCardBox {
-  height: 30dvh;
+.featured {
+  width: calc(2 * var(--card-width) + var(--card-gap));
+}
+
+.modeCardBox:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/*
+ * Cards sit 2–4px from the screen edge and each other here, so the ring goes inside the border,
+ * drawn as a layer because the picture and overlay would paint over an inset outline.
+ */
+@media (max-width: 999px) {
+  .modeCardBox:focus-visible {
+    outline: none;
+  }
+  .modeCardBox:focus-visible::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    z-index: 2;
+    border: 3px solid var(--color-focus-ring);
+    border-radius: 8px;
+    pointer-events: none;
+  }
 }
 
 .modePicture {
@@ -59,27 +88,12 @@
   user-select: none;
 }
 
-:global(.ios-safari-zoomed.zoom-1) .title {
-  margin: 0 0 26px 0;
-  font-size: 19px;
-}
-
-:global(.ios-safari-zoomed.zoom-2) .title {
-  margin: 0 0 18px 0;
-  font-size: 15px;
-}
-
-:global(.ios-safari-zoomed.zoom-3) .title {
-  margin: 0 0 10px 0;
-  font-size: 10px;
-}
-
 @media (max-width: 999px) and (orientation: landscape) {
   .modeCardBox {
+    --card-width: calc(33.3% - 8px);
+    --card-gap: 8px;
     margin: 8px 4px;
-    width: calc(33.3% - 8px);
-    height: 65vh;
-    height: calc(var(--vh, 1vh) * 65);
+    height: 65dvh;
   }
   .title {
     font-size: 26px;
@@ -89,10 +103,10 @@
 
 @media (min-width: 767px) and (orientation: portrait) {
   .modeCardBox {
+    --card-width: calc(50% - 14px);
+    --card-gap: 12px;
     margin: 10px 6px 0 6px;
-    width: calc(50% - 14px);
-    height: calc((100vh - 225px) / 2.1);
-    height: calc(((var(--vh, 1vh) * 100) - 225px) / 2.1);
+    height: calc((100dvh - 225px) / 2.1);
   }
   .title {
     font-size: 32px;
@@ -102,10 +116,10 @@
 
 @media (min-width: 1000px) and (orientation: landscape) {
   .modeCardBox {
+    --card-width: calc(33.3% - 12px);
+    --card-gap: 12px;
     margin: 0 6px 8px 6px;
-    width: calc(33.3% - 12px);
-    height: calc((100vh - 215px) / 2.05);
-    height: calc(((var(--vh, 1vh) * 100) - 215px) / 2.05);
+    height: calc((100dvh - 215px) / 2.05);
   }
 }
 
@@ -117,8 +131,45 @@
 
 @media (min-width: 1500px) and (orientation: landscape) {
   .modeCardBox {
+    --card-width: calc(33.3% - 16px);
+    --card-gap: 16px;
     margin: 0 8px 12px 8px;
-    width: calc(33.3% - 16px);
+  }
+}
+
+/*
+ * Compact (zoomed in; see globals.css). Heights from the viewport alone leave the cards too short
+ * for their titles here, so they get a floor.
+ */
+@media (orientation: portrait) and (max-width: 319px) {
+  .modeCardBox {
+    height: max((100dvh - 200px) / 3.1, 120px);
+  }
+  .title {
+    margin-bottom: 16px;
+    font-size: 20px;
+  }
+}
+
+/* Narrower still: one card per row, so each title fits on a line. */
+@media (orientation: portrait) and (max-width: 279px) {
+  .modeCardBox {
+    --card-width: calc(100% - 4px);
+    height: auto;
+    aspect-ratio: 2;
+  }
+  .featured {
+    width: var(--card-width);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 300px) {
+  .modeCardBox {
+    height: max(65dvh, 120px);
+  }
+  .title {
+    margin-bottom: 16px;
+    font-size: 20px;
   }
 }
 
@@ -127,6 +178,6 @@
     cursor: pointer;
     transform: scale(1.01);
     transition: transform 0.1s ease-in-out;
-    box-shadow: -2px 2px 8px #323232;
+    box-shadow: -2px 2px 8px var(--color-shadow);
   }
 }

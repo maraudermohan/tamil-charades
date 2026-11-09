@@ -1,0 +1,12 @@
+/* Traffic-light order from the palette: teal (go), mustard (careful), tomato (hard). */
+.easy {
+  fill: var(--color-success);
+}
+
+.medium {
+  fill: var(--color-highlight);
+}
+
+.hard {
+  fill: var(--color-danger);
+}

@@ -1,26 +1,21 @@
 import type { MetadataRoute } from "next";
+import { GAME_SLUGS } from "@/constant/gameModes";
+import { SITE_URL } from "@/constant/site";
 
 export const dynamic = "force-static";
 
-const BASE = "https://www.tamilcharades.com";
-
-const GAME_SLUGS = ["classic", "story", "song", "kids", "hollywood"] as const;
-
+/** No lastModified: it would be the build time, which changes on every deploy. */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
-
   const weekly = "weekly" as const;
 
   return [
     {
-      url: BASE,
-      lastModified: now,
+      url: SITE_URL,
       changeFrequency: weekly,
       priority: 1,
     },
     ...GAME_SLUGS.map((slug) => ({
-      url: `${BASE}/game/${slug}/`,
-      lastModified: now,
+      url: `${SITE_URL}/game/${slug}/`,
       changeFrequency: weekly,
       priority: 0.85,
     })),

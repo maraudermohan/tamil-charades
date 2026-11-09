@@ -47,9 +47,9 @@ export const poppins = Poppins({
 });
 
 /**
- * Variable font; latin + tamil for movie titles in game pages.
- * Not used on the homepage — skip preload so these 2 files don't
- * consume homepage bandwidth on the critical path.
+ * Variable font; latin + tamil for movie titles and all Tamil text. On the homepage it only
+ * styles small decorative text (the ticket, rules toggles), so it isn't preloaded and the
+ * tamil file downloads only once Tamil glyphs render.
  */
 export const anek = Anek_Tamil({
   subsets: ["latin", "tamil"],

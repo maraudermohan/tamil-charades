@@ -1,9 +1,14 @@
 export const ErrorStates = {
   BACKEND_FAIL: "BACKEND_FAIL",
   END_OF_LIST: "END_OF_LIST",
-};
+} as const;
 
-export const ErrorData = {
+export type ErrorState = (typeof ErrorStates)[keyof typeof ErrorStates];
+
+export const ErrorData: Record<
+  ErrorState,
+  { title: string; imageUrl: string; description: string }
+> = {
   [ErrorStates.BACKEND_FAIL]: {
     title: "Server Error!",
     imageUrl: "/backend-fail.webp",

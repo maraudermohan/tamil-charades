@@ -1,3 +1,5 @@
+import type { GameSlug } from "@/constant/gameModes";
+
 /** Plain-text SEO per game route (no HTML). */
 export interface GamePathSeoEntry {
   title: string;
@@ -5,7 +7,7 @@ export interface GamePathSeoEntry {
   keywords: string[];
 }
 
-export const GAME_PATH_SEO: Record<string, GamePathSeoEntry> = {
+export const GAME_PATH_SEO: Record<GameSlug, GamePathSeoEntry> = {
   classic: {
     title: "Classic Mode",
     description:

@@ -1,0 +1,15 @@
+.box {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* An ellipsis would hide the whole inline-block, which `transform` needs. */
+.scrolling {
+  text-overflow: clip;
+}
+
+.scrolling > span {
+  display: inline-block;
+}

@@ -1,19 +1,33 @@
-import { memo } from "react";
-import { lora } from "app/fonts";
+import Image from "next/image";
+import { lora } from "@/app/fonts";
+import FilmFrameSubtitle from "@/components/FilmFrameSubtitle";
+import MovieTicket from "@/components/MovieTicket";
+import ThemeToggle from "@/components/ThemeToggle";
 import styles from "./Header.module.css";
 
 function Header() {
   return (
     <header className={styles.header}>
-      <div className={styles.headerLogo} />
-      <h3
-        className={styles.subtitle}
-        style={{ fontFamily: lora.style.fontFamily }}
-      >
-        Charades for Tamil movie lovers!
-      </h3>
+      <MovieTicket />
+      <ThemeToggle className={styles.themeToggle} />
+      <div className={styles.brand} style={{ fontFamily: lora.style.fontFamily }}>
+        <span className={styles.arch}>
+          <Image
+            className={styles.glyph}
+            src="/tamil_logo_white.png"
+            alt=""
+            width={138}
+            height={256}
+            loading="eager"
+          />
+        </span>
+        <h1 className={styles.title}>
+          <span>Tamil</span> <span>Charades</span>
+        </h1>
+      </div>
+      <FilmFrameSubtitle className={styles.subtitle} style={{ fontFamily: lora.style.fontFamily }} />
     </header>
   );
 }
 
-export default memo(Header);
+export default Header;

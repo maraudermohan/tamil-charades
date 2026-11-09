@@ -1,338 +1,503 @@
 .movieSlideBox {
+  --timer-height: 40px;
+  /* Space between the timer and the title card. */
+  --timer-gap: 16px;
+  /* The title card starts no higher than this, so it clears the header and the timer. */
+  --card-min-top: calc(var(--page-header-height) + var(--timer-height) + var(--timer-gap));
+  /* Where .cardArea starts: right under the timer. */
+  --card-area-top: calc(var(--page-header-height) + var(--timer-height));
+  /* The least space left between the title card and the buttons. */
+  --card-bottom-gap: 12px;
+
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
-  height: calc(var(--vh, 1vh) * 100);
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  background-color: #f5fffa;
+  background-color: var(--color-bg);
   z-index: 5;
+  /* Focusable (see :focus below), so mobile browsers would flash the whole screen on every tap. */
+  -webkit-tap-highlight-color: transparent;
   transition: background-color 0.1s ease-in;
 }
 
-.controlButtonsBox {
-  position: relative;
-  width: 100vw;
-  height: 32vh;
-  height: calc(var(--vh, 1vh) * 32);
-  margin: 0;
+/* Focused by script when the game replaces the countdown; not a tab stop. */
+.movieSlideBox:focus {
+  outline: none;
+}
+
+.movieSlideBox[data-answer="right"] {
+  background-color: var(--color-success-flash);
+}
+
+.movieSlideBox[data-answer="wrong"] {
+  background-color: var(--color-danger-flash);
+}
+
+@media (max-height: 700px) and (orientation: portrait) {
+  .movieSlideBox {
+    --timer-height: 38px;
+    --timer-gap: 12px;
+  }
+}
+
+@media (min-width: 768px) {
+  .movieSlideBox {
+    --timer-height: 44px;
+    --timer-gap: 20px;
+  }
+}
+
+/* Declared last so it wins over min-width 768px on wide phones in landscape. */
+@media (max-width: 999px) and (orientation: landscape) {
+  .movieSlideBox {
+    --timer-height: 38px;
+    --timer-gap: 8px;
+  }
+}
+
+/* The timer, under the space GameHeader covers, kept at the top of the column (which is bottom-aligned). */
+.slideTop {
+  flex: none;
+  width: 100%;
+  margin-bottom: auto;
+  padding-top: var(--page-header-height);
   display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* The space between the timer and the buttons, which bounds the title cards (TitleSlide.module.css). */
+.cardArea {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  position: relative;
+}
+
+/* Round timer: a chip under the header. Text is 4px shorter than the chip (2px padding each side). */
+.timer {
+  flex: none;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
-  transition: all 0.3s ease-in;
+  gap: calc(var(--timer-height) * 0.15);
+  height: var(--timer-height);
+  min-width: calc(var(--timer-height) * 2.6);
+  margin: 0;
+  padding: 2px calc(var(--timer-height) * 0.45);
+  border-radius: 999px;
+  background: var(--color-highlight);
+  color: var(--color-on-highlight);
+  font-size: calc(var(--timer-height) - 4px);
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.timer[data-urgent] {
+  background: var(--color-danger);
+  color: var(--color-on-danger);
+  animation: timerBlink 1s infinite;
+}
+
+/* Half the text's font size. */
+.timerIcon {
+  flex: none;
+  width: calc((var(--timer-height) - 4px) / 2);
+  height: calc((var(--timer-height) - 4px) / 2);
+}
+
+/* Keeps the chip's width while the next round is about to start. */
+.timerBlank {
+  visibility: hidden;
+}
+
+@keyframes timerBlink {
+  0% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/*
+ * Answer controls.
+ *   Stacked (default): Wrong | Right on one row (48.5% each, 3% gap), a short full-width End below.
+ *   Side rails (landscape with little height): Wrong and Right beside the title card, End below it.
+ * --answer-height and --end-height change per breakpoint; padding grows with width.
+ */
+.controlButtonsBox {
+  --answer-height: 90px;
+  --end-height: 44px;
+  --controls-row-gap: 20px;
+
+  flex: none;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 48.5% 48.5%;
+  column-gap: 3%;
+  row-gap: var(--controls-row-gap);
+  align-items: center;
+  padding: 16px 16px max(24px, env(safe-area-inset-bottom));
+  transition: opacity 0.3s ease-in;
+}
+
+.controlsHidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .controlButton {
-  position: relative;
-  width: 115px;
-  height: 90px;
-  border-radius: 1px;
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
-}
-
-:global(.ios-safari-zoomed.zoom-1) .controlButton {
-  width: 32dvw;
-  height: 72px;
-}
-
-:global(.ios-safari-zoomed.zoom-2) .controlButton {
-  width: 32dvw;
-  height: 56px;
-}
-
-:global(.ios-safari-zoomed.zoom-3) .controlButton {
-  width: 32dvw;
-  height: 40px;
-}
-
-.stopButton {
+  gap: 10px;
+  min-width: 0;
+  height: var(--answer-height);
+  padding: 0 12px;
   border: 0;
-  background: rgba(255, 215, 0, .75);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease;
 }
 
-.passButton {
-  border: 0.5px solid rgb(72, 209, 204);
-  margin: 0;
-  border-top-right-radius: 15%;
-  border-bottom-right-radius: 15%;
+.controlButton:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.controlButton:active {
+  transform: scale(0.98);
 }
 
 .failButton {
-  border: 0.5px solid rgb(209, 72, 77);
-  margin: 0;
-  border-top-left-radius: 15%;
-  border-bottom-left-radius: 15%;
+  background: var(--color-danger);
+  color: var(--color-on-danger);
 }
 
-.hasLabel {
-  flex-direction: column;
+.passButton {
+  background: var(--color-success);
+  color: var(--color-on-success);
 }
 
-.failLabel,
-.endLabel,
-.passLabel {
-  position: absolute;
-  bottom: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  margin: 0;
-  padding: 0;
+/* Forced colors drop the fills, so outline the buttons to keep their tap areas visible. */
+@media (forced-colors: active) {
+  .controlButton {
+    border: 2px solid ButtonText;
+  }
+}
+
+.endButton {
+  grid-column: 1 / -1;
+  height: var(--end-height);
+  gap: 8px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 999px;
+  background: var(--color-neutral);
+  color: var(--color-highlight);
   font-size: 14px;
-  letter-spacing: 0.3px;
-  font-weight: 500;
-  opacity: 0.7;
 }
 
-:global(.ios-safari-zoomed.zoom-1) .failLabel,
-:global(.ios-safari-zoomed.zoom-1) .endLabel,
-:global(.ios-safari-zoomed.zoom-1) .passLabel {
-  bottom: 4px;
-  font-size: 12px;
-}
-
-:global(.ios-safari-zoomed.zoom-2) .failLabel,
-:global(.ios-safari-zoomed.zoom-2) .endLabel,
-:global(.ios-safari-zoomed.zoom-2) .passLabel {
-  bottom: 3px;
-  font-size: 10px;
-}
-
-:global(.ios-safari-zoomed.zoom-3) .failLabel,
-:global(.ios-safari-zoomed.zoom-3) .endLabel,
-:global(.ios-safari-zoomed.zoom-3) .passLabel {
-  bottom: 2px;
-  font-size: 8px;
-}
-
-.stopControlIcon {
-  margin: 0 0 6px 0;
-  padding: 0;
-  width: 34px;
-  height: 34px;
-  color: #323232;
-}
-
-:global(.ios-safari-zoomed.zoom-1) .stopControlIcon {
+.failIcon {
   width: 28px;
   height: 28px;
-  margin: 0 0 5px 0;
 }
 
-:global(.ios-safari-zoomed.zoom-2) .stopControlIcon {
-  width: 22px;
-  height: 22px;
-  margin: 0 0 4px 0;
-}
-
-:global(.ios-safari-zoomed.zoom-3) .stopControlIcon {
-  width: 20px;
-  height: 20px;
-  margin: 0 0 3px 0;
-}
-
-.endLabel {
-  color: #323232;
-}
-
-.passControlIcon {
-  margin: 0 0 6px 0;
-  padding: 0;
+.passIcon {
   width: 33px;
   height: 33px;
-  color: #48d1cc;
 }
 
-:global(.ios-safari-zoomed.zoom-1) .passControlIcon {
-  width: 26px;
-  height: 26px;
-  margin: 0 0 5px 0;
-}
-
-:global(.ios-safari-zoomed.zoom-2) .passControlIcon {
-  width: 20px;
-  height: 20px;
-  margin: 0 0 4px 0;
-}
-
-:global(.ios-safari-zoomed.zoom-3) .passControlIcon {
-  width: 17px;
-  height: 17px;
-  margin: 0 0 3px 0;
-}
-
-.passLabel {
-  color: #48d1cc;
-}
-
-.failControlIcon {
-  margin: 0 0 6px 0;
-  padding: 0;
-  width: 28px;
-  height: 28px;
-  color: #d1484d;
-}
-
-:global(.ios-safari-zoomed.zoom-1) .failControlIcon {
-  width: 22px;
-  height: 22px;
-  margin: 0 0 5px 0;
-}
-
-:global(.ios-safari-zoomed.zoom-2) .failControlIcon {
+.endIcon {
   width: 18px;
   height: 18px;
-  margin: 0 0 4px 0;
 }
 
-:global(.ios-safari-zoomed.zoom-3) .failControlIcon {
-  width: 16px;
-  height: 16px;
-  margin: 0 0 3px 0;
+.controlLabel {
+  white-space: nowrap;
 }
 
-.failLabel {
-  color: #d1484d;
-}
+@media (hover: hover) and (pointer: fine) {
+  .failButton:hover {
+    background: var(--color-danger-hover);
+  }
 
-@media (max-width: 999px) and (orientation: landscape) {
-  .controlButtonsBox {
-    height: 32vh;
-    height: calc(var(--vh, 1vh) * 32);
+  .passButton:hover {
+    background: var(--color-success-hover);
   }
-  .controlButton {
-    width: 20vh;
-    width: calc(var(--vh, 1vh) * 20);
-    height: 16vh;
-    height: calc(var(--vh, 1vh) * 16);
-    top: 0;
-  }
-  .stopControlIcon,
-  .passControlIcon,
-  .failControlIcon {
-    margin: 0;
-  }
-  .stopControlIcon {
-    width: 5vh;
-    width: calc(var(--vh, 1vh) * 5);
-    height: 5vh;
-    height: calc(var(--vh, 1vh) * 5);
-  }
-  .passControlIcon {
-    width: calc(5vh - 1px);
-    width: calc(var(--vh, 1vh) * 5 - 1px);
-    height: calc(5vh - 1px);
-    height: calc(var(--vh, 1vh) * 5 - 1px);
-  }
-  .failControlIcon {
-    width: calc(5vh - 4px);
-    width: calc(var(--vh, 1vh) * 5 - 4px);
-    height: calc(5vh - 4px);
-    height: calc(var(--vh, 1vh) * 5 - 4px);
-  }
-  .failLabel,
-  .endLabel,
-  .passLabel {
-    font-size: 13px;
+
+  .endButton:hover {
+    background: var(--color-neutral-hover);
   }
 }
 
 @media (max-height: 700px) and (orientation: portrait) {
   .controlButtonsBox {
-    height: 36vh;
-    height: calc(var(--vh, 1vh) * 36);
+    --answer-height: 80px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
   }
-  :global(.ios-safari-zoomed.zoom-1) .controlButtonsBox {
-    height: 31dvh;
-  }
-  :global(.ios-safari-zoomed.zoom-2) .controlButtonsBox {
-    height: 26dvh;
-  }
-  :global(.ios-safari-zoomed.zoom-3) .controlButtonsBox {
-    height: 21dvh;
-  }
-  .controlButton {
-    width: 100px;
-    height: 80px;
+}
+
+@media (min-width: 600px) and (orientation: portrait) {
+  .controlButtonsBox {
+    padding-inline: 32px;
   }
 }
 
 @media (min-width: 767px) and (orientation: portrait) {
-  .controlButton {
-    width: 125px;
-    height: 100px;
+  .controlButtonsBox {
+    --answer-height: 100px;
+    --end-height: 48px;
+    --controls-row-gap: 24px;
+    max-width: 720px;
+    padding: 24px 48px 40px;
   }
-  .stopControlIcon {
-    width: 40px;
-    height: 40px;
+
+  .failIcon {
+    width: 34px;
+    height: 34px;
   }
-  .passControlIcon {
+
+  .passIcon {
     width: 39px;
     height: 39px;
   }
-  .failControlIcon {
-    width: 34px;
-    height: 34px;
+}
+
+/* Tablet landscape and desktop. */
+@media (min-width: 1000px) and (orientation: landscape) {
+  .controlButtonsBox {
+    --end-height: 48px;
+    --controls-row-gap: 24px;
+    max-width: 760px;
+    padding: 24px 32px 40px;
   }
 }
 
 @media (min-width: 1300px) and (orientation: landscape) {
-  .controlButton {
-    width: 135px;
-    height: 110px;
+  .controlButtonsBox {
+    --answer-height: 110px;
   }
-  .stopControlIcon {
-    width: 40px;
-    height: 40px;
-  }
-  .passControlIcon {
-    width: 39px;
-    height: 39px;
-  }
-  .failControlIcon {
+
+  .failIcon {
     width: 34px;
     height: 34px;
   }
-  .failLabel,
-  .endLabel,
-  .passLabel {
-    font-size: 15px;
+
+  .passIcon {
+    width: 39px;
+    height: 39px;
   }
 }
 
-@media (min-width: 1450px) and (orientation: landscape) {  
+@media (max-width: 999px) and (orientation: landscape) {
   .controlButtonsBox {
-    height: 40vh;
-    height: calc(var(--vh, 1vh) * 40);
+    --answer-height: 16dvh;
+  }
+
+  .failIcon,
+  .passIcon {
+    width: 5dvh;
+    height: 5dvh;
   }
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .controlButton:hover {
-    cursor: pointer;
+/*
+ * Lift the buttons off the bottom edge when there is height to spare (portrait, or any screen
+ * taller than 800px). Declared after the width rules so it overrides their bottom padding.
+ */
+@media (orientation: portrait), (min-height: 801px) {
+  .controlButtonsBox {
+    padding-bottom: max(24px, 8dvh, env(safe-area-inset-bottom));
   }
-  .stopButton:hover {
-    opacity: 0.6;
+}
+
+/*
+ * Side rails (landscape with little height: phones, short laptop windows). Wrong and Right are
+ * tall rails beside the title card, matching its top and height; End Game sits under the card.
+ * The card geometry lives here as --card-* variables, and TitleSlide.module.css reads them so the
+ * card and the rails always line up. Declared after the width rules so it wins at any width.
+ */
+@media (orientation: landscape) and (max-height: 720px) {
+  .movieSlideBox {
+    --rail-inset: max(16px, env(safe-area-inset-left), env(safe-area-inset-right));
+    --rail-width: clamp(88px, 12vw, 128px);
+    --rail-gap: 16px;
+    --rail-end-height: 40px;
+    /* The timer sits inside the header here, so the card only has to clear the header. */
+    --card-top: max(16dvh, var(--page-header-height) + 8px);
+    --card-left: calc(var(--rail-inset) + var(--rail-width) + var(--rail-gap));
+    --card-width: calc(100% - 2 * var(--card-left));
+    /* Leaves room for End Game below, even on very short screens. */
+    --card-height: min(
+      58dvh,
+      100dvh - var(--card-top) - var(--rail-end-height) - 2 * var(--rail-gap)
+    );
   }
-  .passButton:hover {
-    background: rgb(72,209,204);
-    .passLabel {
-      color: white;
-    }
+
+  /* The card is placed from the --card-* variables against the whole screen instead. */
+  .cardArea {
+    position: static;
   }
-  .passButton:hover svg,
-  .failButton:hover svg {
-    color: white;
+
+  /* Centered on the header's midline, between the category chip and Pause. */
+  .timer {
+    position: absolute;
+    top: calc(var(--page-header-height) / 2);
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
-  .failButton:hover {
-    background: rgb(209,72,77);
-    .failLabel {
-      color: white;
-    }
+
+  .controlButtonsBox {
+    position: absolute;
+    inset: 0;
+    display: block;
+    max-width: none;
+    padding: 0;
+    pointer-events: none;
+  }
+
+  .controlButton {
+    position: absolute;
+    pointer-events: auto;
+  }
+
+  .controlsHidden .controlButton {
+    pointer-events: none;
+  }
+
+  .failButton,
+  .passButton {
+    top: var(--card-top);
+    width: var(--rail-width);
+    height: var(--card-height);
+    flex-direction: column;
+    padding: 0 8px;
+    border-radius: 20px;
+  }
+
+  .failButton {
+    left: var(--rail-inset);
+  }
+
+  .passButton {
+    right: var(--rail-inset);
+  }
+
+  .failIcon,
+  .passIcon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .endButton {
+    top: calc(var(--card-top) + var(--card-height) + var(--rail-gap));
+    left: 0;
+    right: 0;
+    width: clamp(240px, 34vw, 360px);
+    height: var(--rail-end-height);
+    margin: 0 auto;
+  }
+}
+
+/*
+ * Compact (zoomed in; see globals.css). Declared after the rules above so it wins over them.
+ * Smaller controls leave the title card enough room; the card then fills it.
+ */
+@media (orientation: portrait) and (max-width: 319px) {
+  .movieSlideBox {
+    --timer-height: 32px;
+    --timer-gap: 8px;
+  }
+
+  .controlButtonsBox {
+    --answer-height: clamp(48px, 12dvh, 80px);
+    --end-height: 36px;
+    --controls-row-gap: 8px;
+    padding: 0 8px max(12px, 3dvh, env(safe-area-inset-bottom));
+  }
+
+  .controlButton {
+    gap: 6px;
+    padding: 0 4px;
+    font-size: 13px;
+  }
+
+  .failIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .passIcon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .endIcon {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 300px) {
+  .movieSlideBox {
+    --timer-height: 30px;
+    --rail-inset: max(8px, env(safe-area-inset-left), env(safe-area-inset-right));
+    --rail-width: clamp(64px, 14vw, 88px);
+    --rail-gap: 8px;
+    --rail-end-height: 32px;
+    --card-top: calc(var(--page-header-height) + 4px);
+    --card-height: calc(100dvh - var(--card-top) - var(--rail-end-height) - 2 * var(--rail-gap));
+  }
+
+  .controlButton {
+    font-size: 13px;
+  }
+
+  .failIcon,
+  .passIcon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .endIcon {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .controlButton,
+  .timer {
+    transition: none;
+  }
+
+  .timer[data-urgent] {
+    animation: none;
+  }
+
+  .controlButton:active {
+    transform: none;
   }
 }

@@ -1,0 +1,92 @@
+/*
+ * Light theme: card-stock track, variant knob on the right, sun showing on the left.
+ * Dark theme: variant track, on-variant knob on the left, moon showing on the right.
+ */
+
+/*
+ * Zero specificity, so a parent's positioning class wins even when a lazy chunk re-inserts
+ * this stylesheet after the parent's.
+ */
+:where(.toggle) {
+  position: relative;
+}
+
+.toggle {
+  --variant: var(--color-neutral);
+  --on-variant: var(--color-on-neutral);
+  --track-width: 56px;
+  --track-height: 30px;
+  --track-padding: 3px;
+  --knob-size: calc(var(--track-height) - 2 * var(--track-padding) - 2px);
+  --knob-travel: calc(var(--track-width) - var(--knob-size) - 2 * var(--track-padding) - 2px);
+  --icon-size: 16px;
+  /* Centers each icon in the slot the knob occupies when it is on that side. */
+  --icon-inset: calc(var(--track-padding) + (var(--knob-size) - var(--icon-size)) / 2);
+
+  flex: none;
+  width: var(--track-width);
+  height: var(--track-height);
+  padding: 0;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  transform: translateY(-50%);
+}
+
+.sun {
+  left: var(--icon-inset);
+}
+
+.moon {
+  right: var(--icon-inset);
+}
+
+.knob {
+  position: absolute;
+  top: var(--track-padding);
+  left: var(--track-padding);
+  width: var(--knob-size);
+  height: var(--knob-size);
+  border-radius: 50%;
+  background: var(--variant);
+  box-shadow: var(--shadow-sm);
+  transform: translateX(var(--knob-travel));
+  transition:
+    transform 0.25s ease,
+    background-color 0.25s ease;
+}
+
+:global([data-theme="dark"]) .toggle {
+  background: var(--variant);
+  color: var(--on-variant);
+}
+
+:global([data-theme="dark"]) .knob {
+  background: var(--on-variant);
+  transform: translateX(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle,
+  .knob {
+    transition: none;
+  }
+}

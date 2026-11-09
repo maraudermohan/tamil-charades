@@ -1,86 +1,82 @@
+/*
+ * Full-viewport results. Content scrolls inside .scrollArea; the buttons are pinned to the
+ * bottom center as an absolutely positioned sibling of the scroll area.
+ *
+ * Layout follows the app's width + orientation pattern:
+ *   base                           single column, content and buttons capped at 600px
+ *   max-width 999px + landscape    phone landscape: full width, buttons side by side
+ */
 .resultsSlideBox {
+  --results-gutter: 24px;
+  --results-button-height: 48px;
+  --results-buttons-gap: 12px;
+  --results-buttons-pad-top: 16px;
+  --results-buttons-pad-bottom: 24px;
+  /* Height of the pinned buttons block, so the last content can scroll clear of it. */
+  --results-buttons-block: calc(
+    var(--results-buttons-pad-top) + 2 * var(--results-button-height) +
+      var(--results-buttons-gap) + var(--results-buttons-pad-bottom)
+  );
+  /* Space between the score and the answer squares, and between the squares and the stat cards. */
+  --results-strip-space-above: 28px;
+  --results-strip-space-below: 28px;
+  /* Space above the Missed accordion and above the support button. */
+  --results-section-space: 28px;
+
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  height: calc(var(--vh, 1vh) * 100);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  transform: translateX(110%);
-  transition: all 0.25s ease-in;
-  background: #ff6633;
+  width: 100dvw;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--color-bg);
+  color: var(--color-text);
   z-index: 10;
 }
 
-.supportLink {
-  z-index: 1;
-  margin: 0 0 12px 12px;
-  padding: 8px 12px;
-  background: white;
-  border-radius: 8px;
-  color: black;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.3px;
+.scrollArea {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: calc(var(--results-buttons-block) + env(safe-area-inset-bottom));
+  /* Focusable (see :focus below), so mobile browsers would flash the whole screen on every tap. */
+  -webkit-tap-highlight-color: transparent;
 }
 
-:global(.ios-safari-zoomed.zoom-1) .supportLink {
-  margin: 0 0 9px 0;
-  padding: 2px 0;
-  border-radius: 6px;
-  font-size: 12px;
-  width: 100%;
-}
-:global(.ios-safari-zoomed.zoom-2) .supportLink {
-  margin: 0 0 7px 0;
-  padding: 2px 0;
-  border-radius: 5px;
-  font-size: 10px;
-  width: 100%;
-}
-:global(.ios-safari-zoomed.zoom-3) .supportLink {
-  margin: 0 0 4px 0;
-  padding: 2px 0;
-  border-radius: 4px;
-  font-size: 8px;
-  width: 100%;
-}
-.shareButton {
-  z-index: 1;
-  margin: 0 0 12px 0;
-  padding: 8px 12px;
-  background: #FFE600;
-  border: 0;
-  border-radius: 8px;
-  color: black;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.3px;
+/* Focused by script when the results replace the game, so the keys scroll it; not a tab stop. */
+.scrollArea:focus {
+  outline: none;
 }
 
-:global(.ios-safari-zoomed.zoom-1) .shareButton {
-  margin: 0 0 9px 0;
-  padding: 2px 0;
-  border-radius: 6px;
-  font-size: 12px;
+/* Auto margins center the content while it fits and fall back to 0 once it scrolls. */
+.content {
+  margin: auto 0;
+  padding: 48px 0 24px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-:global(.ios-safari-zoomed.zoom-2) .shareButton {
-  margin: 0 0 7px 0;
-  padding: 2px 0;
-  border-radius: 5px;
-  font-size: 10px;
+
+.scoreSection,
+.answerStrip,
+.statCards,
+.missedSection,
+.supportSection {
+  width: 100%;
+  max-width: 600px;
+  padding-inline: var(--results-gutter);
 }
-:global(.ios-safari-zoomed.zoom-3) .shareButton {
-  margin: 0 0 4px 0;
-  padding: 2px 0;
-  border-radius: 4px;
-  font-size: 8px;
+
+.scoreSection {
+  display: flex;
+  justify-content: center;
 }
 
 .scoreboard {
+  --stars-delay: 2s;
+
   position: relative;
   margin: 0;
   padding: 0;
@@ -90,8 +86,7 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  z-index: 5;
-  color: white;
+  color: var(--color-text);
 }
 
 .starIconLeft {
@@ -102,7 +97,6 @@
   height: 50px;
   transform: translate(-100%, 60%) rotate(-30deg);
   opacity: 0.2;
-  transition: width 0.2s ease-out, height 0.2s ease-out;
   background: url('/star.webp') no-repeat;
   background-position: center;
   background-size: cover;
@@ -116,7 +110,6 @@
   height: 60px;
   transform: translate(-50%);
   opacity: 0.2;
-  transition: width 0.2s ease-out, height 0.2s ease-out;
   background: url('/star.webp') no-repeat;
   background-position: center;
   background-size: cover;
@@ -130,10 +123,51 @@
   height: 50px;
   transform: translateY(60%) rotate(30deg);
   opacity: 0.2;
-  transition: width 0.2s ease-out, height 0.2s ease-out;
   background: url('/star.webp') no-repeat;
   background-position: center;
   background-size: cover;
+}
+
+/*
+ * Each lit star stays dim until its delay, then turns on and grows by 5px. The sequence waits
+ * --stars-delay so the confetti gets the stage first.
+ */
+.starIconLeft.starLit {
+  animation: starLitSide 0.2s ease-out calc(var(--stars-delay) + 750ms) forwards;
+}
+
+.starIconMid.starLit {
+  animation: starLitMid 0.2s ease-out calc(var(--stars-delay) + 1500ms) forwards;
+}
+
+.starIconRight.starLit {
+  animation: starLitSide 0.2s ease-out calc(var(--stars-delay) + 2000ms) forwards;
+}
+
+@keyframes starLitSide {
+  from {
+    opacity: 1;
+    width: 50px;
+    height: 50px;
+  }
+  to {
+    opacity: 1;
+    width: 55px;
+    height: 55px;
+  }
+}
+
+@keyframes starLitMid {
+  from {
+    opacity: 1;
+    width: 60px;
+    height: 60px;
+  }
+  to {
+    opacity: 1;
+    width: 65px;
+    height: 65px;
+  }
 }
 
 .starsCount {
@@ -141,7 +175,7 @@
   padding: 0;
   font-size: 50px;
   line-height: 65px;
-  color: white;
+  color: var(--color-heading);
   user-select: none;
 }
 
@@ -150,209 +184,366 @@
   padding: 5px 0 0 0;
   font-size: 24px;
   line-height: 35px;
-  color: white;
+  color: var(--color-text-muted);
   user-select: none;
 }
 
-.timeBoard {
-  position: relative;
-  margin: 5vh auto 0 auto;
-  margin-top: calc(var(--vh, 1vh) * 5);
-  padding: 0;
-  width: 70vw;
-  height: 80px;
-  max-width: 500px;
-  z-index: 5;
-  color: white;
-}
-
-.totalKey {
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  font-size: 17px;
-  line-height: 32px;
-  letter-spacing: 0.2px;
-  color: white;
-  user-select: none;
-}
-
-.totalValue {
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 32px;
-  letter-spacing: 0.2px;
-  color: white;
-  user-select: none;
-}
-
-.AverageKey {
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  font-size: 17px;
-  line-height: 32px;
-  letter-spacing: 0.2px;
-  color: white;
-  user-select: none;
-}
-
-:global(.ios-safari-zoomed.zoom-1) .AverageKey,
-:global(.ios-safari-zoomed.zoom-1) .totalKey {
-  font-size: 14px;
-  line-height: 17px;
-}
-
-:global(.ios-safari-zoomed.zoom-2) .AverageKey,
-:global(.ios-safari-zoomed.zoom-2) .totalKey {
-  font-size: 12px;
-  line-height: 15px;
-}
-
-:global(.ios-safari-zoomed.zoom-3) .AverageKey,
-:global(.ios-safari-zoomed.zoom-3) .totalKey {
-  font-size: 10px;
-  line-height: 13px;
-}
-
-.AverageValue {
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 32px;
-  letter-spacing: 0.2px;
-  color: white;
-  user-select: none;
-}
-
-:global(.ios-safari-zoomed.zoom-1) .AverageValue,
-:global(.ios-safari-zoomed.zoom-1) .totalValue {
-  font-size: 13px;
-  line-height: 16px;
-}
-
-:global(.ios-safari-zoomed.zoom-2) .AverageValue,
-:global(.ios-safari-zoomed.zoom-2) .totalValue {
-  font-size: 11px;
-  line-height: 14px;
-}
-
-:global(.ios-safari-zoomed.zoom-3) .AverageValue,
-:global(.ios-safari-zoomed.zoom-3) .totalValue {
-  font-size: 9px;
-  line-height: 13px;
-}
-
-.continueButton {
-  position: relative;
-  margin: 8vh 0 0 0;
-  margin-top: calc(var(--vh, 1vh) * 8);
-  padding: 0;
-  width: 150px;
-  height: 50px;
-  border-radius: 10px;
-  border: 1px solid #48d1cc;
-  font-size: 17px;
-  font-weight: 500;
-  letter-spacing: 1px;
-  background-color: #48d1cc;
-  z-index: 5;
-  color: white;
-}
-
-:global(.ios-safari-zoomed.zoom-1) .continueButton {
+/* One square per answered title, in order; wraps onto more rows as needed. */
+.exhaustedNote {
+  max-width: 600px;
+  margin: 12px 0 0;
+  padding-inline: var(--results-gutter);
   font-size: 15px;
-  width: 134px;
-  height: 43px;
-}
-:global(.ios-safari-zoomed.zoom-2) .continueButton {
-  font-size: 13px;
-  width: 118px;
-  height: 36px;
-}
-:global(.ios-safari-zoomed.zoom-3) .continueButton {
-  width: 100px;
-  height: 30px;
-  font-size: 11px;
+  line-height: 22px;
+  text-align: center;
+  text-wrap: balance;
 }
 
-.socialButtonBox {
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  padding: 0 12px;
+.answerStrip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: var(--results-strip-space-above) 0 0;
+  list-style: none;
+}
+
+.answerSquare {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--color-word-card-border);
+  border-radius: 6px;
+}
+
+.answerRight {
+  background: var(--color-success);
+}
+
+.answerWrong {
+  background: var(--color-danger);
+}
+
+/* The squares' colors are their meaning, so keep them in forced-colors mode. */
+@media (forced-colors: active) {
+  .answerSquare {
+    forced-color-adjust: none;
+  }
+}
+
+/* 2 × 2 stat cards (one row of 4 in phone landscape). Card stock like the word card, in both themes. */
+.statCards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: var(--results-strip-space-below) 0 0;
+}
+
+.statCard {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 19px 16px;
+  border: 2px solid var(--color-word-card-border);
+  border-radius: 12px;
+  background: var(--color-word-card);
+  color: var(--color-on-word-card);
+}
+
+.statLabel {
+  margin: 0;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  opacity: 0.75;
+  user-select: none;
+}
+
+.statValue {
+  margin: 0;
+  overflow: hidden;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Closed by default; lists the titles answered wrong, in order. Card stock like the stat cards. */
+.missedSection {
+  margin-top: var(--results-section-space);
+}
+
+.missed {
+  border: 2px solid var(--color-word-card-border);
+  border-radius: 12px;
+  background: var(--color-word-card);
+  color: var(--color-on-word-card);
+  overflow: hidden;
+}
+
+.missedSummary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 16px;
+  font-size: 16px;
+  font-weight: 500;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.missedSummary::-webkit-details-marker {
+  display: none;
+}
+
+/* Inset, in card ink: the panel clips its overflow and stays cream in dark mode. */
+.missedSummary:focus-visible {
+  outline: 2px solid var(--color-on-word-card);
+  outline-offset: -4px;
+  border-radius: 10px;
+}
+
+.missedCount {
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--color-danger);
+  color: var(--color-on-danger);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 24px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.missedChevron {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-left: auto;
+  transition: rotate 0.2s ease;
+}
+
+.missed[open] .missedChevron {
+  rotate: 180deg;
+}
+
+.missedList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--color-word-card-divider);
+}
+
+.missedItem {
+  overflow: hidden;
+  padding: 10px 16px;
+  font-size: 15px;
+  line-height: 22px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.missedItem + .missedItem {
+  border-top: 1px solid var(--color-word-card-divider);
+}
+
+.supportSection {
   display: flex;
   justify-content: center;
-  z-index: 1;
+  margin-top: var(--results-section-space);
 }
 
-.orangeBg {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100vw;
-  height: 75vh;
-  height: calc(var(--vh, 1vh) * 75);
-  z-index: 1;
-  background: linear-gradient(195deg, rgba(255, 102, 51,1) 70%, rgba(253,208,45,0) 100%);;
+/* Two columns: the coffee cup, then the two-line message, centered as one group. */
+.supportLink {
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  justify-content: center;
+  align-items: center;
+  column-gap: 12px;
+  width: 252px;
+  max-width: 100%;
+  height: 72px;
+  margin: 0;
+  padding: 0 16px;
+  border: 2px dashed var(--color-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.patternBg {
+.supportIcon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.supportText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Pinned to the bottom center, on the page color so scrolled content passes underneath. */
+.buttons {
   position: absolute;
-  bottom: 0;
   left: 0;
-  width: 100vw;
-  height: 75vh;
-  height: calc(var(--vh, 1vh) * 75);
-  z-index: 0;
-  --s: 40px; /* control the size */
-  --c: #ff6633;
-  
-  --_g: 
-    #0000 calc(-650%/13) calc(50%/13),var(--c) 0 calc(100%/13),
-    #0000 0 calc(150%/13),var(--c) 0 calc(200%/13),
-    #0000 0 calc(250%/13),var(--c) 0 calc(300%/13);
-  --_g0: repeating-linear-gradient( 45deg,var(--_g));
-  --_g1: repeating-linear-gradient(-45deg,var(--_g));
-  background:
-    var(--_g0),var(--_g0) var(--s) var(--s),
-    var(--_g1),var(--_g1) var(--s) var(--s) #ff835a;
-  background-size: calc(2*var(--s)) calc(2*var(--s));
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--results-buttons-gap);
+  padding: var(--results-buttons-pad-top) var(--results-gutter)
+    max(var(--results-buttons-pad-bottom), env(safe-area-inset-bottom));
+  background: var(--color-bg);
+  z-index: 5;
+}
+
+.button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  height: var(--results-button-height);
+  padding: 0 20px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  box-shadow: var(--shadow-md);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.button:active {
+  transform: scale(0.98);
+}
+
+.button:focus-visible,
+.supportLink:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.buttonIcon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+.playAgainButton {
+  background: var(--color-success);
+  color: var(--color-on-success);
+}
+
+/* Outlined like the game header's Pause button. */
+.shareButton {
+  border-color: var(--color-border);
+  background: transparent;
+  color: var(--color-text);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .playAgainButton:hover {
+    background: var(--color-success-hover);
+  }
+
+  .shareButton:hover {
+    background: var(--color-surface);
+  }
+
+  .supportLink:hover {
+    background: var(--color-surface);
+  }
+}
+
+/* Short portrait phones (iPhone SE and similar). */
+@media (max-height: 700px) and (orientation: portrait) {
+  .resultsSlideBox {
+    --results-strip-space-above: 20px;
+    --results-strip-space-below: 20px;
+    --results-section-space: 20px;
+  }
+}
+
+/* Tablets and desktops. */
+@media (min-width: 768px) {
+  .resultsSlideBox {
+    --results-strip-space-above: 36px;
+    --results-strip-space-below: 40px;
+    --results-section-space: 36px;
+  }
+}
+
+/* Phone landscape: too short for a column, so everything uses the full width. */
+@media (max-width: 999px) and (orientation: landscape) {
+  .resultsSlideBox {
+    --results-gutter: max(24px, env(safe-area-inset-left), env(safe-area-inset-right));
+    --results-button-height: 44px;
+    --results-buttons-pad-top: 12px;
+    --results-buttons-pad-bottom: 16px;
+    --results-buttons-block: calc(
+      var(--results-buttons-pad-top) + var(--results-button-height) +
+        var(--results-buttons-pad-bottom)
+    );
+  }
+
+  .scoreSection,
+  .answerStrip,
+  .statCards,
+  .missedSection,
+  .supportSection,
+  .buttons {
+    max-width: none;
+  }
+
+  .statCards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .buttons {
+    flex-direction: row;
+  }
+
+  .buttons > .button {
+    flex: 1 1 0;
+  }
 }
 
 @media (max-height: 500px) and (orientation: landscape) {
+  .resultsSlideBox {
+    --results-strip-space-above: 16px;
+    --results-strip-space-below: 20px;
+    --results-section-space: 20px;
+  }
   .scoreboard {
     height: 170px;
-  }
-  .timeBoard {
-    height: 70px;
   }
   .starsCount {
     font-size: 40px;
     line-height: 50px;
-  }
-  .continueButton {
-    margin: 4px 0 0 0;
-  }
-  .timeBoard {
-    margin: 4px auto 0 auto;
-  }
-  .socialButtonBox {
-    justify-content: space-between;
   }
   .supportLink {
     font-size: 13px;
@@ -363,81 +554,122 @@
   .scoreboard {
     height: 148px;
   }
-  .timeBoard {
-    height: 62px;
-  }
   .starsCount {
     font-size: 36px;
     line-height: 42px;
+  }
+  .resultsSlideBox {
+    --results-strip-space-above: 12px;
+    --results-strip-space-below: 16px;
+    --results-section-space: 16px;
   }
   .totalCount {
     font-size: 18px;
     line-height: 22px;
   }
-  .continueButton {
-    margin: 2px 0 0 0;
-  }
-  .timeBoard {
-    margin: 2px auto 0 auto;
-  }
 }
 
-@media (max-width: 420px) and (orientation: portrait) {
-  :global(.ios-safari-zoomed.zoom-1) .scoreboard {
-    transform: scale(0.8);
+/* Compact (zoomed in; see globals.css). */
+@media (orientation: portrait) and (max-width: 319px), (orientation: landscape) and (max-height: 300px) {
+  .resultsSlideBox {
+    --results-gutter: max(12px, env(safe-area-inset-left), env(safe-area-inset-right));
+    --results-button-height: 44px;
+    --results-buttons-gap: 8px;
+    --results-buttons-pad-top: 8px;
+    --results-buttons-pad-bottom: 12px;
+    --results-strip-space-above: 16px;
+    --results-strip-space-below: 16px;
+    --results-section-space: 16px;
   }
-  :global(.ios-safari-zoomed.zoom-2) .scoreboard {
-    transform: scale(0.6);
+
+  .content {
+    padding-top: 16px;
   }
-  :global(.ios-safari-zoomed.zoom-3) .scoreboard {
-    transform: scale(0.4);
+
+  .scoreboard {
+    zoom: 0.85;
   }
-  .socialButtonBox {
-    flex-direction: column;
-    text-align: center;
-    width: 280px;
-    position: static;
-    margin: 24px 0 0 0;
+
+  .statCard {
+    padding: 10px 12px;
   }
-  :global(.ios-safari-zoomed.zoom-1) .socialButtonBox {
-    margin: 12px 0 0 0;
-    padding: 0 3%;
-    width: 100%;
+
+  .statLabel {
+    font-size: 12px;
+    line-height: 18px;
   }
-  :global(.ios-safari-zoomed.zoom-2) .socialButtonBox {
-    margin: 8px 0 0 0;
-    padding: 0 3%;
-    width: 100%;
+
+  .statValue {
+    font-size: 17px;
+    line-height: 24px;
   }
-  :global(.ios-safari-zoomed.zoom-3) .socialButtonBox {
-    margin: 3px 0 0 0;
-    padding: 0 3%;
-    width: 100%;
-  }
-  :global(.ios-safari-zoomed) .timeBoard {
-    width: 94dvw;
-    margin-top: 0;
-    height: 50px;
-  }
-  .shareButton {
-    margin: 0 0 12px 0;
-  }
+
   .supportLink {
-    margin: 0 0 12px 0;
-    width: 100%;
-    text-align: center;
+    column-gap: 8px;
+    height: auto;
+    min-height: 60px;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .supportIcon {
+    font-size: 24px;
+  }
+
+  .button {
+    padding: 0 12px;
+    font-size: 14px;
+    letter-spacing: 0.02em;
   }
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .continueButton:hover {
-    cursor: pointer;
-    color: #48d1cc;
-    background-color: white;
+/* One card per row, label and value side by side: two columns leave too little room for either. */
+@media (orientation: portrait) and (max-width: 319px) {
+  .statCards {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
   }
-  .supportLink:hover,
-  .shareButton:hover {
-    cursor: pointer;
-    opacity: 0.7;
+
+  .statCard {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .statLabel {
+    flex: none;
+  }
+
+  .statValue {
+    min-width: 0;
+    text-align: right;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 300px) {
+  .resultsSlideBox {
+    --results-button-height: 36px;
+    --results-buttons-pad-bottom: 8px;
+  }
+
+  .scoreboard {
+    zoom: 0.7;
+  }
+
+  .statCard {
+    padding: 6px 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .missedChevron,
+  .supportLink {
+    transition: none;
+  }
+
+  .button:active {
+    transform: none;
   }
 }

@@ -1,20 +1,16 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
 import type { Metadata } from 'next';
-import { SessionMetricsHandler } from 'components';
+import BrokenImageGuard from '@/components/BrokenImageGuard';
+import SessionMetricsHandler from '@/components/SessionMetricsHandler';
+import { SITE_NAME, SITE_URL } from '@/constant/site';
+import { themeBootScript } from '@/utils/theme';
+import './tokens.css';
 import './globals.css';
 
-/** Inlined so static export runs zoom detect during parse (beforeInteractive + src only preloads on export). */
-const iosSafariZoomCheck = readFileSync(
-  join(process.cwd(), 'public/ios-safari-zoom-boot.js'),
-  'utf8',
-);
-
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.tamilcharades.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Tamil & Hollywood Dumb Charades",
-    template: "%s | Tamil Charades",
+    template: `%s | ${SITE_NAME}`,
   },
   description:
     "Dumb Charades game for Tamil and English movies. Classic, Story, Song, Kids, and Hollywood modes. 1960s through latest films.",
@@ -28,10 +24,10 @@ export const metadata: Metadata = {
     description:
       "Dumb Charades game for Tamil and English movies. Classic, Story, Song, Kids, and Hollywood modes. 1960s through latest films.",
     url: "/",
-    siteName: "Tamil Charades",
+    siteName: SITE_NAME,
     type: "website",
     locale: "en_US",
-    images: [{ url: "/tamil-logo-blue.webp", alt: "Tamil Charades" }],
+    images: [{ url: "/tamil-logo-blue.webp", alt: SITE_NAME }],
   },
   twitter: {
     card: "summary",
@@ -48,15 +44,22 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    // `data-theme` is added by themeBootScript before hydration.
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script
           suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: iosSafariZoomCheck }}
+          dangerouslySetInnerHTML={{ __html: themeBootScript }}
         />
       </head>
       <body>
+        <noscript>
+          <p className="noscript-banner">
+            Tamil Charades needs JavaScript to play. Please turn it on and reload the page.
+          </p>
+        </noscript>
         <SessionMetricsHandler />
+        <BrokenImageGuard />
         {children}
       </body>
     </html>

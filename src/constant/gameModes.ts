@@ -17,81 +17,139 @@ import storySm from "../assets/game-modes/story-sm.webp";
 
 export const GameDifficulty = ["easy", "medium", "hard"] as const;
 
+/** 1 = easy, 2 = medium, 3 = hard; also the value sent to the PHP endpoints. */
+export type DifficultyLevel = 1 | 2 | 3;
+
+export const DEFAULT_DIFFICULTY: DifficultyLevel = 2;
+
+/** Display order on the homepage; also drives static params and the sitemap. */
+export const GAME_SLUGS = ["classic", "story", "song", "hollywood", "kids"] as const;
+
+export type GameSlug = (typeof GAME_SLUGS)[number];
+
 export interface GameModeType {
   title: string;
-  mode: "classic" | "story" | "song" | "hollywood" | "kids";
-  description: string;
+  mode: GameSlug;
+  /** The one rule shown on the instruction card before the countdown. */
+  instruction: string;
+  instructionInTamil: string;
+  twist?: string;
+  twistInTamil?: string;
+  dont?: string;
+  dontInTamil?: string;
+  do?: string;
+  doInTamil?: string;
   backgroundLg: StaticImageData;
   backgroundMd: StaticImageData;
   backgroundSm: StaticImageData;
-  backgroundPosition: string;
   endpoint: string;
   timeLimit: number;
+  /** Shows the difficulty slider and appends the level to `endpoint`. */
+  hasDifficulty: boolean;
+  /** Renders the `movie` field under the title (song name's film, kids word's meaning). */
+  showsSubtitle: boolean;
+  /** Single centered title with no film-reel icon (no Tamil translation). */
+  centeredTitle: boolean;
 }
 
-export interface GameModeData {
-  [key: string]: GameModeType;
-}
-
-export const GAME_MODES_DATA: GameModeData = {
+export const GAME_MODES_DATA: Record<GameSlug, GameModeType> = {
   classic: {
     title: "Classic Mode",
     mode: "classic",
-    description:
-      "Act out the movie without speaking or making sounds.<br /><br />Press ✔ for right guesses and ✘ for wrong/skipped ones.<br />Press 🏁 to conclude the game.",
+    instruction: "No lip-reading, whispering or making any sounds!",
+    instructionInTamil: "உதட்டு அசைவு, முணுமுணுப்பு, எந்த சத்தமும் - கூடாது!",
+    do: "Act out the movie by any means.",
+    doInTamil: "படத்தை எந்த குறிப்பு, கருத்து, நுணுக்கம் மூலமும் நடிக்கலாம்!",
+    dont: "No lip-reading, whispering or making any sounds!",
+    dontInTamil: "உதட்டு அசைவு, முணுமுணுப்பு, எந்த சத்தமும் - கூடாது!",
     backgroundLg: classicLg,
     backgroundMd: classicMd,
     backgroundSm: classicSm,
-    backgroundPosition: "90%",
     endpoint: "/classic-movies.php?difficulty=",
     timeLimit: 75,
+    hasDifficulty: true,
+    showsSubtitle: false,
+    centeredTitle: false,
   },
   story: {
     title: "Story Mode",
     mode: "story",
-    description:
-      "Make the players guess the movie by acting out only the <strong>storyline</strong> or iconic scenes.<br /><br /><strong>Don't</strong> act anything about the <span>movie title, cast or crew</span>. No hints about hero, heroine, villain, director etc.",
+    instruction: "Don't act the movie name, cast or crew!",
+    instructionInTamil: "படத்தின் பெயர், நடிகர், நடிகை, இயக்குனர் பற்றி நடிக்கக் கூடாது!",
+    twist: "Act out the story line, iconic scenes or mass dialogues.",
+    twistInTamil: "படத்தின் கதைக்களம், குறிப்புகள், முக்கிய காட்சிகள் - இவற்றை பற்றி மட்டுமே நடிக்கலாம்!",
+    dont: "Don't act about the movie name, hero, heroine, villain, director, etc.",
+    dontInTamil: "படத்தின் பெயர், நடிகர், நடிகை, இயக்குனர் பற்றி நடிக்கக் கூடாது!",
     backgroundLg: storyLg,
     backgroundMd: storyMd,
     backgroundSm: storySm,
-    backgroundPosition: "85%",
     endpoint: "/story-movies.php?story_difficulty=",
     timeLimit: 90,
+    hasDifficulty: true,
+    showsSubtitle: false,
+    centeredTitle: false,
   },
   song: {
     title: "Song Mode",
     mode: "song",
-    description:
-      "Make the players guess the song by acting out only the <strong>lyrics</strong>, song scenes or <strong>famous dance steps</strong>.<br /><br /><strong>Don't</strong> act anything about the <span>movie title, storyline, cast or crew</span>. No hints about music director, hero, heroine or villain.",
+    instruction: "Don't sing or hum. No hints about the movie, cast or crew!",
+    instructionInTamil: "படத்தின் பெயர், நடிகர், நடிகை, இசை, இயக்குனர் பற்றி நடிக்கக் கூடாது!",
+    twist: "Act out the lyrics, song scenes or famous dance steps.",
+    twistInTamil: "பாடலின் வரிகள், காட்சிகள், நடன அமைப்பு - இவற்றை பற்றி மட்டுமே நடிக்கலாம்!",
+    dont: "Don't act about the movie name, hero, heroine, music, director, etc.",
+    dontInTamil: "படத்தின் பெயர், நடிகர், நடிகை, இசை, இயக்குனர் பற்றி நடிக்கக் கூடாது!",
     backgroundLg: songLg,
     backgroundMd: songMd,
     backgroundSm: songSm,
-    backgroundPosition: "35%",
     endpoint: "/songs.php?difficulty=",
     timeLimit: 90,
+    hasDifficulty: true,
+    showsSubtitle: true,
+    centeredTitle: false,
   },
   hollywood: {
     title: "Hollywood Mode",
     mode: "hollywood",
-    description:
-      "Act out the movie without speaking or making sounds.<br /><br />Press ✔ for right guesses and ✘ for wrong/skipped ones.<br />Press 🏁 to conclude the game.",
+    instruction: "No lip-reading, whispering or making any sounds!",
+    instructionInTamil: "உதட்டு அசைவு, முணுமுணுப்பு, எந்த சத்தமும் - கூடாது!",
+    do: "Act out the movie by any means.",
+    doInTamil: "படத்தை எந்த குறிப்பு, கருத்து, நுணுக்கம் மூலமும் நடிக்கலாம்!",
+    dont: "No lip-reading, whispering or making any sounds!",
+    dontInTamil: "உதட்டு அசைவு, முணுமுணுப்பு, எந்த சத்தமும் - கூடாது!",
     backgroundLg: hollywoodLg,
     backgroundMd: hollywoodMd,
     backgroundSm: hollywoodSm,
-    backgroundPosition: "60%",
     endpoint: "/hollywood.php?difficulty=",
     timeLimit: 75,
+    hasDifficulty: true,
+    showsSubtitle: false,
+    centeredTitle: true,
   },
   kids: {
     title: "Kids Mode",
     mode: "kids",
-    description:
-      "Simple day-to-day words for kids to get introduced to the world of <strong>Charades</strong>.",
+    instruction: "No lip-reading, whispering or making any sounds!",
+    instructionInTamil: "உதட்டு அசைவு, முணுமுணுப்பு, எந்த சத்தமும் - கூடாது!",
+    do: "Simple day-to-day words for kids to get introduced to the world of Charades.",
+    doInTamil: "குழந்தைகள் விளையாட அன்றாடம் பயன்படும், எளிய சொற்கள்!",
+    dont: "No lip-reading, whispering or making any sounds!",
+    dontInTamil: "உதட்டு அசைவு, முணுமுணுப்பு, எந்த சத்தமும் - கூடாது!",
     backgroundLg: kidsLg,
     backgroundMd: kidsMd,
     backgroundSm: kidsSm,
-    backgroundPosition: "50%",
     endpoint: "/kid-words.php",
     timeLimit: 60,
+    hasDifficulty: false,
+    showsSubtitle: true,
+    centeredTitle: false,
   },
-} as const;
+};
+
+/** First word of the mode's title ("Hollywood" for "Hollywood Mode"), for the category chip. */
+export function getModeShortTitle(mode: GameModeType): string {
+  return mode.title.split(" ")[0];
+}
+
+export function isGameSlug(value: string): value is GameSlug {
+  return (GAME_SLUGS as readonly string[]).includes(value);
+}

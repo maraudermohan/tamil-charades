@@ -1,0 +1,118 @@
+.picker {
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0 0 24px 0;
+  border: 0;
+}
+
+/* Matches the cards' bold labels. */
+.label {
+  margin: 0 0 12px;
+  padding: 0;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 24px;
+  color: var(--color-text);
+  span {
+    font-weight: 400;
+    font-size: 15px;
+  }
+}
+
+/* One outlined box split into three; the corner radius sits on the outer edges only. */
+.options {
+  --picker-radius: 12px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--color-border);
+  border-radius: var(--picker-radius);
+}
+
+.option {
+  position: relative;
+  display: block;
+  min-width: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.option + .option {
+  border-left: 1px solid var(--color-border);
+}
+
+.face {
+  height: 52px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  color: var(--color-text);
+  user-select: none;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.option:first-child .face {
+  border-radius: calc(var(--picker-radius) - 1px) 0 0 calc(var(--picker-radius) - 1px);
+}
+
+.option:last-child .face {
+  border-radius: 0 calc(var(--picker-radius) - 1px) calc(var(--picker-radius) - 1px) 0;
+}
+
+.icon {
+  flex: none;
+  width: 72px;
+  height: auto;
+}
+
+.input:checked + .face {
+  background: var(--color-surface-inverse);
+  color: var(--color-text-on-inverse);
+}
+
+/* Raised so the ring isn't hidden under the neighbouring options. */
+.input:focus-visible + .face {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .option:hover .input:not(:checked) + .face {
+    background: var(--color-surface);
+  }
+}
+
+/* Compact (zoomed in; see globals.css): the gauges shrink to their thirds of the box. */
+@media (orientation: portrait) and (max-width: 319px), (orientation: landscape) and (max-height: 300px) {
+  .picker {
+    padding-bottom: 12px;
+  }
+
+  .label {
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+
+  .label span {
+    font-size: 14px;
+  }
+
+  .face {
+    height: 44px;
+  }
+
+  .icon {
+    width: min(72px, 100% - 12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .face {
+    transition: none;
+  }
+}

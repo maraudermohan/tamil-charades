@@ -1,19 +1,13 @@
 .footer {
-  margin: 10vh 10vw 0 10vw;
-  margin-top: calc(var(--vh, 1vh) * 10);
+  margin: 10dvh 10vw 0 10vw;
   padding: 32px 0 36px 0;
   width: calc(100% - 20vw);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-top: 1px solid #ff6633;
+  border-top: 1px solid var(--color-border-subtle);
   z-index: 3;
-}
-
-:global(.ios-safari-zoomed) .footer {
-  margin: 5dvh 5dvw 0 5dvw;
-  width: calc(100% - 10dvw);
 }
 
 .footerDescription {
@@ -22,19 +16,7 @@
   font-size: 16px;
   letter-spacing: 0.2px;
   font-weight: 500;
-  color: #ff6633;
-}
-
-:global(.ios-safari-zoomed.zoom-1) .footerDescription {
-  font-size: 14px;
-}
-
-:global(.ios-safari-zoomed.zoom-2) .footerDescription {
-  font-size: 12px;
-}
-
-:global(.ios-safari-zoomed.zoom-3) .footerDescription {
-  font-size: 10px;
+  color: var(--color-text-muted);
 }
 
 .footerLink {
@@ -43,58 +25,71 @@
   font-size: 16px;
   letter-spacing: 0.3px;
   font-weight: 500;
-  color: #ff6633;
-  border-bottom: 1px solid #ff6633;
+  color: var(--color-text);
+  border-bottom: 1px solid currentColor;
+  transition:
+    color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-:global(.ios-safari-zoomed.zoom-1) .footerLink {
-  font-size: 14px;
+@media (hover: hover) and (pointer: fine) {
+  /* The shadow thickens the underline without shifting the layout. */
+  .footerLink:hover {
+    color: var(--color-secondary-text);
+    box-shadow: 0 1px 0 currentColor;
+  }
 }
 
-:global(.ios-safari-zoomed.zoom-2) .footerLink {
-  font-size: 12px;
-}
-
-:global(.ios-safari-zoomed.zoom-3) .footerLink {
-  font-size: 10px;
+.footerLink:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
 }
 
 @media (max-width: 999px) and (orientation: landscape) {
   .footer {
-    margin: 5vh 20vw 0 20vw;
-    margin-top: calc(var(--vh, 1vh) * 5);
+    margin: 5dvh 20vw 0 20vw;
     width: calc(100% - 40vw);
   }
 }
 
 @media (min-width: 767px) and (orientation: portrait) {
   .footer {
-    margin: 5vh 20vw 0 20vw;
-    margin-top: calc(var(--vh, 1vh) * 5);
+    margin: 5dvh 20vw 0 20vw;
     width: calc(100% - 40vw);
   }
 }
 
 @media (min-width: 1000px) and (orientation: landscape) {
   .footer {
-    margin: 5vh 20vw 0 20vw;
-    margin-top: calc(var(--vh, 1vh) * 5);
+    margin: 5dvh 20vw 0 20vw;
     width: calc(100% - 40vw);
   }
 }
 
 @media (min-width: 1300px) and (orientation: landscape) {
   .footer {
-    margin: 9vh 20vw 0 20vw;
-    margin-top: calc(var(--vh, 1vh) * 9);
+    margin: 9dvh 20vw 0 20vw;
     padding: 24px 0 20px 0;
   }
 }
 
 @media (min-width: 1500px) and (orientation: landscape) {
   .footer {
-    margin: 8vh 20vw 0 20vw;
-    margin-top: calc(var(--vh, 1vh) * 8);
+    margin: 8dvh 20vw 0 20vw;
     padding: 24px 0 20px 0;
+  }
+}
+
+/* Compact (zoomed in; see globals.css): the side margins would leave the text a narrow column. */
+@media (orientation: portrait) and (max-width: 319px), (orientation: landscape) and (max-height: 300px) {
+  .footer {
+    margin: 32px 16px 0;
+    padding: 20px 0 24px;
+    width: calc(100% - 32px);
+  }
+
+  .footerDescription,
+  .footerLink {
+    font-size: 14px;
   }
 }

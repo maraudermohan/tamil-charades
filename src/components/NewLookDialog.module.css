@@ -1,0 +1,75 @@
+/* Popcorn-box stripes across the top, bleeding to the panel's edges. */
+.band {
+  flex: none;
+  align-self: stretch;
+  height: 88px;
+  margin: calc(-1 * var(--pad-top)) calc(-1 * var(--pad-x)) 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-highlight) 0 18px,
+    var(--color-highlight-playful) 18px 36px,
+    var(--color-success) 36px 54px,
+    var(--color-accent) 54px 72px
+  );
+}
+
+/* Half over the band. */
+.icon {
+  margin-top: -28px;
+  background: var(--color-surface);
+  color: var(--color-highlight-playful);
+  box-shadow: var(--shadow-md);
+}
+
+.title {
+  max-width: 18ch;
+  margin-bottom: 12px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.text {
+  max-width: 36ch;
+  margin: 0 0 8px;
+  color: var(--color-text-muted);
+  font-size: 15px;
+  line-height: 1.5;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.thanks {
+  color: var(--color-heading);
+  font-weight: 600;
+}
+
+@media (max-width: 999px) and (orientation: landscape) {
+  .band {
+    height: 56px;
+  }
+
+  .icon {
+    margin-top: -22px;
+  }
+}
+
+/* Compact (zoomed in; see globals.css). */
+@media (orientation: portrait) and (max-width: 319px), (orientation: landscape) and (max-height: 300px) {
+  .band {
+    height: 48px;
+  }
+
+  .icon {
+    margin-top: -20px;
+  }
+
+  .text {
+    font-size: 14px;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 300px) {
+  .band {
+    height: 32px;
+  }
+}

@@ -1,10 +1,11 @@
 import {
   TrackEvents,
   type TrackApiRequest,
+  type TrackContext,
   type TrackEventName,
   type TrackEventPayloadByName,
-} from "constant";
-import { getUniqueSessionId, getUniqueUserId } from "./sessionMetrics";
+} from "@/constant/metricsData";
+import { getUniqueSessionId, getUniqueUserId } from "@/utils/sessionMetrics";
 
 const DEFAULT_METRICS_PATH = "/track-metrics.php";
 
@@ -31,15 +32,20 @@ function resolveMetricsUrl(): string {
   return new URL(path, window.location.origin).href;
 }
 
+/** A stalled metrics request would hold a connection the game's title requests may need. */
+const METRICS_TIMEOUT_MS = 5000;
+
 /**
  * POST JSON body to the metrics endpoint (use for most events).
  */
-export function postMetricsFetch(request: TrackApiRequest): Promise<Response> {
+function postMetricsFetch(request: TrackApiRequest): Promise<Response> {
   return fetch(resolveMetricsUrl(), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
     cache: "no-store",
+    // AbortSignal.timeout is missing before Safari 16.
+    signal: typeof AbortSignal.timeout === "function" ? AbortSignal.timeout(METRICS_TIMEOUT_MS) : undefined,
   });
 }
 
@@ -60,7 +66,7 @@ function postMetricsFetchKeepalive(request: TrackApiRequest): Promise<Response> 
  * POST via sendBeacon (reliable on page hide / unload).
  * Prefer for session.ended and session.web_vitals. Returns false if Beacon is unavailable or queued failed.
  */
-export function postMetricsBeacon(request: TrackApiRequest): boolean {
+function postMetricsBeacon(request: TrackApiRequest): boolean {
   if (typeof navigator === "undefined" || !navigator.sendBeacon) {
     return false;
   }
@@ -84,7 +90,7 @@ function shouldUseBeaconForEvent(event: TrackEventName): boolean {
 export function track<E extends TrackEventName>(
   event: E,
   payload: TrackEventPayloadByName[E],
-  context: Omit<TrackApiRequest, "event" | "payload" | "session_id" | "user_id" | "created">,
+  context: TrackContext,
 ): void {
   if (typeof window === "undefined") {
     return;

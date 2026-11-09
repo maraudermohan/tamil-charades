@@ -1,8 +1,4 @@
-const difficultyMap: Record<number, string> = {
-  1: "EASY",
-  2: "MEDIUM",
-  3: "HARD",
-} as const;
+import { lora, poppins, rubik } from "@/app/fonts";
 
 const firstPart = [
   "It just got wild",
@@ -18,38 +14,88 @@ const secondPart = [
   "Can you beat our score?",
 ];
 
+/**
+ * The card always uses the dark theme. Canvas can't read CSS variables for a theme that
+ * isn't applied, so these mirror the dark-mode values in src/app/tokens.css.
+ */
+const colors = {
+  bg: "#1e1d33", // --color-bg
+  text: "#fffcf6", // --color-text
+  textMuted: "#fffcf6b3", // --color-text-muted
+  chip: "#5b4b8a", // --color-accent
+  onChip: "#fffcf6", // --color-on-accent
+  card: "#fffcf6", // --color-word-card
+  onCard: "#2b2a4c", // --color-on-word-card
+  cardBorder: "#474556", // --color-word-card-border
+  highlight: "#e5b653", // --color-highlight
+  stripe: ["#e0644a", "#e5b653", "#2a9d8f"], // tomato, mustard, teal (bright)
+  dots: "#fffcf60f",
+  filmHoles: "#fffcf629",
+  filmBody: "#fffcf614",
+};
+
+const fonts = {
+  lora: lora.style.fontFamily,
+  poppins: poppins.style.fontFamily,
+  rubik: rubik.style.fontFamily,
+};
+
+export interface ShareCardStats {
+  bestStreak: number;
+  fastestTitle: string | null;
+  accuracy: number;
+  totalTime: string;
+}
+
 interface GenerateShareCardProps {
   currentMode: string;
-  currentDifficulty: number;
   starsCount: number;
   totalCount: number;
-  averageTime: string;
+  stats: ShareCardStats;
   firstPartIndex: number;
   secondPartIndex: number;
 }
 
+/** Layout is in an 810×810 space, rendered at 1080×1080. */
+const SIZE = 810;
+const OUTPUT_SIZE = 1080;
+
 export async function generateShareCard({
   currentMode,
-  currentDifficulty,
   starsCount,
   totalCount,
-  averageTime,
+  stats,
   firstPartIndex,
   secondPartIndex,
 }: GenerateShareCardProps): Promise<Blob | null> {
-  const SIZE = 810;
   const canvas = document.createElement("canvas");
-  canvas.width = SIZE;
-  canvas.height = SIZE;
+  canvas.width = OUTPUT_SIZE;
+  canvas.height = OUTPUT_SIZE;
   const ctx = canvas.getContext("2d");
   if (!ctx) return null;
 
+  // Fonts the page hasn't drawn yet (or Lora after its optional swap window) aren't ready for canvas.
+  const fontsUsed = [
+    `600 18px ${fonts.lora}`,
+    `700 120px ${fonts.lora}`,
+    `400 22px ${fonts.lora}`,
+    `400 44px ${fonts.poppins}`,
+    `600 17px ${fonts.poppins}`,
+    `600 26px ${fonts.poppins}`,
+    `400 17px ${fonts.rubik}`,
+    `500 18px ${fonts.rubik}`,
+  ];
+  await Promise.all(fontsUsed.map((font) => document.fonts.load(font).catch(() => [])));
+
+  ctx.scale(OUTPUT_SIZE / SIZE, OUTPUT_SIZE / SIZE);
+  ctx.textAlign = "center";
+
   // ── Background ──────────────────────────────────────────
-  ctx.fillStyle = "#111016";
+  ctx.fillStyle = colors.bg;
   ctx.fillRect(0, 0, SIZE, SIZE);
 
   // ── Dot grid pattern ────────────────────────────────────
-  ctx.fillStyle = "rgba(255,255,255,0.06)";
+  ctx.fillStyle = colors.dots;
   const spacing = 28;
   const radius = 1.2;
   for (let x = spacing; x < SIZE; x += spacing) {
@@ -62,9 +108,9 @@ export async function generateShareCard({
 
   // ── Top stripe ──────────────────────────────────────────
   const stripeGrad = ctx.createLinearGradient(0, 0, SIZE, 0);
-  stripeGrad.addColorStop(0, "#e8522a");
-  stripeGrad.addColorStop(0.5, "#c9303a");
-  stripeGrad.addColorStop(1, "#9b2dd4");
+  colors.stripe.forEach((color, index) =>
+    stripeGrad.addColorStop(index / (colors.stripe.length - 1), color),
+  );
   ctx.fillStyle = stripeGrad;
   ctx.fillRect(0, 0, SIZE, 5);
 
@@ -75,77 +121,76 @@ export async function generateShareCard({
   drawFilmCorner(ctx, SIZE - 20, SIZE - 20, true, true);
 
   // ── App name ─────────────────────────────────────────────
-  ctx.fillStyle = "rgba(255,255,255,0.8)";
-  ctx.font = "600 18px 'Times New Roman', serif";
+  ctx.fillStyle = colors.textMuted;
+  ctx.font = `600 18px ${fonts.lora}`;
   ctx.letterSpacing = "8px";
-  ctx.textAlign = "center";
-  ctx.fillText("TAMILCHARADES.com", SIZE / 2, 148);
-  // margin-bottom:50px;
+  ctx.fillText("TAMILCHARADES.com", SIZE / 2, 124);
 
-  // ── Mode badge ───────────────────────────────────────────
-  const badgeText = `${currentMode} on ${difficultyMap[currentDifficulty]}`;
-  ctx.font = "500 22px 'Times New Roman', serif";
-  ctx.letterSpacing = "4px";
-  const badgeW = ctx.measureText(badgeText).width + 40;
-  const badgeX = SIZE / 2 - badgeW / 2;
-  const badgeY = 200;
-
-  // badge background
-  ctx.fillStyle = "rgba(232,82,42,0.13)";
-  roundRect(ctx, badgeX, badgeY, badgeW, 32, 13);
+  // ── Mode chip: a tag, like the game header's category chip ──
+  ctx.font = `600 17px ${fonts.poppins}`;
+  ctx.letterSpacing = "2px";
+  const chipText = fitText(ctx, currentMode.toUpperCase(), 560);
+  const chipW = ctx.measureText(chipText).width + 36;
+  const chipH = 36;
+  const chipY = 150;
+  ctx.fillStyle = colors.chip;
+  roundRect(ctx, SIZE / 2 - chipW / 2, chipY, chipW, chipH, 7);
   ctx.fill();
-  // badge border
-  ctx.strokeStyle = "rgba(232,82,42,0.38)";
-  ctx.lineWidth = 1;
-  roundRect(ctx, badgeX, badgeY, badgeW, 32, 13);
-  ctx.stroke();
-  // badge text
-  ctx.fillStyle = "#e8845a";
-  ctx.fillText(badgeText, SIZE / 2, badgeY + 23);
+  ctx.fillStyle = colors.onChip;
+  ctx.textBaseline = "middle";
+  ctx.fillText(chipText, SIZE / 2, chipY + chipH / 2 + 1);
+  ctx.textBaseline = "alphabetic";
 
-  // ── Score number ─────────────────────────────────────────
-  ctx.letterSpacing = "-4px";
-  ctx.font = "700 120px Georgia, serif";
-  ctx.fillStyle = "#ffffff";
-  ctx.fillText(String(starsCount), SIZE / 2 - (ctx.measureText(String(starsCount)).width / 1.5), 360);
-
-  // denominator
+  // ── Score: "12 / 15", centered as one line ───────────────
+  const scoreBaseline = 318;
+  const scoreGap = 14;
+  const starsText = String(starsCount);
+  const totalText = `/ ${totalCount}`;
   ctx.letterSpacing = "0px";
-  ctx.font = "400 50px Georgia, serif";
-  ctx.fillStyle = "rgba(255,255,255,0.3)";
-  ctx.fillText(`/ ${totalCount}`, SIZE / 2 + (ctx.measureText(`/ ${totalCount}`).width / 2), 360);
+  ctx.font = `700 120px ${fonts.lora}`;
+  const starsW = ctx.measureText(starsText).width;
+  ctx.font = `400 44px ${fonts.poppins}`;
+  const totalW = ctx.measureText(totalText).width;
+  const scoreLeft = SIZE / 2 - (starsW + scoreGap + totalW) / 2;
+
+  ctx.textAlign = "left";
+  ctx.font = `700 120px ${fonts.lora}`;
+  ctx.fillStyle = colors.text;
+  ctx.fillText(starsText, scoreLeft, scoreBaseline);
+  ctx.font = `400 44px ${fonts.poppins}`;
+  ctx.fillStyle = colors.textMuted;
+  ctx.fillText(totalText, scoreLeft + starsW + scoreGap, scoreBaseline);
+  ctx.textAlign = "center";
 
   // ── Tagline ──────────────────────────────────────────────
-  ctx.font = "400 18px 'Times New Roman', serif";
-  ctx.fillStyle = "rgba(255,255,255,0.5)";
+  ctx.font = `400 22px ${fonts.lora}`;
+  ctx.fillStyle = colors.textMuted;
   ctx.letterSpacing = "1px";
-  ctx.fillText(firstPart[firstPartIndex], SIZE / 2, 418);
+  ctx.fillText(firstPart[firstPartIndex], SIZE / 2, 366);
 
-  // ── Divider ──────────────────────────────────────────────
-  ctx.strokeStyle = "rgba(255,255,255,0.3)";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(SIZE / 2 - 48, 460);
-  ctx.lineTo(SIZE / 2 + 48, 460);
-  ctx.stroke();
-
-  // ── Stats row ────────────────────────────────────────────
-  ctx.font = "600 22px 'Times New Roman', serif";
-  ctx.fillStyle = "#ffffff";
-  ctx.letterSpacing = "0px";
-  ctx.fillText(averageTime, SIZE / 2, 516);
-  console.log(averageTime);
-
-  ctx.font = "400 14px 'Times New Roman', serif";
-  ctx.fillStyle = "rgba(255,255,255,0.5)";
-  ctx.letterSpacing = "2px";
-  ctx.fillText("AVG TIME", SIZE / 2, 546);
+  // ── Stat cards (2 × 2) ───────────────────────────────────
+  const statCards = [
+    { label: "Best Streak", value: String(stats.bestStreak) },
+    { label: "Fastest guess", value: stats.fastestTitle ?? "–" },
+    { label: "Accuracy", value: `${stats.accuracy}%` },
+    { label: "Total time", value: stats.totalTime },
+  ];
+  const cardW = 252;
+  const cardH = 104;
+  const cardGap = 16;
+  const gridLeft = SIZE / 2 - cardW - cardGap / 2;
+  const gridTop = 404;
+  statCards.forEach(({ label, value }, index) => {
+    const x = gridLeft + (index % 2) * (cardW + cardGap);
+    const y = gridTop + Math.floor(index / 2) * (cardH + cardGap);
+    drawStatCard(ctx, x, y, cardW, cardH, label, value);
+  });
 
   // ── CTA footer ───────────────────────────────────────────
-  ctx.font = "400 15px 'Times New Roman', serif";
-  ctx.fillStyle = "rgba(255,255,255,0.7)";
-  ctx.letterSpacing = "2px";
-  ctx.fillText(secondPart[secondPartIndex].toUpperCase(), SIZE / 2, 648);
+  ctx.font = `500 18px ${fonts.rubik}`;
+  ctx.fillStyle = colors.highlight;
+  ctx.letterSpacing = "3px";
+  ctx.fillText(secondPart[secondPartIndex].toUpperCase(), SIZE / 2, 700);
 
   // ── Export ───────────────────────────────────────────────
   return new Promise((resolve) =>
@@ -154,6 +199,51 @@ export async function generateShareCard({
 }
 
 // ── Helpers ──────────────────────────────────────────────────
+
+function drawStatCard(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  label: string,
+  value: string,
+) {
+  const border = 3;
+  const paddingX = 22;
+  const textW = w - paddingX * 2;
+
+  ctx.fillStyle = colors.cardBorder;
+  roundRect(ctx, x, y, w, h, 14);
+  ctx.fill();
+  ctx.fillStyle = colors.card;
+  roundRect(ctx, x + border, y + border, w - border * 2, h - border * 2, 14 - border);
+  ctx.fill();
+
+  ctx.save();
+  ctx.textAlign = "left";
+  ctx.letterSpacing = "0px";
+  ctx.fillStyle = colors.onCard;
+
+  ctx.font = `400 17px ${fonts.rubik}`;
+  ctx.globalAlpha = 0.75;
+  ctx.fillText(fitText(ctx, label, textW), x + paddingX, y + 40);
+
+  ctx.font = `600 26px ${fonts.poppins}`;
+  ctx.globalAlpha = 1;
+  ctx.fillText(fitText(ctx, value, textW), x + paddingX, y + 78);
+  ctx.restore();
+}
+
+/** Trims `text` with an ellipsis so it fits `maxWidth` in the current font. */
+function fitText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number) {
+  if (ctx.measureText(text).width <= maxWidth) return text;
+  let end = text.length;
+  while (end > 0 && ctx.measureText(`${text.slice(0, end).trimEnd()}…`).width > maxWidth) {
+    end--;
+  }
+  return `${text.slice(0, end).trimEnd()}…`;
+}
 
 function drawFilmCorner(
   ctx: CanvasRenderingContext2D,
@@ -165,7 +255,7 @@ function drawFilmCorner(
   ctx.save();
   ctx.translate(x, y);
   ctx.scale(flipX ? -1 : 1, flipY ? -1 : 1);
-  ctx.fillStyle = "rgba(255,255,255,0.16)";
+  ctx.fillStyle = colors.filmHoles;
   // sprocket holes
   [
     [0, 0],
@@ -175,7 +265,7 @@ function drawFilmCorner(
     ctx.fillRect(dx, dy, 7, 7);
   });
   // film strip body
-  ctx.fillStyle = "rgba(255,255,255,0.08)";
+  ctx.fillStyle = colors.filmBody;
   ctx.fillRect(10, 0, 24, 30);
   ctx.restore();
 }
